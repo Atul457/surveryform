@@ -1,0 +1,5 @@
+---
+deployment:
+  tasks:
+    - export DEPLOYPATH=/home/clqsts2cjeiq/public_html/survey
+    - /bin/cp index.html $DEPLOYPATH
