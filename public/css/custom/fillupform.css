@@ -1,0 +1,70 @@
+.formContainer {
+    max-width: 800px;
+    margin: auto;
+    width: 100%;
+    color: rgba(0, 0, 0, 0.918);
+    margin: 50px auto;
+}
+
+.page_header {
+    border-radius: 8px;
+    border-top: 13px solid var(--bs-primary);
+    margin-bottom: 1rem !important;
+    text-transform: capitalize;
+}
+
+.rendered-form .form-group {
+    border-radius: 8px;
+    background: #fff;
+    background-clip: border-box;
+    padding: 1.5rem 1.5rem;
+    margin-bottom: 1rem !important;
+    box-shadow: 0 4px 24px 0 rgb(34 41 47 / 10%);
+    transition: all 0.3s ease-in-out, background 0s, color 0s, border-color 0s;
+}
+
+.card-header {
+    font-size: 25px;
+    font-weight: 500;
+}
+
+.rendered-form input[type="text"],
+.rendered-form input[type="email"],
+.rendered-form input[type="password"] 
+{
+    border: none;
+    margin-top: 4px;
+    padding: 6px 0px !important;
+    border-bottom: 1px solid #999595;
+    border-radius: 0px;
+    max-width: 400px;
+    width: 100%;
+    box-shadow: none !important;
+    outline: none !important;
+}
+
+.rendered-form input::placeholder{
+    color: #999595;
+}
+
+.formbuilder-button {
+    all: unset !important;
+}
+
+.rendered-form select {
+    margin-top: 4px;
+    border: 1px solid #999595;
+    box-shadow: none !important;
+    outline: none !important;
+}
+
+input[type="submit"],
+button[type="button"],
+button,
+button[type="submit"] {
+    background: var(--bs-primary);
+    color: #fff;
+    border-radius: 4px;
+    padding: 6px 17px !important;
+    margin-bottom: 1rem !important;
+}

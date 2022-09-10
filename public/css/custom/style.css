@@ -1,0 +1,85 @@
+.main-menu.menu-light .navigation > li.active > a {
+    box-shadow: none !important;
+}
+
+.vertical-layout
+    .header-navbar
+    .navbar-container
+    ul.navbar-nav
+    li.dropdown
+    .dropdown-menu {
+    top: 47px !important;
+    right: -14px;
+}
+
+.error {
+    font-size: 11px;
+    color: red;
+    font-weight: bold;
+    margin-top: 7px;
+}
+
+.update_pass_btn {
+    min-width: 97px;
+}
+
+.create_form_details {
+    margin-bottom: 20px;
+}
+
+.tooltip-element {
+    position: relative;
+    cursor: pointer;
+    background-color: var(--bs-primary) !important;
+    color: #fff;
+    width: 16px;
+    height: 16px;
+    border-radius: 8px;
+    display: inline-block;
+    line-height: 16px;
+    margin: 0 5px;
+    text-align: left;
+    font-size: 12px;
+}
+
+.main-menu.menu-light .navigation > li ul .active {
+    box-shadow: none;
+}
+
+*[tooltip]:hover::after {
+    background: var(--bs-primary) !important;
+    border-radius: 5px 5px 5px 0;
+    bottom: 23px;
+    color: #fff;
+    content: attr(tooltip);
+    padding: 10px 5px;
+    position: absolute;
+    z-index: 98;
+    left: 2px;
+    width: 230px;
+    text-shadow: none;
+    font-size: 12px;
+    line-height: 1.5em;
+}
+*[tooltip]:hover::before {
+    border-color: var(--bs-primary) transparent !important;
+    border: solid;
+    border-width: 6px 6px 0;
+    bottom: 17px;
+    content: "";
+    left: 2px;
+    position: absolute;
+    z-index: 99;
+}
+
+.deleteModal .modal-header {
+    background-color: #ff000024;
+}
+
+.shareFormModal .modal-header {
+    background-color: #1a73e838;
+}
+
+label {
+    margin-bottom: 3px;
+}

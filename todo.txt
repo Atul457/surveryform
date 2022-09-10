@@ -1,0 +1,6 @@
+Complete users module
+
+make product module
+1) create product with name against a company
+2) delte product 
+3) update product

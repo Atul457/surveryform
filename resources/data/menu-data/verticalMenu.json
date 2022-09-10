@@ -1,0 +1,94 @@
+{
+    "menu": [
+        {
+            "role": "admin",
+            "name": "My companies",
+            "icon": "home",
+            "slug": "",
+            "submenu": [
+                {
+                    "url": "mycompanies",
+                    "name": "View",
+                    "icon": "circle",
+                    "slug": "mycompanies"
+                },
+                {
+                    "url": "viewcompany",
+                    "name": "Create",
+                    "icon": "circle",
+                    "id": "create_company",
+                    "slug": "create_company"
+                }
+            ]
+        },
+        {
+            "role": "admin",
+            "name": "Products",
+            "icon": "shopping-cart",
+            "slug": "",
+            "submenu": [
+                {
+                    "url": "myproducts",
+                    "name": "View",
+                    "icon": "circle",
+                    "slug": "myproducts"
+                },
+                {
+                    "url": "createprodview",
+                    "name": "Create",
+                    "icon": "circle",
+                    "id": "createprodview",
+                    "slug": "createprodview"
+                }
+            ]
+        },
+        {
+            "role": "admin",
+            "name": "Employees",
+            "icon": "user",
+            "slug": "adminViewUsers",
+            "submenu": [
+                {
+                    "url": "users",
+                    "name": "View",
+                    "icon": "circle",
+                    "slug": "users_view"
+                },
+                {
+                    "url": "createuserview",
+                    "name": "Create",
+                    "icon": "circle",
+                    "id": "create_user",
+                    "slug": "create_user_view"
+                }
+            ]
+        },
+        {
+            "role": "admin",
+            "name": "Forms",
+            "icon": "edit-2",
+            "slug": "",
+            "submenu": [
+                {
+                    "url": "myforms",
+                    "name": "My forms",
+                    "icon": "circle",
+                    "slug": "myforms"
+                },
+                {
+                    "url": "create_form_view",
+                    "name": "Create form",
+                    "icon": "circle",
+                    "slug": "create_form_view"
+                }
+            ]
+        },
+        {
+            "role": "user",
+            "url": "forms_filled",
+            "name": "Forms filled",
+            "icon": "book-open",
+            "slug": "forms_filled"
+        }
+    ]
+}

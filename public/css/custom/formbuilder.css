@@ -1,0 +1,55 @@
+.form-wrap.form-builder .frmb li.form-field {
+    margin-bottom: 0px !important;
+}
+
+.form-wrap.form-builder .stage-wrap {
+    width: calc(73% - 5px) !important;
+    background: #fff;
+    padding: 0px 15px 0px 0px !important;
+}
+
+.form-wrap.form-builder .frmb-control li {
+    background-color: var(--bs-primary) !important;
+    color: #fff;
+    font-weight: bold;
+    padding: 0px !important;
+    display: flex;
+    align-items: center;
+    margin-bottom: 5px !important;
+    box-shadow: -5px 5px 10px -2px #0000007a !important;
+    border-radius: 5px !important;
+}
+
+.form-wrap.form-builder .frmb-control li::before {
+    background: #fff;
+    color: #000;
+    padding: 10px;
+    width: 2.5rem;
+    margin-left: 0px;
+}
+
+.form-wrap.form-builder .stage-wrap.empty::after {
+    font-size: 20px;
+}
+
+.form-wrap.form-builder .stage-wrap.empty {
+    background: #fff !important;
+    border-radius: 10px;
+}
+
+.form-wrap.form-builder .cb-wrap {
+    height: 100% !important;
+    top: 96px !important;
+}
+
+.create_form_select_c_cont {
+    display: flex;
+    align-items: center;
+    margin-bottom: 20px;
+}
+
+.create_form_select_c_cont > select {
+    min-width: 180px;
+    max-width: fit-content;
+    margin-left: 10px;
+}

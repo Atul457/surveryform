@@ -1,0 +1,20 @@
+.main-menu.menu-light .navigation > li.active > a{
+    box-shadow: none !important;
+}
+
+.vertical-layout .header-navbar .navbar-container ul.navbar-nav li.dropdown .dropdown-menu {
+    top: 47px !important;
+    right: -14px;
+}
+
+.error {
+    font-size: 11px;
+    color: red;
+    font-weight: bold;
+    margin-top: 7px;
+}
+
+.update_pass_btn{
+    min-width: 97px;
+}
+

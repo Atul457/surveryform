@@ -1,0 +1,36 @@
+{
+    "menu": [
+        {
+            "name": "My companies",
+            "icon": "home",
+            "slug": "",
+            "submenu": [
+                {
+                    "url": "mycompanies",
+                    "name": "View",
+                    "icon": "circle",
+                    "slug": "mycompanies"
+                },
+                {
+                    "url": "viewcompany",
+                    "name": "Create",
+                    "icon": "circle",
+                    "id": "create_company",
+                    "slug": "create_company"
+                }
+            ]
+        },
+        {
+            "url": "myforms",
+            "name": "My forms",
+            "icon": "layers",
+            "slug": "myforms"
+        },
+        {
+            "url": "createform",
+            "name": "Create form",
+            "icon": "edit-2",
+            "slug": "createform"
+        }
+    ]
+}
