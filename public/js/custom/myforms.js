@@ -45,7 +45,7 @@ $(function () {
     // Advanced Search
     if (dt_adv_filter_table.length) {
         var dt_adv_filter = dt_adv_filter_table.DataTable({
-            ajax: `${window.location.origin}/getMyforms`,
+            ajax: `${window.location.origin}/survey/public/getMyforms`,
             order: [[5, "desc"]],
             columns: [
                 { data: "responsive_id" },
