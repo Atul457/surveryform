@@ -100,7 +100,7 @@ $(function () {
                         return `<div class="d-flex flex-wrap align-items-center">
                                     <a href="${
                                         window.location.origin
-                                    }/editform/${value}">
+                                    }/survey/public/editform/${value}">
                                         ${feather.icons["edit"].toSvg({
                                             class: "me-1",
                                         })}

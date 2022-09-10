@@ -94,7 +94,7 @@ $(function () {
                         return `<div class="d-flex flex-wrap align-items-center">
                                     <a href="${
                                         window.location.origin
-                                    }/editcompany/${value}">
+                                    }/survey/public/editcompany/${value}">
                                         ${feather.icons["edit"].toSvg({
                                             class: "me-1",
                                         })}
