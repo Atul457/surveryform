@@ -97,6 +97,7 @@ class UserController extends Controller
             "is_admin" => $result[0]["is_admin"]
         ]);
 
+        
         return redirect('myforms');
     }
 

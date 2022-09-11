@@ -24,14 +24,6 @@
                 class="form-control"/>
             </div>
 
-            @if(session()->has('is_admin') == "1")
-                @if(Session::get('is_admin') == 1)
-                    <input type="hidden" id="is_admin" value="1">
-                @else
-                    <input type="hidden" id="is_admin" value="0">
-                @endif
-            @endif
-
             <div class="updatePassModalFields">
             <input 
                 type="text" 

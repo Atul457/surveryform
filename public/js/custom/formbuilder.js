@@ -302,34 +302,67 @@ if (updatElemRef.length) {
 
 function createForm() {
     if (!validateForm()) return false;
-    if(!validateFormDates()) return false
+    if (!validateFormDates()) return false;
     let formJson = formBuilderRef.formData;
-    if (JSON.parse(formJson).length === 0) return showAlert();
+    if (JSON.parse(formJson).length === 0) {
+        showAlert();
+        return false;
+    }
     $("#form_json").val(formJson);
-
-    return false;
-    // $("#create_forms_form").submit();
-}
-
-function validateFormDates(){
-    let start_date = $("#start_date"),
-    end_date = $("#end_date"),
-    moment_start_date_ref = moment
-
-    
-
-    if(start_date)
-
-    console.log(start_date.val(), end_date.val())
+    return true;
 }
 
 function updateForm() {
-    if (!validateForm()) return;
+    // if (!validateForm()) return;
+    // let formJson = formUpdaterRef.formData;
+    // if (JSON.parse(formJson).length === 0) return showAlert();
+    // $("#form_json").val(formJson);
+    // $("#updateFormRef").submit();
+
+    if (!validateForm()) return false;
+    if (!validateFormDates()) return false;
     let formJson = formUpdaterRef.formData;
-    if (JSON.parse(formJson).length === 0) return showAlert();
+    if (JSON.parse(formJson).length === 0) {
+        showAlert();
+        return false;
+    }
     $("#form_json").val(formJson);
-    $("#updateFormRef").submit();
+    return true;
 }
+
+function validateFormDates() {
+    let start_date = $("#start_date"),
+        end_date = $("#end_date"),
+        moment_start_date_ref = moment(start_date.val()),
+        moment_end_date_ref = moment(end_date.val());
+
+    if (!moment_start_date_ref._isValid) {
+        start_date.after(
+            "<div class='error'>start date is either empty or invalid.</div>"
+        );
+        start_date.focus();
+        return false;
+    }
+
+    if (!moment_end_date_ref._isValid) {
+        end_date.after(
+            "<div class='error'>end date is either empty or invalid.</div>"
+        );
+        end_date.focus();
+        return false;
+    }
+
+    if (!moment_end_date_ref.isAfter(moment_start_date_ref)) {
+        end_date.after(
+            "<div class='error'>end date should be after start end.</div>"
+        );
+        end_date.focus();
+        return false;
+    }
+
+    return true;
+}
+
 
 function validateForm() {
     let form_name = $("#form_name");
@@ -376,7 +409,7 @@ function getProductOfComp(isInitialLoad = false) {
     $.ajax({
         url: `${
             window.location.origin
-        }/survey/public/getprodofcomp/${company_selected.val()}`,
+        }/survey/public//getprodofcomp/${company_selected.val()}`,
     })
         .done(function (data) {
             data = JSON.parse(data)?.data ?? [];

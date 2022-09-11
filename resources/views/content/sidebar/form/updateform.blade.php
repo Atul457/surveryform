@@ -38,6 +38,7 @@
                         class="form form-horizontal" 
                         action="{{url('updateform')}}" 
                         method="post" 
+                        onsubmit="return updateForm();"
                         id="updateFormRef">
                         <div class="row mb-2">
                             @csrf
@@ -109,11 +110,6 @@
                                 </select>
                             </div>
 
-                            <!-- <pre>
-                            {{print_r($form)}}
-                            {{$form['prod_ref']}}
-                            </pre> -->
-
                             <input 
                                 type="hidden"
                                 value="{{$form['prod_ref']}}"
@@ -129,6 +125,30 @@
                                     >
                                     <option>Loading products</option>
                                 </select>
+                            </div>
+
+                            <div class="col-12 col-md-6 mb-1">
+                                <label>Survey start date</label>
+                                <input 
+                                type="date"
+                                placeholder="Start date"
+                                class="form-control"
+                                name="start_date"
+                                value="{{$form['start_date']}}"
+                                min="<?php echo date("Y-m-d"); ?>"
+                                id="start_date"/>
+                            </div>
+
+                            <div class="col-12 col-md-6 mb-1">
+                                <label>Survey end date</label>
+                                <input 
+                                type="date" 
+                                placeholder="End date"
+                                class="form-control"
+                                value="{{$form['end_date']}}"
+                                min="<?php echo date("Y-m-d"); ?>"
+                                name="end_date"
+                                id="end_date"/>
                             </div>
 
                             <div class="col-12 col-md-6 mb-1">
@@ -153,8 +173,7 @@
                         <textarea name="formBuilderUpdater" id="formUpdater" class="d-none"></textarea>
                             <div class="d-flex justify-content-end mt-2 mb-3">
                                 <button 
-                                    type="button" 
-                                    onclick="updateForm()"
+                                    type="submit"
                                     class="btn btn-success">
                                     Update form
                                 </button>
@@ -179,6 +198,7 @@
 <script src="{{asset('js/cdns/jquery-ui.min.js')}}"></script>
 <script src="{{asset('js/cdns/form-builder.min.js')}}"></script>
 <script src="{{asset('js/cdns/form-render.min.js')}}"></script>
-<script src="{{asset('js/custom/formbuilder.js')}}">
+<script src="{{asset('js/custom/formbuilder.js')}}"></script>
+<script src="{{asset('js/cdns/moment.min.js')}}"></script>
 @endsection
 

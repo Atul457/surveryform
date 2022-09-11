@@ -1,0 +1,27 @@
+.share_fields{
+    margin-bottom: 13px;
+}
+
+.share_fields:last-child{
+    margin-bottom: 0px;
+}
+
+.phone_num_fields {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-between;
+}
+
+.phone_num_fields > input {
+    width: calc(100% - 115px);
+}
+
+.form_add_removeBtns{
+    display: flex;
+    justify-content: end;
+    align-items: center;
+}
+
+.form_add_removeBtns > button:first-child{
+    margin: 0px 5px;
+}

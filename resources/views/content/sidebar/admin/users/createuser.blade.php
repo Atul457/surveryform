@@ -105,7 +105,7 @@
                         @if(count($comp) > 1)
                         Create a product first to create a employee, if the created product/products are inactive, activate them.
                         @else
-                        if the created company/companies are inactive, activate them to creat a employee.
+                        if the created company/companies or product/products are inactive, activate them to creat a employee.
                         @endif
                     </div>
                 </div>

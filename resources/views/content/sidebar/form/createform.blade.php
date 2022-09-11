@@ -145,7 +145,7 @@
     @else
     <div class="card-header">
         <div class="alert alert-danger p-1 col-12 mb-0 rounded-3">
-            Create a employee first to create the form, if the created users a inactive, activate them.
+            Create a employee first to create the form, if the created users/user are/is inactive, activate them.
         </div>
       </div>
     @endif
@@ -162,6 +162,6 @@
 <script src="{{asset('js/cdns/jquery-ui.min.js')}}"></script>
 <script src="{{asset('js/cdns/form-builder.min.js')}}"></script>
 <script src="{{asset('js/cdns/form-render.min.js')}}"></script>
-<script src="{{asset('js/custom/formbuilder.js')}}">
-<script src="{{asset('js/custom/formbuilder.js')}}">
+<script src="{{asset('js/custom/formbuilder.js')}}"></script>
+<script src="{{asset('js/cdns/moment.min.js')}}"></script>
 @endsection

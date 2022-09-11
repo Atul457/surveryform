@@ -24,9 +24,31 @@ class FormsFilledController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function create(Request $req)
+    public function create(Request $req, FormsFilled $formsFilled)
     {
-        print_r($req->all());
+        $data_filled = $req->input("data_filled");
+        $survey_form_ref = $req->input("survey_form_ref");
+        $user_ref = $req->input("user_ref");
+
+        $res = $formsFilled
+        ->insert([
+            'data_filled' => $data_filled,
+            'survey_form_ref' => $survey_form_ref,
+            'user_ref' => $user_ref
+        ]);
+
+        if(!$res)
+            throw ValidationException::withMessages([
+                'error' => "Something went wrong."
+            ]);
+        
+        return redirect("successpage");
+
+    }
+
+    public function success(Request $req){
+        $req->session()->flash('success', 'Form submitted successfully');
+        return view("public.fill_up_form.successpage");
     }
 
     /**
@@ -49,10 +71,14 @@ class FormsFilledController extends Controller
     public function show(FormsFilled $formsFilled, SurveyForm $form, Request $req, $id)
     {
         $active = 1;
+
         $fill_up_form = $form
-        ->where("id", $id)
-        ->select("form_json", "id", "form_name")
-        ->where("status", $active)
+        ->select("survey_forms.*", "companies.comp_name", "companies.comp_care_no", "companies.comp_addr", "users.name", "users.phone_no", "products.batch_no")
+        ->leftJoin("users", "users.id", "=", "survey_forms.user_ref")
+        ->leftJoin("products", "products.id", "=", "prod_ref")
+        ->leftJoin("companies", "companies.id", "=", "products.comp_id")
+        ->where("survey_forms.id", $id)
+        ->where("survey_forms.status", $active)
         ->get()
         ->toArray();
 

@@ -17,9 +17,26 @@ class SurveyFormController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function index()
+    public function index(User $user, Request $req)
     {
+        if(!$this->isAdmin($user))  {
+            $this->unAuthenticatedUser($req, "You are not an admin");
+            throw ValidationException::withMessages(['error' => "You are not an admin"]);;
+        }
         return view("content/sidebar/form/myforms");
+    }
+
+    // Checks whether user is admin or not
+    public function isAdmin(User $user){
+        if(session("is_admin") != 1) return 0;
+
+        $res = $user
+        ->where("email", session("email"))
+        ->where("is_admin", 1)
+        ->get()
+        ->toArray();
+
+        return count($res) > 0 ? 1 : 0;
     }
 
     // Show my forms
@@ -33,7 +50,7 @@ class SurveyFormController extends Controller
         }
 
         $data = $survey
-        ->select("*", "survey_forms.id as action", "survey_forms.id as share", "survey_forms.id as responsive_id", "companies.comp_name",  "survey_forms.status as status", "survey_forms.id as id")
+        ->select("*", "survey_forms.id as action", "survey_forms.id as share", "survey_forms.id as responsive_id", "companies.comp_name",  "survey_forms.status as status", "survey_forms.id as id", "survey_forms.start_date", "survey_forms.end_date")
         ->leftJoin("products", "products.id", "=", "prod_ref")
         ->leftJoin("companies", "companies.id", "=", "products.comp_id")
         ->get()
@@ -48,8 +65,9 @@ class SurveyFormController extends Controller
         $req->session()->flash('error', "Your account may have been inactivated");
         return redirect("login");
     }
-    // Logout
+    
 
+    // Logout on second request to any route
     public function unAuthenticatedUser(Request $req, $message = 0){
         $req->session()->flush();
 
@@ -89,6 +107,8 @@ class SurveyFormController extends Controller
             'user_ref' => 'required',
             'form_json' => 'required',
             'status' => 'required',
+            'start_date' => 'required',
+            'end_date' => 'required',
         ]);
 
         $form_json = $req->input("form_json");
@@ -96,6 +116,8 @@ class SurveyFormController extends Controller
         $form_name = $req->input("form_name");
         $status = $req->input("status");
         $prod_ref = $req->input("prod_ref");
+        $start_date = $req->input("start_date");
+        $end_date = $req->input("end_date");
 
         if(!$this->isUserStatusActive()) $this->logout($req);
         
@@ -109,7 +131,9 @@ class SurveyFormController extends Controller
             "user_ref" => $user_ref,
             "status" => $status,
             "form_name" => $form_name,
-            "prod_ref" => $prod_ref
+            "prod_ref" => $prod_ref,
+            "start_date" => $start_date,
+            "end_date" => $end_date
         ]);
 
         if(!$res)
@@ -174,7 +198,6 @@ class SurveyFormController extends Controller
         if(!$this->isUserStatusActive()) return $this->logout($req);
 
         // $form = $surveyForm->select("*")->where("user_ref", session("id"))->get()->toArray();       
-
         $form = $surveyForm
         ->select("*", "survey_forms.id as action", "survey_forms.id as share", "survey_forms.id as responsive_id", "companies.comp_name", "survey_forms.id as id", "survey_forms.status as status")
         ->leftJoin("products", "products.id", "=", "prod_ref")
@@ -237,6 +260,8 @@ class SurveyFormController extends Controller
             'prod_ref' => 'required',
             'user_ref' => 'required',
             'form_json' => 'required',
+            'start_date' => 'required',
+            'end_date' => 'required',
             'status' => 'required',
             'form_id' => 'required',
         ]);
@@ -247,6 +272,8 @@ class SurveyFormController extends Controller
         $status = $req->input("status");
         $prod_ref = $req->input("prod_ref");
         $user_ref = $req->input("user_ref");
+        $start_date = $req->input("start_date");
+        $end_date = $req->input("end_date");
 
         if(!$this->isUserStatusActive()) return $this->logout($req);
         
@@ -256,19 +283,10 @@ class SurveyFormController extends Controller
             'status' => $status,
             'prod_ref' => $prod_ref,
             'user_ref' => $user_ref,
+            'user_ref' => $user_ref,
+            'start_date' => $start_date,
+            'end_date' => $end_date
         ]);
-
-        // echo "<pre>";
-        // print_r([
-        //     'form_json' => $form_json,
-        //     'form_name' => $form_name,
-        //     'status' => $status,
-        //     'prod_ref' => $prod_ref,
-        //     'user_ref' => $user_ref,
-        //     'updated' => $updated,
-        //     'form_id' => $form_id,
-        // ]);
-        // die();
        
         if(!$updated) return throw ValidationException::withMessages([
             'error' => "Something went wrong."

@@ -35,7 +35,7 @@ class Kernel extends HttpKernel
             \Illuminate\Session\Middleware\StartSession::class,
             // \Illuminate\Session\Middleware\AuthenticateSession::class,
             \App\Http\Middleware\ProtectedRoute::class,
-            // \App\Http\Middleware\AdminProtectedRoutes::class,
+            \App\Http\Middleware\AdminRoute::class,
             \App\Http\Middleware\AuthProtectedRoute::class,
             // \App\Http\Middleware\AdminAuthProtectedRoutes::class,
             \Illuminate\View\Middleware\ShareErrorsFromSession::class,

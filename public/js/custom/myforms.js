@@ -48,7 +48,12 @@ $(function () {
             ajax: `${window.location.origin}/survey/public/getMyforms`,
             order: [[5, "desc"]],
             columns: [
-                { data: "responsive_id" },
+                {
+                    data: null,
+                    render: function () {
+                        return "";
+                    },
+                },
                 {
                     data: null,
                     render: function (data, type, full, meta) {
@@ -57,6 +62,8 @@ $(function () {
                 },
                 { data: "form_name" },
                 { data: "comp_name" },
+                { data: "start_date" },
+                { data: "end_date" },
                 {
                     data: "status",
                     render: function (value) {
@@ -125,34 +132,7 @@ $(function () {
             dom: '<"d-flex justify-content-between align-items-center mx-0 row"<"col-sm-12 col-md-6"l><"col-sm-12 col-md-6"f>>t<"d-flex justify-content-between mx-0 row"<"col-sm-12 col-md-6"i><"col-sm-12 col-md-6"p>>',
             orderCellsTop: true,
             lengthMenu: [5, 10, 25, 50, 75, 100],
-            responsive: {
-                details: {
-                    type: "column",
-                    renderer: function (columns) {
-                        var data = $.map(columns, function (col, i) {
-                            return col.title !== ""
-                                ? '<tr data-dt-row="' +
-                                      col.rowIndex +
-                                      '" data-dt-column="' +
-                                      col.columnIndex +
-                                      '">' +
-                                      "<td>" +
-                                      col.title +
-                                      ":" +
-                                      "</td> " +
-                                      "<td>" +
-                                      col.data +
-                                      "</td>" +
-                                      "</tr>"
-                                : "";
-                        }).join("");
-
-                        return data
-                            ? $('<table class="table"/><tbody />').append(data)
-                            : false;
-                    },
-                },
-            },
+            responsive: true,
             language: {
                 paginate: {
                     // remove previous & next text from pagination
@@ -190,9 +170,73 @@ function confirmDeleteSuveyForm() {
     }
 }
 
-function openShareFormModal(id){
+function openShareFormModal(id) {
     let shareFormRef = $("#shareFormModal");
     let form_link = $("#form_link");
-    form_link.val(`${window.location.origin}/fillupform/${id}`)
+    form_link.val(`${window.location.origin}/fillupform/${id}`);
     shareFormRef.modal("show");
 }
+
+function addField() {
+    let html = `<div class="phone_num_fields share_fields">
+						<input
+							type="number"
+							placeholder="Consumer phone no"
+                            autocomplete="off"
+                            class="numbers form-control">
+						<button
+							type="button"
+							class="btn btn-danger ml-1 remove_phone_btn">Remove</button>
+					</div>`;
+    $("#cunsumer_inputs_cont").append(html);
+}
+
+$(document).on("click", ".remove_phone_btn", function (e) {
+    $(this).parent().remove();
+});
+
+function shareForm() {
+    let numbersArr = [],
+        i = 0,
+        errorCount = 0;
+    $("#shareFormModal").find(".error").remove();
+
+    $(".numbers").each(function () {
+        let val = $(this).val().trim();
+        if ((val.length > 0 && val.length < 10) || val.length > 10) {
+            $(this)
+                .parent()
+                .append(
+                    "<div class='error'>phone number should be of 10 digits, if given.</div>"
+                );
+            errorCount++;
+            return false;
+        }
+
+        if (val !== "") {
+            numbersArr.splice(i, 0, val);
+            i++;
+        }
+    });
+
+    if (i !== 0 && errorCount === 0 && numbersArr.length > 0)
+        return console.log({ "submit form": numbersArr });
+    showAlert();
+}
+
+function showAlert() {
+    Swal.fire({
+        text: "All the numbers entered should be valid, and at least one valid number is required to send the message, if you have entered a invalid number remove it first.",
+        icon: "error",
+        customClass: {
+            confirmButton: "btn btn-primary",
+        },
+        buttonsStyling: false,
+    });
+}
+
+const validateNumber = (ref) => {
+    let value = ref.value;
+    value.replaceAll(/^\D*$/g, "");
+    ref.value = value;
+};

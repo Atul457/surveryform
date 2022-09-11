@@ -6,6 +6,12 @@ const fbRender = $(".fb-render").formRender({
     formData: form_data.val(),
 });
 
-function getData() {
-    // console.log(fbRender.userData);
+function getFormData() {
+    let formData = [];
+    formData = fbRender.userData.filter(function(currField){
+        return currField.type !== "button"
+    });
+
+    $("#data_filled").val(JSON.stringify(formData));
+    return true;
 }

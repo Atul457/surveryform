@@ -9,6 +9,7 @@ use \App\Http\Middleware\ProtectedRoute;
 // use \App\Http\Middleware\AdminProtectedRoutes;
 // use \App\Http\Middleware\AdminAuthProtectedRoutes;
 use \App\Http\Middleware\AuthProtectedRoute;
+use \App\Http\Middleware\AdminRoute;
 use \App\Http\Controllers\CompanyController;
 use \App\Http\Controllers\SurveyFormController;
 use \App\Http\Controllers\ProductController;
@@ -35,7 +36,7 @@ Route::get('/', function () {
 // My routes
 
 // Users Auth
-Route::withoutMiddleware([ProtectedRoute::class])->group(function () {
+Route::withoutMiddleware([ProtectedRoute::class, AdminRoute::class])->group(function () {
     Route::get('login', [UserController::class, 'login_view']);
     Route::post('login_user', [UserController::class, 'login_user']);
 });
@@ -53,7 +54,7 @@ Route::withoutMiddleware([ProtectedRoute::class])->group(function () {
 Route::withoutMiddleware([AuthProtectedRoute::class])->group(function () {      
     
     // User
-    Route::post('logout', [UserController::class, 'logout'])->name('logout');
+    Route::post('logout', [UserController::class, 'logout'])->name('logout')->withoutMiddleware([AdminRoute::class]);
     Route::post('updatepass', [UserController::class, 'updatepass']);
     
     // Form
@@ -101,9 +102,16 @@ Route::withoutMiddleware([AuthProtectedRoute::class])->group(function () {
     Route::get('editform/{id}', [SurveyFormController::class, 'edit'])->name('myforms');
     Route::post("updateform", [SurveyFormController::class, 'update']);
     
-    // Filled forms
-    Route::get('forms_filled', [FormsFilledController::class, 'index'])->name('forms_filled');
-    Route::get('saveform', [FormsFilledController::class, 'create']);
+    // userRoutes
+    Route::withoutMiddleware([AdminRoute::class])->group(function () {      
+
+        // Filled forms
+        Route::get('forms_filled', [FormsFilledController::class, 'index'])->name('forms_filled');
+        Route::post('saveform', [FormsFilledController::class, 'create']);
+        Route::get('successpage', [FormsFilledController::class, 'success']);
+
+    });
+    // userRoutes
     
 });
 

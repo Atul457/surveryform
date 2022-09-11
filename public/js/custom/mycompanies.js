@@ -45,7 +45,7 @@ $(function () {
     // Advanced Search
     if (dt_adv_filter_table.length) {
         var dt_adv_filter = dt_adv_filter_table.DataTable({
-            ajax: `${window.location.origin}/getcompanies`,
+            ajax: `${window.location.origin}/survey/public/getcompanies`,
             order: [[5, "desc"]],
             columns: [
                 {
@@ -60,7 +60,7 @@ $(function () {
                         return meta.row + 1;
                     },
                 },
-                { data: "comp_name" }, 
+                { data: "comp_name" },
                 { data: "comp_addr" },
                 { data: "comp_care_no" },
                 {
@@ -94,7 +94,7 @@ $(function () {
                         return `<div class="d-flex flex-wrap align-items-center">
                                     <a href="${
                                         window.location.origin
-                                    }/survey/public/editcompany/${value}">
+                                    }/survey/public/editcompany${value}">
                                         ${feather.icons["edit"].toSvg({
                                             class: "me-1",
                                         })}
@@ -108,7 +108,6 @@ $(function () {
                     },
                 },
             ],
-
             columnDefs: [
                 {
                     className: "control",

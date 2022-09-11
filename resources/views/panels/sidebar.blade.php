@@ -39,6 +39,10 @@ $configData = Helper::applClasses();
             @if (($menu->role === "admin") && (Session::get("is_admin") != "1"))
               @continue
             @endif
+            
+            @if (($menu->role === "user") && (Session::get("is_admin") == "1"))
+              @continue
+            @endif
             <li
               class="nav-item {{ $custom_classes }} {{ Route::currentRouteName() === $menu->slug ? 'active' : '' }}">
               <a href="{{ isset($menu->url) ? url($menu->url) : 'javascript:void(0)' }}" class="d-flex align-items-center"

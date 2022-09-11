@@ -19,6 +19,8 @@ return new class extends Migration
             $table->unsignedBigInteger('user_ref');
             $table->unsignedBigInteger('prod_ref');
             $table->longText('form_json');
+            $table->date('start_date');
+            $table->date('end_date');
             $table->integer('status')->default(1);
             $table->timestamp('created_at')->useCurrent();
             $table->timestamp('updated_at')->useCurrent();

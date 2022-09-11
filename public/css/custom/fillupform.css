@@ -11,6 +11,13 @@
     border-top: 13px solid var(--bs-primary);
     margin-bottom: 1rem !important;
     text-transform: capitalize;
+    padding: 21px;
+}
+
+.form_header_fields * {
+    margin-bottom: 0px !important;
+    font-size: 13px;
+    font-weight: 500;
 }
 
 .rendered-form .form-group {
@@ -23,15 +30,18 @@
     transition: all 0.3s ease-in-out, background 0s, color 0s, border-color 0s;
 }
 
-.card-header {
+.comp_details{
+    margin-bottom: 13px;
+}
+
+.card_header {
     font-size: 25px;
     font-weight: 500;
 }
 
 .rendered-form input[type="text"],
 .rendered-form input[type="email"],
-.rendered-form input[type="password"] 
-{
+.rendered-form input[type="password"] {
     border: none;
     margin-top: 4px;
     padding: 6px 0px !important;
@@ -43,7 +53,7 @@
     outline: none !important;
 }
 
-.rendered-form input::placeholder{
+.rendered-form input::placeholder {
     color: #999595;
 }
 

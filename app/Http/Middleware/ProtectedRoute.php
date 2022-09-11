@@ -28,17 +28,6 @@ class ProtectedRoute
         if($inactivated) $request->session()->flash('error', $message);
         else $request->session()->flash('error', 'Login to access homepage');
         return redirect('login');
-
-        // $request->session()->has('email') && !())
-        // echo $inactivated;
-        // echo $request->session()->has('email');
-
-        // die();
-
-        // echo "<pre>";
-
-        // print_r(session()->all());
-        // die;
-        // return $next($request);
+        
     }
 }
