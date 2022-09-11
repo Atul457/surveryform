@@ -67,6 +67,10 @@ $(function () {
                 {
                     data: "status",
                     render: function (value) {
+                        console.log({
+                            value,
+                            result: value === 0 ? "Inactive" : "Active"
+                        })
                         if (value === null) return "";
                         return `<span class="badge rounded-pill badge-light-${
                             value === 0 ? "danger" : "success"
