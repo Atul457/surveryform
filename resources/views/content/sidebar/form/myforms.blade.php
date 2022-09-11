@@ -8,11 +8,15 @@
 	<link rel="stylesheet" href="{{ asset(mix('vendors/css/tables/datatable/dataTables.bootstrap5.min.css')) }}">
 	<link rel="stylesheet" href="{{ asset(mix('vendors/css/tables/datatable/responsive.bootstrap5.min.css')) }}">
 	<link rel="stylesheet" href="{{ asset(mix('vendors/css/pickers/flatpickr/flatpickr.min.css')) }}">
+	<link rel="stylesheet" href="{{ asset(mix('vendors/css/animate/animate.min.css')) }}">
+	<link rel="stylesheet" href="{{ asset(mix('vendors/css/extensions/sweetalert2.min.css')) }}">
 @endsection
 
 @section('page-style')
-{{-- Page Css files --}}
-<link rel="stylesheet" type="text/css" href="{{asset('css/base/plugins/forms/pickers/form-flat-pickr.css')}}">
+	{{-- Page Css files --}}
+	<link rel="stylesheet" type="text/css" href="{{asset('css/base/plugins/forms/pickers/form-flat-pickr.css')}}"/>
+	<link rel="stylesheet" href="{{asset(mix('css/base/plugins/extensions/ext-component-sweet-alerts.css'))}}">
+	<link rel="stylesheet" href="{{ asset('css/custom/myforms.css') }}"/>
 @endsection
 
 @section('content')
@@ -61,6 +65,8 @@
 								<th>Sr. No</th>
 								<th>Form Name</th>
 								<th>Company Name</th>
+								<th>Start date</th>
+								<th>End date</th>
 								<th>Status</th>
 								<th>Created at</th>
 								<th>Updated at</th>
@@ -131,19 +137,42 @@
 					<button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
 				</div>
 				<div class="modal-body pb-2">
-					<div>Copy the link below and share it to anyone</div>
+					<div class="share_fields">Copy the link below and share it to anyone</div>
 					<input 
-						class="form-control mt-2"
+						class="form-control share_fields"
 						type="text" 
 						id="form_link"/>
+
+					<div id="cunsumer_inputs_cont" class="share_fields">
+						<div class="phone_num_fields share_fields">
+							<input
+								type="number"
+								placeholder="Consumer phone no"
+								autocomplete="off"
+								onkeyup="validateNumber(this)"
+								class="numbers form-control">
+							<button
+								type="button"
+								class="btn btn-danger ml-1 remove_phone_btn">Remove</button>
+						</div>
+					</div>
+
+					<div class="form_add_removeBtns share_fields">
+						<button
+							type="button"
+							class="btn btn-success"
+							onclick="addField()">Add</button>
+					</div>
 				</div>
-				<!-- <div class="modal-footer">
+
+				<div class="modal-footer">
 					<button 
-							type="button" 
+							type="button"
+							onclick="shareForm()"
 							class="btn btn-primary">
-							Share
+							Send message
 					</button>
-				</div> -->
+				</div>
 			</div>
 		</div>
 	</div>
@@ -161,6 +190,8 @@
 	<script src="{{ asset(mix('vendors/js/tables/datatable/dataTables.bootstrap5.min.js')) }}"></script>
 	<script src="{{ asset(mix('vendors/js/tables/datatable/dataTables.responsive.min.js')) }}"></script>
 	<script src="{{ asset(mix('vendors/js/tables/datatable/responsive.bootstrap5.js')) }}"></script>
+	<script src="{{ asset(mix('vendors/js/extensions/sweetalert2.all.min.js')) }}"></script>
+	<script src="{{ asset(mix('vendors/js/extensions/polyfill.min.js')) }}"></script>
 @endsection
 
 @section('page-script')

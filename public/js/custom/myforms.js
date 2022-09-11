@@ -173,7 +173,7 @@ function confirmDeleteSuveyForm() {
 function openShareFormModal(id) {
     let shareFormRef = $("#shareFormModal");
     let form_link = $("#form_link");
-    form_link.val(`${window.location.origin}/fillupform/${id}`);
+    form_link.val(`${window.location.origin}/survey/public/fillupform/${id}`);
     shareFormRef.modal("show");
 }
 
