@@ -409,7 +409,7 @@ function getProductOfComp(isInitialLoad = false) {
     $.ajax({
         url: `${
             window.location.origin
-        }/survey/public//getprodofcomp/${company_selected.val()}`,
+        }/survey/public/getprodofcomp/${company_selected.val()}`,
     })
         .done(function (data) {
             data = JSON.parse(data)?.data ?? [];
