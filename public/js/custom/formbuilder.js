@@ -248,14 +248,6 @@ if (updatElemRef.length) {
         // prevent clearAll from remove default fields
         persistDefaultFields: false,
 
-        // callbakcs
-        onAddField: (fieldData, fieldId) => {},
-        onAddOption: () => null,
-        onClearAll: () => null,
-        onCloseFieldEdit: () => null,
-        onOpenFieldEdit: () => null,
-        onSave: (evt, formData) => {},
-
         // replaces an existing field by id.
         replaceFields: [],
 
@@ -313,12 +305,6 @@ function createForm() {
 }
 
 function updateForm() {
-    // if (!validateForm()) return;
-    // let formJson = formUpdaterRef.formData;
-    // if (JSON.parse(formJson).length === 0) return showAlert();
-    // $("#form_json").val(formJson);
-    // $("#updateFormRef").submit();
-
     if (!validateForm()) return false;
     if (!validateFormDates()) return false;
     let formJson = formUpdaterRef.formData;
