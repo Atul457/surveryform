@@ -1,14 +1,15 @@
-.share_fields{
+.share_fields {
     margin-bottom: 13px;
 }
 
-.share_fields:last-child{
+.share_fields:last-child {
     margin-bottom: 0px;
 }
 
 .phone_num_fields {
     display: flex;
     flex-wrap: wrap;
+    align-items: flex-start;
     justify-content: space-between;
 }
 
@@ -16,12 +17,53 @@
     width: calc(100% - 115px);
 }
 
-.form_add_removeBtns{
+.form_add_removeBtns {
     display: flex;
     justify-content: end;
     align-items: center;
 }
 
-.form_add_removeBtns > button:first-child{
+.form_add_removeBtns > button:first-child {
     margin: 0px 5px;
+}
+
+.shareModalinputs {
+    display: flex;
+    justify-content: space-between;
+    margin: 0px 10px 0px 0px;
+    width: calc(100% - 120px);
+}
+
+.shareModalinputs input {
+    width: 32%;
+}
+
+@media (max-width: 992px) and (min-width:769px) {
+    .shareModalinputs input.location {
+        width: calc(100% - 10px);
+    }
+
+    .shareModalinputs input {
+        width: calc(50% - 10px);
+        margin-right: 10px;
+        margin-bottom: 10px;
+    }
+
+    .shareModalinputs {
+        margin-right: 0px;
+        justify-content: flex-start;
+        width: calc(100% - 104px);
+    }
+    
+}
+
+@media (max-width: 768px){
+    .shareModalinputs input:first-child{
+        margin-top: 0px;
+    }
+    
+    .shareModalinputs input {   
+        width: 100%;
+        margin-top: 10px;
+    }
 }

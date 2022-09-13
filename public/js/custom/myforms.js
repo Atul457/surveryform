@@ -179,15 +179,28 @@ function openShareFormModal(id) {
 
 function addField() {
     let html = `<div class="phone_num_fields share_fields">
-						<input
-							type="number"
-							placeholder="Consumer phone no"
+                    <div class="row shareModalinputs">
+                        <input
+                            type="text"
+                            placeholder="Name"
                             autocomplete="off"
-                            class="numbers form-control">
-						<button
-							type="button"
-							class="btn btn-danger ml-1 remove_phone_btn">Remove</button>
-					</div>`;
+                            class="name form-control">
+                        <input
+                            type="number"
+                            placeholder="Consumer phone no"
+                            autocomplete="off"
+                            onkeyup="validateNumber(this)"
+                            class="number form-control">
+                        <input
+                            type="text"
+                            placeholder="Location"
+                            autocomplete="off"
+                            class="location form-control">
+                    </div>
+                    <button
+                        type="button"
+                        class="btn btn-danger ml-1 remove_phone_btn">Remove</button>
+                </div>`;
     $("#cunsumer_inputs_cont").append(html);
 }
 
@@ -196,43 +209,66 @@ $(document).on("click", ".remove_phone_btn", function (e) {
 });
 
 function shareForm() {
-    let numbersArr = [],
+    let consumersArr = [],
         i = 0,
         errorCount = 0;
     $("#shareFormModal").find(".error").remove();
+    $(".shareModalinputs").each(function () {
+        let phone_num = $(this).children(".number"),
+            name = $(this).children(".name"),
+            location = $(this).children(".location").val().trim(),
+            phone_val = $(phone_num).val().trim();
+        name_val = $(name).val().trim();
 
-    $(".numbers").each(function () {
-        let val = $(this).val().trim();
-        if ((val.length > 0 && val.length < 10) || val.length > 10) {
-            $(this)
+        if (name_val === "") {
+            $(name)
+                .parent()
+                .append("<div class='error px-0'>name is required.</div>");
+            errorCount++;
+            return false;
+        }
+
+        if (name_val.length < 2) {
+            $(name)
                 .parent()
                 .append(
-                    "<div class='error'>phone number should be of 10 digits, if given.</div>"
+                    "<div class='error px-0'>name's minimum length is 2 characters.</div>"
                 );
             errorCount++;
             return false;
         }
 
-        if (val !== "") {
-            numbersArr.splice(i, 0, val);
+        if (phone_val === "") {
+            $(name)
+                .parent()
+                .append("<div class='error px-0'>phone no is required.</div>");
+            errorCount++;
+            return false;
+        }
+
+        if (phone_val.length > 10 || phone_val.length < 10) {
+            $(phone_num)
+                .parent()
+                .append(
+                    "<div class='error px-0'>phone number should be of 10 digits.</div>"
+                );
+            errorCount++;
+            return false;
+        }
+
+        if (phone_val !== "" && name_val !== "") {
+            consumersArr.splice(i, 0, {
+                phone: phone_val,
+                name: name_val,
+                location,
+            });
             i++;
         }
     });
 
-    if (i !== 0 && errorCount === 0 && numbersArr.length > 0)
-        return console.log({ "submit form": numbersArr });
-    showAlert();
-}
-
-function showAlert() {
-    Swal.fire({
-        text: "All the numbers entered should be valid, and at least one valid number is required to send the message, if you have entered a invalid number remove it first.",
-        icon: "error",
-        customClass: {
-            confirmButton: "btn btn-primary",
-        },
-        buttonsStyling: false,
-    });
+    if (i !== 0 && errorCount === 0 && consumersArr.length > 0)
+        return console.log({ "submit form": consumersArr });
+    // showAlert();
 }
 
 const validateNumber = (ref) => {

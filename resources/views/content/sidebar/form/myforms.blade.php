@@ -130,7 +130,7 @@
 		aria-labelledby="shareFormModal"
 		aria-hidden="true"
 		>
-		<div class="modal-dialog modal-dialog-centered">
+		<div class="modal-dialog modal-dialog-centered modal-lg">
 			<div class="modal-content">
 				<div class="modal-header">
 					<h5 class="modal-title text-primary">Share form</h5>
@@ -145,12 +145,29 @@
 
 					<div id="cunsumer_inputs_cont" class="share_fields">
 						<div class="phone_num_fields share_fields">
-							<input
-								type="number"
-								placeholder="Consumer phone no"
-								autocomplete="off"
-								onkeyup="validateNumber(this)"
-								class="numbers form-control">
+							<div class="row shareModalinputs">
+
+								<input
+									type="text"
+									placeholder="Name"
+									autocomplete="off"
+									class="name form-control">
+
+								<input
+									type="number"
+									placeholder="Consumer phone no"
+									autocomplete="off"
+									onkeyup="validateNumber(this)"
+									class="number form-control">
+
+								<input
+									type="text"
+									placeholder="Location"
+									autocomplete="off"
+									class="location form-control">
+
+							</div>
+							
 							<button
 								type="button"
 								class="btn btn-danger ml-1 remove_phone_btn">Remove</button>
@@ -166,11 +183,11 @@
 				</div>
 
 				<div class="modal-footer">
-					<button 
-							type="button"
-							onclick="shareForm()"
-							class="btn btn-primary">
-							Send message
+					<button
+						type="button"
+						onclick="shareForm()"
+						class="btn btn-primary">
+						Send message
 					</button>
 				</div>
 			</div>
