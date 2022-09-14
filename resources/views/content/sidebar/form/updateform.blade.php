@@ -151,23 +151,6 @@
                                 id="end_date"/>
                             </div>
 
-                            <div class="col-12 col-md-6 mb-1">
-                                <label>Users</label>
-                                <select 
-                                    type="text" 
-                                    id="user_ref" 
-                                    class="form-control"
-                                    name="user_ref">
-                                    @foreach($users as $user)
-                                        <option value="{{$user['id']}}"
-                                        @if($form['user_ref']==$user['id']) selected="selected" @endif
-                                        >
-                                        {{$user["name"]}}
-                                        </option>
-                                    @endforeach
-                                </select>
-                            </div>
-
                         </div>
 
                         <textarea name="formBuilderUpdater" id="formUpdater" class="d-none"></textarea>

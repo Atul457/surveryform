@@ -37,7 +37,6 @@
           </div>
       @endif
 
-      @if(count($users) > 0)
       <div class="card-body">
         <form 
           method="post"
@@ -114,22 +113,6 @@
               name="end_date"
               id="end_date"/>
           </div>
-
-          <div class="col-12 col-md-6 mb-1">
-              <label>Users</label>
-              <select 
-                  type="text" 
-                  id="user_ref" 
-                  class="form-control"
-                  name="user_ref">
-                  @foreach($users as $user)
-                      <option value="{{$user['id']}}">
-                      {{$user["name"]}}
-                      </option>
-                  @endforeach
-              </select>
-          </div>
-
         </div>
           
         <textarea name="formBuilder" id="formBuilder" class="d-none mt-2"></textarea>
@@ -142,13 +125,6 @@
         </div>
       </form>
     </div>
-    @else
-    <div class="card-header">
-        <div class="alert alert-danger p-1 col-12 mb-0 rounded-3">
-            Create a employee first to create the form, if the created users/user are/is inactive, activate them.
-        </div>
-      </div>
-    @endif
   </div>
 </div>
 @endsection

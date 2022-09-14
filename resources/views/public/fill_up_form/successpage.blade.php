@@ -6,7 +6,7 @@
   {{-- Page Css files --}}
   <link rel="stylesheet" href="{{ asset('css/custom/fillupform.css') }}">
 @endsection
-@section('content') 
+@section('content')
 <div class="formContainer row px-2">
   @if ($errors->any())
   <div class="card">

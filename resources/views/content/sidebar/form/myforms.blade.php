@@ -70,7 +70,7 @@
 								<th>Status</th>
 								<th>Created at</th>
 								<th>Updated at</th>
-								<th>Share</th>
+								<!-- <th>Share</th> -->
 								<th>Action</th>
 							</tr>
 						</thead>

@@ -7,12 +7,14 @@
             "slug": "",
             "submenu": [
                 {
+                    "role": "admin",
                     "url": "mycompanies",
                     "name": "View",
                     "icon": "circle",
                     "slug": "mycompanies"
                 },
                 {
+                    "role": "admin",
                     "url": "viewcompany",
                     "name": "Create",
                     "icon": "circle",
@@ -28,12 +30,14 @@
             "slug": "",
             "submenu": [
                 {
+                    "role": "admin",
                     "url": "myproducts",
                     "name": "View",
                     "icon": "circle",
                     "slug": "myproducts"
                 },
                 {
+                    "role": "admin",
                     "url": "createprodview",
                     "name": "Create",
                     "icon": "circle",
@@ -49,12 +53,14 @@
             "slug": "adminViewUsers",
             "submenu": [
                 {
+                    "role": "admin",
                     "url": "users",
                     "name": "View",
                     "icon": "circle",
                     "slug": "users_view"
                 },
                 {
+                    "role": "admin",
                     "url": "createuserview",
                     "name": "Create",
                     "icon": "circle",
@@ -64,18 +70,20 @@
             ]
         },
         {
-            "role": "admin",
+            "role": "both",
             "name": "Forms",
             "icon": "edit-2",
             "slug": "",
             "submenu": [
                 {
+                    "role": "both",
                     "url": "myforms",
                     "name": "My forms",
                     "icon": "circle",
                     "slug": "myforms"
                 },
                 {
+                    "role": "admin",
                     "url": "create_form_view",
                     "name": "Create form",
                     "icon": "circle",
@@ -84,11 +92,34 @@
             ]
         },
         {
-            "role": "user",
-            "url": "forms_filled",
-            "name": "Forms filled",
-            "icon": "book-open",
-            "slug": "forms_filled"
+            "role": "admin",
+            "name": "Cities and Areas",
+            "icon": "globe",
+            "slug": "",
+            "submenu": [
+                {
+                    "role": "admin",
+                    "url": "citynareas",
+                    "name": "View",
+                    "icon": "circle",
+                    "slug": "citynareas"
+                },
+                {
+                    "role": "admin",
+                    "url": "addcityview",
+                    "name": "Add city",
+                    "icon": "circle",
+                    "slug": "addcityview"
+                },
+                {
+                    "role": "admin",
+                    "url": "addareaview",
+                    "name": "Add area",
+                    "icon": "circle",
+                    "slug": "addareaview"
+                }
+            ]
         }
     ]
 }
+

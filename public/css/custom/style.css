@@ -83,3 +83,35 @@
 label {
     margin-bottom: 3px;
 }
+
+.cities_n_areasbtns{
+    margin: 0px 0px 10px 0px;
+}
+
+.cities_n_areasbtns:first-child{
+    margin-right: 10px;
+}
+
+.cities_n_areasfoot{
+    display: flex;
+    justify-content: flex-end;
+    align-items: center;
+    flex-wrap: wrap;
+}
+
+@media(max-width: 768px){
+}
+
+@media(max-width: 450px){
+    .cities_n_areasbtns{
+        width: 100%;
+    }
+
+    .cities_n_areasfoot{
+        justify-content: flex-start;
+    }
+
+    .cities_n_areasbtns:first-child{
+        margin-right: 0px;
+    }
+}

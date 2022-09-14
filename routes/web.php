@@ -5,6 +5,7 @@ use App\Http\Controllers\StaterkitController;
 use App\Http\Controllers\LanguageController;
 use App\Http\Controllers\UserController;
 use App\Http\Controllers\AdminUsersController;
+use App\Http\Controllers\AreasController;
 use \App\Http\Middleware\ProtectedRoute;
 // use \App\Http\Middleware\AdminProtectedRoutes;
 // use \App\Http\Middleware\AdminAuthProtectedRoutes;
@@ -12,6 +13,7 @@ use \App\Http\Middleware\AuthProtectedRoute;
 use \App\Http\Middleware\AdminRoute;
 use \App\Http\Controllers\CompanyController;
 use \App\Http\Controllers\SurveyFormController;
+use \App\Http\Controllers\CitiesController;
 use \App\Http\Controllers\ProductController;
 use \App\Http\Controllers\FormsFilledController;
 
@@ -101,6 +103,9 @@ Route::withoutMiddleware([AuthProtectedRoute::class])->group(function () {
     Route::post('deleteform', [SurveyFormController::class, 'destroy']);
     Route::get('editform/{id}', [SurveyFormController::class, 'edit'])->name('myforms');
     Route::post("updateform", [SurveyFormController::class, 'update']);
+
+    // Filled forms
+    Route::get('getuserforms', [FormsFilledController::class, 'getUserForms']);
     
     // userRoutes
     Route::withoutMiddleware([AdminRoute::class])->group(function () {      
@@ -109,9 +114,18 @@ Route::withoutMiddleware([AuthProtectedRoute::class])->group(function () {
         Route::get('forms_filled', [FormsFilledController::class, 'index'])->name('forms_filled');
         Route::post('saveform', [FormsFilledController::class, 'create']);
         Route::get('successpage', [FormsFilledController::class, 'success']);
-
+        
     });
     // userRoutes
+    
+    // Cities and areas
+    Route::get('citynareas', [UserController::class, 'citiesNAreas'])->name("citynareas");
+    Route::get('cities', [CitiesController::class, 'getCities']);
+    Route::get('addcityview', [CitiesController::class, 'addCityView'])->name("addcityview");
+    Route::post('addcity', [CitiesController::class, 'addCity']);
+    Route::get('addareaview', [AreasController::class, 'addAreaView'])->name("addareaview");
+    Route::post('addarea', [AreasController::class, 'addArea']);
+    Route::get('getareas/{cityid}', [AreasController::class, 'getAreas']);
     
 });
 

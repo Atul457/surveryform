@@ -16,7 +16,9 @@ class AdminRoute
      */
     public function handle(Request $request, Closure $next)
     {
-        if(session("is_admin") == "1") return $next($request);
-        return redirect('forms_filled');
+        // if(session("is_admin") == "1") return $next($request);
+        // return redirect('forms_filled');
+
+        return $next($request);
     }
 }

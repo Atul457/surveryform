@@ -87,21 +87,21 @@ $(function () {
                         return normalizeDate(value);
                     },
                 },
+                // {
+                //     data: "action",
+                //     render: function (value) {
+                //         if (value === null) return "";
+                //         return `<div class="d-flex flex-wrap align-items-center">
+                //                     <span onclick="openShareFormModal(${value})" class="cursor-pointer">
+                //                         ${feather.icons["share-2"].toSvg({
+                //                             class: "text-primary",
+                //                         })}
+                //                     </span>
+                //                 <div>`;
+                //     },
+                // },
                 {
                     data: "action",
-                    render: function (value) {
-                        if (value === null) return "";
-                        return `<div class="d-flex flex-wrap align-items-center">
-                                    <span onclick="openShareFormModal(${value})" class="cursor-pointer">
-                                        ${feather.icons["share-2"].toSvg({
-                                            class: "text-primary",
-                                        })}
-                                    </span>
-                                <div>`;
-                    },
-                },
-                {
-                    data: "share",
                     render: function (value) {
                         if (value === null) return "";
                         return `<div class="d-flex flex-wrap align-items-center">

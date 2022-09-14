@@ -15,3 +15,4 @@ function getFormData() {
     $("#data_filled").val(JSON.stringify(formData));
     return true;
 }
+

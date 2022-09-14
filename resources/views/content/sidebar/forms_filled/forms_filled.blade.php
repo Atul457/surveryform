@@ -117,7 +117,7 @@
 
 @section('page-script')
   {{-- Page js files --}}
-  <script src="{{ asset('js\custom\mycompanies.js') }}"></script>
+  <script src="{{ asset('js\custom\getFilledForms.js') }}"></script>
 @endsection
 
 <script>
