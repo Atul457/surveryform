@@ -76,7 +76,7 @@
             "slug": "",
             "submenu": [
                 {
-                    "role": "both",
+                    "role": "admin",
                     "url": "myforms",
                     "name": "My forms",
                     "icon": "circle",
