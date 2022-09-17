@@ -294,6 +294,7 @@ function showRelatedAreas(ref) {
 }
 
 function getAreas(city_id) {
+    console.log("first");
     let areasSelectBox = $("#areasSelectBox"),
         areasHtml = "",
         id = null,
