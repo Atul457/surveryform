@@ -133,7 +133,7 @@ $(function () {
     // Cities table
     if (areasDatatable.length) {
         areasDatatable.DataTable({
-            ajax: `${window.location.origin}/getareas/${cityId}`,
+            ajax: `${window.location.origin}/survey/public/getareas/${cityId}`,
             order: [[5, "desc"]],
             columns: [
                 {
