@@ -93,7 +93,7 @@ function getFormsOfProd(isInitialLoad = false) {
         form_name = "";
 
     $.ajax({
-        url: `${window.location.origin}/getformsofprod/${prodSelected}`,
+        url: `${window.location.origin}/survey/public/getformsofprod/${prodSelected}`,
     })
         .done(function (data) {
             data = JSON.parse(data)?.data ?? [];
