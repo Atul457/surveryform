@@ -141,7 +141,7 @@ $(function () {
 function openShareFormModal(shareId) {
     let shareFormRef = $("#shareFormModal");
     let form_link = $("#form_link");
-    form_link.val(`${window.location.origin}/share/${shareId}`);
+    form_link.val(`${window.location.origin}/survey/public/share/${shareId}`);
     shareFormRef.modal("show");
 }
 
