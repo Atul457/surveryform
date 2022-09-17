@@ -65,7 +65,7 @@ function getUsersOfComp() {
         user_name = "";
 
     $.ajax({
-        url: `${window.location.origin}/getusersofcomp/${company_selected}`,
+        url: `${window.location.origin}/survey/public/getusersofcomp/${company_selected}`,
     })
         .done(function (data) {
             data = JSON.parse(data)?.data ?? [];
@@ -121,7 +121,7 @@ function getProductOfComp(isInitialLoad = false) {
         prod_name = "";
 
     $.ajax({
-        url: `${window.location.origin}/getprodofcomp/${company_selected}`,
+        url: `${window.location.origin}/survey/public/getprodofcomp/${company_selected}`,
     })
         .done(function (data) {
             data = JSON.parse(data)?.data ?? [];
