@@ -39,7 +39,7 @@ $(function () {
     // Cities table
     if (citiesDatatable.length) {
         citiesDatatable.DataTable({
-            ajax: `${window.location.origin}/survey/public/getareas/getcities`,
+            ajax: `${window.location.origin}/survey/public/getcities`,
             order: [[5, "desc"]],
             columns: [
                 {
