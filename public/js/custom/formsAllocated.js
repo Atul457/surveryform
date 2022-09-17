@@ -41,7 +41,7 @@ $(function () {
     //FormAllocated Datatable
     if (formsAllocated.length) {
         var formsAllocated = formsAllocated.DataTable({
-            ajax: `${window.location.origin}/formsallocated/${form_id_for_datatable}`,
+            ajax: `${window.location.origin}/survey/public/formsallocated/${form_id_for_datatable}`,
             order: [[5, "desc"]],
             columns: [
                 {
