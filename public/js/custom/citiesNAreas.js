@@ -77,7 +77,7 @@ $(function () {
                         return `<div class="d-flex flex-wrap align-items-center justify-content-center">
                                     <a href="${
                                         window.location.origin
-                                    }/areas/${value}">
+                                    }/survey/public/areas/${value}">
                                         ${feather.icons["eye"].toSvg({
                                             class: "me-1",
                                         })}
