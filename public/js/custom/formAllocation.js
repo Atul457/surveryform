@@ -294,14 +294,13 @@ function showRelatedAreas(ref) {
 }
 
 function getAreas(city_id) {
-    console.log("first");
     let areasSelectBox = $("#areasSelectBox"),
         areasHtml = "",
         id = null,
         area_name = "";
 
     $.ajax({
-        url: `${window.location.origin}/getareas/${city_id}`,
+        url: `${window.location.origin}/survey/public/getareas/${city_id}`,
     })
         .done(function (data) {
             data = JSON.parse(data)?.data ?? [];
