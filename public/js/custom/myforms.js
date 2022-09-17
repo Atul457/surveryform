@@ -34,14 +34,7 @@ var normalizeDate = function (dateString) {
 // Advanced Search Functions Ends
 
 $(function () {
-    var isRtl = $("html").attr("data-textdirection") === "rtl";
-
     var dt_adv_filter_table = $(".dt-advanced-search");
-    // assetPath = "../../../app-assets/";
-
-    if ($("body").attr("data-framework") === "laravel") {
-        assetPath = $("body").attr("data-asset-path");
-    }
     // Advanced Search
     if (dt_adv_filter_table.length) {
         var dt_adv_filter = dt_adv_filter_table.DataTable({
@@ -69,8 +62,8 @@ $(function () {
                     render: function (value) {
                         if (value === null) return "";
                         return `<span class="badge rounded-pill badge-light-${
-                            value == 0 ? "danger" : "success"
-                        }"}>${value == 0 ? "Inactive" : "Active"}</span>`;
+                            value === 0 ? "danger" : "success"
+                        }"}>${value === 0 ? "Inactive" : "Active"}</span>`;
                     },
                 },
                 {
@@ -87,19 +80,21 @@ $(function () {
                         return normalizeDate(value);
                     },
                 },
-                // {
-                //     data: "action",
-                //     render: function (value) {
-                //         if (value === null) return "";
-                //         return `<div class="d-flex flex-wrap align-items-center">
-                //                     <span onclick="openShareFormModal(${value})" class="cursor-pointer">
-                //                         ${feather.icons["share-2"].toSvg({
-                //                             class: "text-primary",
-                //                         })}
-                //                     </span>
-                //                 <div>`;
-                //     },
-                // },
+                {
+                    data: "forms_allocated",
+                    render: function (value) {
+                        if (value === null) return "";
+                        return `<div class="d-flex flex-wrap align-items-centerr">
+                                    <a href="${
+                                        window.location.origin
+                                    }/survey/public/formsallocatedview/${value}">
+                                        ${feather.icons["eye"].toSvg({
+                                            class: "text-primary",
+                                        })}
+                                    </a>
+                                <div>`;
+                    },
+                },
                 {
                     data: "action",
                     render: function (value) {
@@ -109,7 +104,7 @@ $(function () {
                                         window.location.origin
                                     }/survey/public/editform/${value}">
                                         ${feather.icons["edit"].toSvg({
-                                            class: "me-1",
+                                            class: "text-primary me-1",
                                         })}
                                     </a>
                                     <span onclick="deleteSurveyForm(${value})" class="cursor-pointer">
@@ -170,109 +165,3 @@ function confirmDeleteSuveyForm() {
     }
 }
 
-function openShareFormModal(id) {
-    let shareFormRef = $("#shareFormModal");
-    let form_link = $("#form_link");
-    form_link.val(`${window.location.origin}/survey/public/fillupform/${id}`);
-    shareFormRef.modal("show");
-}
-
-function addField() {
-    let html = `<div class="phone_num_fields share_fields">
-                    <div class="row shareModalinputs">
-                        <input
-                            type="text"
-                            placeholder="Name"
-                            autocomplete="off"
-                            class="name form-control">
-                        <input
-                            type="number"
-                            placeholder="Consumer phone no"
-                            autocomplete="off"
-                            onkeyup="validateNumber(this)"
-                            class="number form-control">
-                        <input
-                            type="text"
-                            placeholder="Location"
-                            autocomplete="off"
-                            class="location form-control">
-                    </div>
-                    <button
-                        type="button"
-                        class="btn btn-danger ml-1 remove_phone_btn">Remove</button>
-                </div>`;
-    $("#cunsumer_inputs_cont").append(html);
-}
-
-$(document).on("click", ".remove_phone_btn", function (e) {
-    $(this).parent().remove();
-});
-
-function shareForm() {
-    let consumersArr = [],
-        i = 0,
-        errorCount = 0;
-    $("#shareFormModal").find(".error").remove();
-    $(".shareModalinputs").each(function () {
-        let phone_num = $(this).children(".number"),
-            name = $(this).children(".name"),
-            location = $(this).children(".location").val().trim(),
-            phone_val = $(phone_num).val().trim();
-        name_val = $(name).val().trim();
-
-        if (name_val === "") {
-            $(name)
-                .parent()
-                .append("<div class='error px-0'>name is required.</div>");
-            errorCount++;
-            return false;
-        }
-
-        if (name_val.length < 2) {
-            $(name)
-                .parent()
-                .append(
-                    "<div class='error px-0'>name's minimum length is 2 characters.</div>"
-                );
-            errorCount++;
-            return false;
-        }
-
-        if (phone_val === "") {
-            $(name)
-                .parent()
-                .append("<div class='error px-0'>phone no is required.</div>");
-            errorCount++;
-            return false;
-        }
-
-        if (phone_val.length > 10 || phone_val.length < 10) {
-            $(phone_num)
-                .parent()
-                .append(
-                    "<div class='error px-0'>phone number should be of 10 digits.</div>"
-                );
-            errorCount++;
-            return false;
-        }
-
-        if (phone_val !== "" && name_val !== "") {
-            consumersArr.splice(i, 0, {
-                phone: phone_val,
-                name: name_val,
-                location,
-            });
-            i++;
-        }
-    });
-
-    if (i !== 0 && errorCount === 0 && consumersArr.length > 0)
-        return console.log({ "submit form": consumersArr });
-    // showAlert();
-}
-
-const validateNumber = (ref) => {
-    let value = ref.value;
-    value.replaceAll(/^\D*$/g, "");
-    ref.value = value;
-};

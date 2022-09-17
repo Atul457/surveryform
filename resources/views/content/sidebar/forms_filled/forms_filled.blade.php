@@ -119,9 +119,3 @@
   {{-- Page js files --}}
   <script src="{{ asset('js\custom\getFilledForms.js') }}"></script>
 @endsection
-
-<script>
-  function navigate(){
-    window.location.href = "{{url('viewcompany')}}"
-  }
-</script>

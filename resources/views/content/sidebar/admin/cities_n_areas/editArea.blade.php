@@ -1,6 +1,6 @@
 @extends('layouts/contentLayoutMaster')
 
-@section('title', 'Add area')
+@section('title', 'Edit area')
 
 @section('vendor-style')
   <!-- vendor css files -->
@@ -31,33 +31,46 @@
                     method="post"
                     id="add_area_form"
                     onsubmit="return createArea();"
-                    action="{{url('addarea')}}">
-                    <div class="row align-items-end">
+                    action="{{url('updatearea')}}">
+                    <div class="row align-items-start">
                         @csrf
                         <div class="col-md-5 mb-1">
-                            <label class="form-label" for="citiesSelectBox">Cities</label>
                             <select 
                                 class="select2InModal form-select"
                                 name="city_ref"
                                 id="citiesSelectBox">
-                            @foreach($cities as $city)
-                                <option value="{{$city['id']}}">{{$city['city_name']}}</option>
-                            @endforeach
+                                    @foreach($cities as $city)
+                                        <option 
+                                        value="{{$city['id']}}"
+                                        @if($city['id']==$area["city_ref"]) selected="selected" @endif>
+                                            {{$city['city_name']}}
+                                        </option>
+                                    @endforeach
                             </select>
                         </div>
 
                         <div class="col-md-5 col-12 mb-1">
-                            <label class="form-label" for="citiesSelectBox">Area</label>
                             <input 
                                 type="text"
                                 placeholder="Area name"
                                 class="form-control"
+                                value="{{$area['area_name']}}"
                                 name="area_name"
                                 id="area_name"/>
+
+                            <input 
+                                type="hidden"
+                                value="{{$area['id']}}"
+                                name="area_id"/>
+                                
+                            <input 
+                                type="hidden"
+                                value="{{$area['city_ref']}}"
+                                name="old_city_ref"/>
                         </div>
 
                         <div class="col-md-2 col-12 mb-1">
-                            <button class="btn btn-primary">Add Area</button>
+                            <button class="btn btn-primary">Update</button>
                         </div>
                     </div>
                 </div>

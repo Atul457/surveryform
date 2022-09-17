@@ -253,17 +253,6 @@ class UserController extends Controller
         ]);
     }
 
-    // Display cities and areas view
-    public function citiesNAreas(User $user, Request $req, Cities $cities){
-        if(!$this->isAdmin($user, $req)) return $this->logout($req);
-        $cities_res = $cities
-        ->orderBy("city_name", "asc")
-        ->get()
-        ->toArray();
-        return view("content.sidebar.admin.cities_n_areas.citiesNAreas", 
-        ["cities" => $cities_res ]);
-    }
-
     // Updates the user
     public function updateUser(Request $req, User $user, AdminUsers $admin_users, UserCompany_link $link)
     {

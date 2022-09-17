@@ -43,15 +43,6 @@ Route::withoutMiddleware([ProtectedRoute::class, AdminRoute::class])->group(func
     Route::post('login_user', [UserController::class, 'login_user']);
 });
 
-// Admin Auth
-// Route::withoutMiddleware([ProtectedRoute::class, AuthProtectedRoute::class, AdminProtectedRoutes::class])->group(function () {
-//     Route::prefix('admin')->group(function () {
-//         Route::get('login', [AdminUsersController::class, 'login_view']);
-//         Route::post('login_user', [AdminUsersController::class, 'login_user']);
-//     });
-// });
-
-
 // User Routes
 Route::withoutMiddleware([AuthProtectedRoute::class])->group(function () {      
     
@@ -67,6 +58,13 @@ Route::withoutMiddleware([AuthProtectedRoute::class])->group(function () {
     Route::post('deleteform', [SurveyFormController::class, 'destroy']);
     Route::get('editform/{id}', [SurveyFormController::class, 'edit'])->name('myforms');
     Route::post("updateform", [SurveyFormController::class, 'update']);
+    Route::get("allocateformview", [SurveyFormController::class, 'allocateFormView'])->name("allocateformview");
+    Route::get('getusersofcomp/{id}', [SurveyFormController::class, 'getUsersOfComp']);
+    Route::get('getformsofprod/{prod_id}', [SurveyFormController::class, 'getFormsOfProduct']);
+    Route::post('allocateform', [SurveyFormController::class, 'allocateForm']);
+    Route::get('formsallocated/{form_id}', [SurveyFormController::class, 'formsAllocated']);
+    Route::get('formsallocatedview/{form_id}', [SurveyFormController::class, 'formsAllocatedView']);
+    Route::post('deallocateform', [SurveyFormController::class, 'deallocateForm']);
     
     // Admin
     Route::get('createuserview', [UserController::class, 'create_user_view'])->name('create_user_view');
@@ -95,15 +93,6 @@ Route::withoutMiddleware([AuthProtectedRoute::class])->group(function () {
     Route::get('myproducts', [ProductController::class, 'index'])->name("myproducts");
     Route::get('getprodofcomp/{id}', [ProductController::class, 'getProdOfComp']);
     
-    // Form
-    Route::get('myforms', [SurveyFormController::class, 'index'])->name('myforms');
-    Route::get('getMyforms', [SurveyFormController::class, 'myForms']);
-    Route::get('create_form_view', [SurveyFormController::class, 'show'])->name('create_form_view');
-    Route::post('createform', [SurveyFormController::class, 'create']);
-    Route::post('deleteform', [SurveyFormController::class, 'destroy']);
-    Route::get('editform/{id}', [SurveyFormController::class, 'edit'])->name('myforms');
-    Route::post("updateform", [SurveyFormController::class, 'update']);
-
     // Filled forms
     Route::get('getuserforms', [FormsFilledController::class, 'getUserForms']);
     
@@ -118,18 +107,27 @@ Route::withoutMiddleware([AuthProtectedRoute::class])->group(function () {
     });
     // userRoutes
     
-    // Cities and areas
-    Route::get('citynareas', [UserController::class, 'citiesNAreas'])->name("citynareas");
-    Route::get('cities', [CitiesController::class, 'getCities']);
+    // Cities
+    Route::get('cities', [CitiesController::class, 'cities'])->name("cities");
+    Route::get('getcities', [CitiesController::class, 'getCities']);
     Route::get('addcityview', [CitiesController::class, 'addCityView'])->name("addcityview");
     Route::post('addcity', [CitiesController::class, 'addCity']);
-    Route::get('addareaview', [AreasController::class, 'addAreaView'])->name("addareaview");
+    Route::post('updatecity', [CitiesController::class, 'updateCity'])->name("cities");
+    Route::get('editcity/{cityid}', [CitiesController::class, 'editCity'])->name("cities");
+    Route::post('deletecity', [CitiesController::class, 'deleteCity']);
+    
+    // Areas
     Route::post('addarea', [AreasController::class, 'addArea']);
     Route::get('getareas/{cityid}', [AreasController::class, 'getAreas']);
+    Route::get('areas/{cityid}', [AreasController::class, 'areas'])->name("cities");
+    Route::get('addareaview', [AreasController::class, 'addAreaView'])->name("addareaview");
+    Route::get('editarea/{area_id}', [AreasController::class, 'editArea'])->name("cities");
+    Route::post('updatearea', [AreasController::class, 'updateArea'])->name("cities");
+    Route::post('deletearea', [AreasController::class, 'deleteArea']);
     
 });
 
-Route::get('fillupform/{id}', [FormsFilledController::class, 'show'])->withoutMiddleware([ProtectedRoute::class, AuthProtectedRoute::class, AdminAuthProtectedRoutes::class, AdminProtectedRoutes::class]);
+Route::get('share/{share_id}', [SurveyFormController::class, 'shareForm'])->withoutMiddleware([ProtectedRoute::class, AuthProtectedRoute::class, AdminAuthProtectedRoutes::class, AdminProtectedRoutes::class]);
 
 
 // My routes

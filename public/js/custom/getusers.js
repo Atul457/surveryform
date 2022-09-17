@@ -70,8 +70,8 @@ $(function () {
                     render: function (value) {
                         if (value === null) return "";
                         return `<span class="badge rounded-pill badge-light-${
-                            value == 0 ? "danger" : "success"
-                        }"}>${value == 0 ? "Inactive" : "Active"}</span>`;
+                            value === 0 ? "danger" : "success"
+                        }"}>${value === 0 ? "Inactive" : "Active"}</span>`;
                     },
                 },
                 {
@@ -131,6 +131,7 @@ $(function () {
             },
         });
     }
+    
 
     // on key up from input field
     $("input.dt-input").on("keyup", function () {

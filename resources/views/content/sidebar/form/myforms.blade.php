@@ -7,15 +7,10 @@
 	{{-- vendor css files --}}
 	<link rel="stylesheet" href="{{ asset(mix('vendors/css/tables/datatable/dataTables.bootstrap5.min.css')) }}">
 	<link rel="stylesheet" href="{{ asset(mix('vendors/css/tables/datatable/responsive.bootstrap5.min.css')) }}">
-	<link rel="stylesheet" href="{{ asset(mix('vendors/css/pickers/flatpickr/flatpickr.min.css')) }}">
-	<link rel="stylesheet" href="{{ asset(mix('vendors/css/animate/animate.min.css')) }}">
-	<link rel="stylesheet" href="{{ asset(mix('vendors/css/extensions/sweetalert2.min.css')) }}">
 @endsection
 
 @section('page-style')
 	{{-- Page Css files --}}
-	<link rel="stylesheet" type="text/css" href="{{asset('css/base/plugins/forms/pickers/form-flat-pickr.css')}}"/>
-	<link rel="stylesheet" href="{{asset(mix('css/base/plugins/extensions/ext-component-sweet-alerts.css'))}}">
 	<link rel="stylesheet" href="{{ asset('css/custom/myforms.css') }}"/>
 @endsection
 
@@ -50,11 +45,12 @@
 		<div class="col-12">
 			<div class="card">
 				<div class="card-header border-bottom d-flex justify-content-end">
+					<a href="url('create_form_view')">
 					<button 
-						onclick="navigate()"
-						class="btn btn-primary waves-effect waves-float waves-light">
-						<i data-feather='plus'></i> Create Form
+							class="btn btn-primary waves-effect waves-float waves-light">
+							<i data-feather='plus'></i> Create Form
 					</button>
+					</a>
 				</div>
 				<hr class="my-0" />
 				<div class="card-datatable">
@@ -71,6 +67,7 @@
 								<th>Created at</th>
 								<th>Updated at</th>
 								<!-- <th>Share</th> -->
+								<th>Allocated to</th>
 								<th>Action</th>
 							</tr>
 						</thead>
@@ -122,79 +119,6 @@
 	</div>
 	<!-- Delete form modal -->
 
-	<!-- Share form modal -->
-	<div
-		class="modal fade text-start modal-primary shareFormModal"
-		id="shareFormModal"
-		tabindex="-1"
-		aria-labelledby="shareFormModal"
-		aria-hidden="true"
-		>
-		<div class="modal-dialog modal-dialog-centered modal-lg">
-			<div class="modal-content">
-				<div class="modal-header">
-					<h5 class="modal-title text-primary">Share form</h5>
-					<button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-				</div>
-				<div class="modal-body pb-2">
-					<div class="share_fields">Copy the link below and share it to anyone</div>
-					<input 
-						class="form-control share_fields"
-						type="text" 
-						id="form_link"/>
-
-					<div id="cunsumer_inputs_cont" class="share_fields">
-						<div class="phone_num_fields share_fields">
-							<div class="row shareModalinputs">
-
-								<input
-									type="text"
-									placeholder="Name"
-									autocomplete="off"
-									class="name form-control">
-
-								<input
-									type="number"
-									placeholder="Consumer phone no"
-									autocomplete="off"
-									onkeyup="validateNumber(this)"
-									class="number form-control">
-
-								<input
-									type="text"
-									placeholder="Location"
-									autocomplete="off"
-									class="location form-control">
-
-							</div>
-							
-							<button
-								type="button"
-								class="btn btn-danger ml-1 remove_phone_btn">Remove</button>
-						</div>
-					</div>
-
-					<div class="form_add_removeBtns share_fields">
-						<button
-							type="button"
-							class="btn btn-success"
-							onclick="addField()">Add</button>
-					</div>
-				</div>
-
-				<div class="modal-footer">
-					<button
-						type="button"
-						onclick="shareForm()"
-						class="btn btn-primary">
-						Send message
-					</button>
-				</div>
-			</div>
-		</div>
-	</div>
-	<!-- Share form modal -->
-
 	<!-- Modals -->
 </section>
 <!--/ Advanced Search -->
@@ -207,17 +131,9 @@
 	<script src="{{ asset(mix('vendors/js/tables/datatable/dataTables.bootstrap5.min.js')) }}"></script>
 	<script src="{{ asset(mix('vendors/js/tables/datatable/dataTables.responsive.min.js')) }}"></script>
 	<script src="{{ asset(mix('vendors/js/tables/datatable/responsive.bootstrap5.js')) }}"></script>
-	<script src="{{ asset(mix('vendors/js/extensions/sweetalert2.all.min.js')) }}"></script>
-	<script src="{{ asset(mix('vendors/js/extensions/polyfill.min.js')) }}"></script>
 @endsection
 
 @section('page-script')
 {{-- Page js files --}}
 	<script src="{{ asset('js\custom\myforms.js') }}"></script>
 @endsection
-
-<script>
-	function navigate(){
-		window.location.href = "{{url('create_form_view')}}"
-	}
-</script>

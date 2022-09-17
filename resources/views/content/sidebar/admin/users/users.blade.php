@@ -40,11 +40,12 @@
     <div class="col-12">
       <div class="card">
         <div class="card-header border-bottom d-flex justify-content-end">
+          <a href="url('createuserview')}">
             <button 
-              onclick="navigate()"
               class="btn btn-primary waves-effect waves-float waves-light">
               <i data-feather='plus'></i> Create Employee
             </button>
+          </a>
         </div>
         <hr class="my-0" />
         <div class="card-datatable">
@@ -126,9 +127,3 @@
   {{-- Page js files --}}
   <script src="{{ asset('js\custom\getusers.js') }}"></script>
 @endsection
-
-<script>
-  function navigate(){
-    window.location.href = "{{url('createuserview')}}"
-  }
-</script>

@@ -18,5 +18,7 @@ class AdminRoute
     {
         if(session("is_admin") == "1") return $next($request);
         return redirect('forms_filled');
+
+        return $next($request);
     }
 }

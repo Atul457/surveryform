@@ -1,6 +1,6 @@
 @extends('layouts/contentLayoutMaster')
 
-@section('title', 'Add city')
+@section('title', 'Edit city')
 
 @section('vendor-style')
   <!-- vendor css files -->
@@ -32,7 +32,7 @@
                     method="post"
                     id="add_city_form"
                     onsubmit="return createCity();"
-                    action="{{url('addcity')}}">
+                    action="{{url('updatecity')}}">
                     <div class="row">
                         @csrf
                         <div class="col-md-5 col-12 my-1">
@@ -41,11 +41,17 @@
                                 placeholder="City name"
                                 class="form-control"
                                 name="city_name"
+                                value="{{$city['city_name']}}"
                                 id="city_name"/>
+
+                                <input 
+                                type="hidden"
+                                name="city_id"
+                                value="{{$city['id']}}">
                         </div>
 
                         <div class="col-md-3 col-12 my-1">
-                            <button class="btn btn-primary">Add City</button>
+                            <button class="btn btn-primary">Update</button>
                         </div>
                     </div>
                 </div>
