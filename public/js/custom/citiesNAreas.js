@@ -93,7 +93,7 @@ $(function () {
                         return `<div class="d-flex flex-wrap align-items-center justify-content-center">
                                     <a href="${
                                         window.location.origin
-                                    }/editcity/${value}">
+                                    }/survey/public/editcity/${value}">
                                         ${feather.icons["edit"].toSvg({
                                             class: "me-1",
                                         })}
@@ -171,7 +171,7 @@ $(function () {
                         return `<div class="d-flex flex-wrap align-items-center justify-content-center">
                                      <a href="${
                                          window.location.origin
-                                     }/editarea/${value}">
+                                     }/survey/public/editarea/${value}">
                                          ${feather.icons["edit"].toSvg({
                                              class: "me-1",
                                          })}
