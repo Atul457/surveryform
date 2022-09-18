@@ -103,7 +103,7 @@ class SurveyFormController extends Controller
             $elem = [
                 "user_ref" => $user_ref,
                 "survey_form_ref" => $form_id,
-                "area_ref" => $area_ref
+                // "area_ref" => $area_ref
             ];
             $doesExists = $userFormLink
             ->where($elem)
@@ -123,7 +123,7 @@ class SurveyFormController extends Controller
         $message = '';
         if(count($alreadyAllocatedFormList) > 0){
             $message = implode(",", $alreadyAllocatedFormList);
-            $message = "form/forms at number [".$message."]"." can not be allocated, because they were already allocated to the user.";
+            $message = "form/forms at number [".$message."]"." could not be allocated, because they were already allocated to the user.";
             throw ValidationException::withMessages(['error' => $message]);
         }
         
