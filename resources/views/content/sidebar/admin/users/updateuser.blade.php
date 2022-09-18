@@ -129,7 +129,7 @@
                                 </select>
                             </div>
 
-                            <div class="col-12 col-md-6 mb-2">
+                            <!-- <div class="col-12 col-md-6 mb-2">
                                 <input 
                                     type="number" 
                                     id="phone_no" 
@@ -138,7 +138,7 @@
                                     name="phone_no" 
                                     value="{{$user['phone_no']}}"
                                     placeholder="Employee phone no" />
-                            </div>
+                            </div> -->
 
                             <div class="mb-2 d-flex justify-content-end">
                                 <button type="submit" class="btn btn-primary me-1">Update</button>

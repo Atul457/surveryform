@@ -70,7 +70,7 @@ function getUsersOfComp() {
         .done(function (data) {
             data = JSON.parse(data)?.data ?? [];
             if (data.length === 0)
-                usersHtml += `<option>No users found</option>`;
+                usersHtml += `<option>No employees found</option>`;
             else
                 data.forEach((user) => {
                     id = user.user_id;
@@ -216,7 +216,7 @@ function allocateForm() {
     if (!testIsNumber(usersSelectBox.val())) {
         usersSelectBox
             .parent()
-            .after("<div class='error'>Please select a user.</div>");
+            .after("<div class='error'>Please select a employee.</div>");
         return false;
     }
 

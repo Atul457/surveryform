@@ -105,6 +105,11 @@ class SurveyFormController extends Controller
                 "survey_form_ref" => $form_id,
                 // "area_ref" => $area_ref
             ];
+            $elemToInsert = [
+                "user_ref" => $user_ref,
+                "survey_form_ref" => $form_id,
+                "area_ref" => $area_ref
+            ];
             $doesExists = $userFormLink
             ->where($elem)
             ->get()
@@ -112,7 +117,7 @@ class SurveyFormController extends Controller
 
             if(count($doesExists) === 0){
                 $res = $userFormLink
-                ->insert($elem);
+                ->insert($elemToInsert);
                 print_r($res);
             }else{
                 $alreadyAllocatedFormList[] = $loop_count;

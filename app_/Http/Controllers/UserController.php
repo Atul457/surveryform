@@ -86,7 +86,7 @@ class UserController extends Controller
             throw ValidationException::withMessages(['not_found' => "You account has been deactived by the admin"]);
 
         if(!count($result)) 
-            throw ValidationException::withMessages(['not_found' => "User with this id doesn't exist"]);
+            throw ValidationException::withMessages(['not_found' => "Employee with this id doesn't exist"]);
 
         if(!Hash::check($password, $result[0]["password"]))
             throw ValidationException::withMessages(['unauthorized' => "Invalid credentials"]);
@@ -179,7 +179,7 @@ class UserController extends Controller
 
         if(!$res) throw ValidationException::withMessages(['error' => "Something went wrong"]);
             
-        $req->session()->flash('success', 'User created successfully');
+        $req->session()->flash('success', 'Employee created successfully');
         return redirect("users");
     }
 
@@ -240,7 +240,7 @@ class UserController extends Controller
         };
 
         if(count($single_user) == 0) {
-            $req->session()->flash('error', "User with this id doesn't exist.");
+            $req->session()->flash('error', "Employee with this id doesn't exist.");
             return view("content.sidebar.admin.users.updateuser");
         }
 
@@ -317,11 +317,11 @@ class UserController extends Controller
 
         
         if(count($isDuplicateEmail) != 0) {
-            return redirect()->back()->with('other', "A user with email id provided already exists.");
+            return redirect()->back()->with('other', "A employee with email id provided already exists.");
         }
         
         if(count($single_user) === 0) {
-            return redirect()->back()->with('other', "User with this id doesn't exist.");   
+            return redirect()->back()->with('other', "Employee with this id doesn't exist.");   
         }
         
         $updated = $user->where("id", $id)->update($data_to_update);
@@ -342,7 +342,7 @@ class UserController extends Controller
                 'error' => "Something went wrong."
             ]);
 
-        return redirect('users')->with('success', 'User updated successfully');
+        return redirect('users')->with('success', 'Employee updated successfully');
         
     }
 
@@ -356,12 +356,12 @@ class UserController extends Controller
         ->toArray();
 
         if(count($single_user) === 0) {
-            throw ValidationException::withMessages(['error' => "User with this id doesn't exist."]);   
+            throw ValidationException::withMessages(['error' => "Employee with this id doesn't exist."]);   
         }
 
         $deleted = $user->where('id', $id)->delete();
         if($deleted)
-            return redirect()->back()->with('success', 'User deleted successfully');
+            return redirect()->back()->with('success', 'Employee deleted successfully');
         
         throw ValidationException::withMessages([
             'error' => "Something went wrong."

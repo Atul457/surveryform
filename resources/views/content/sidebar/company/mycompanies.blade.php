@@ -46,7 +46,7 @@
     <div class="col-12">
       <div class="card">
         <div class="card-header border-bottom d-flex justify-content-end">
-          <a href="url('viewcompany')">
+          <a href="{{url('viewcompany')}}">
             <button 
               class="btn btn-primary waves-effect waves-float waves-light">
               <i data-feather='plus'></i> Create Company
