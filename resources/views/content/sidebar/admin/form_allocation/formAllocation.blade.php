@@ -44,7 +44,7 @@
           <div class="create_form_details row" id="formFieldsCont">
 
             <div class="col-12 col-md-6 mb-1">
-              <label>Select company to get it's users</label>
+              <label>Select company to get it's employees</label>
               <select 
                   type="text" 
                   id="companiesSelectBox" 
