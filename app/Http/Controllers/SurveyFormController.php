@@ -128,7 +128,7 @@ class SurveyFormController extends Controller
         $message = '';
         if(count($alreadyAllocatedFormList) > 0){
             $message = implode(",", $alreadyAllocatedFormList);
-            $message = "form/forms at number [".$message."]"." could not be allocated, because they were already allocated to the user.";
+            $message = "form/forms at number [".$message."]"." could not be allocated, because they were already allocated to the employee.";
             throw ValidationException::withMessages(['error' => $message]);
         }
         

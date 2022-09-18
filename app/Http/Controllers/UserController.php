@@ -86,7 +86,7 @@ class UserController extends Controller
             throw ValidationException::withMessages(['not_found' => "You account has been deactived by the admin"]);
 
         if(!count($result)) 
-            throw ValidationException::withMessages(['not_found' => "User with this id doesn't exist"]);
+            throw ValidationException::withMessages(['not_found' => "Employee with this id doesn't exist"]);
 
         if(!Hash::check($password, $result[0]["password"]))
             throw ValidationException::withMessages(['unauthorized' => "Invalid credentials"]);
