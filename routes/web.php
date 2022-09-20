@@ -37,7 +37,7 @@ Route::get('/', function () {
 
 // My routes
 
-// Users Auth
+// Users and admin Auth
 Route::withoutMiddleware([ProtectedRoute::class, AdminRoute::class])->group(function () {
     Route::get('login', [UserController::class, 'login_view']);
     Route::post('login_user', [UserController::class, 'login_user']);
@@ -127,7 +127,7 @@ Route::withoutMiddleware([AuthProtectedRoute::class])->group(function () {
     
 });
 
-Route::get('share/{share_id}', [SurveyFormController::class, 'shareForm'])->withoutMiddleware([ProtectedRoute::class, AuthProtectedRoute::class, AdminAuthProtectedRoutes::class, AdminProtectedRoutes::class]);
+Route::get('share/{share_id}', [SurveyFormController::class, 'shareForm'])->withoutMiddleware([ProtectedRoute::class, AuthProtectedRoute::class, AdminAuthProtectedRoutes::class, AdminProtectedRoutes::class, AdminRoute::class]);
 
 
 // My routes
