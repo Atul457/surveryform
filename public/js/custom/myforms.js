@@ -102,7 +102,7 @@ $(function () {
                         return `<div class="d-flex flex-wrap align-items-centerr">
                         <a href="${
                             window.location.origin
-                        }/survey/public/editform/${value}">
+                        }/survey/public/view_report_admin/${value}">
                                         ${feather.icons["eye"].toSvg({
                                             class: "text-primary",
                                         })}
