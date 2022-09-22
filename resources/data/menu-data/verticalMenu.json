@@ -70,7 +70,7 @@
             ]
         },
         {
-            "role": "both",
+            "role": "admin",
             "name": "Forms",
             "icon": "edit-2",
             "slug": "",
@@ -126,6 +126,13 @@
                     "slug": "addareaview"
                 }
             ]
+        },
+        {
+            "role": "user",
+            "name": "My Forms",
+            "icon": "edit-2",
+            "slug": "userforms",
+            "url": "userforms"
         }
     ]
 }
