@@ -115,7 +115,7 @@ $(function () {
                     render: function (value) {
                         if (value === null) return "";
                         return `<div class="d-flex flex-wrap align-items-center">
-                                    <a href="${window.location.origin}/survey/public/${value}">
+                                    <a href="${window.location.origin}/survey/public/editform/${value}">
                                         ${feather.icons["edit"].toSvg({
                                             class: "text-primary me-1",
                                         })}
