@@ -248,7 +248,7 @@ function allocateForm() {
         return false;
     }
 
-    return false;
+    return true;
 }
 
 function removeAddedForm(formIdToRemove) {
