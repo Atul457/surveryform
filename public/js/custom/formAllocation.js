@@ -243,7 +243,7 @@ function allocateForm() {
         sampleSize
             .parent()
             .append(
-                "<div class='error'>Please enter a number more than 0.</div>"
+                "<div class='error'>Please enter a number more than 0</div>"
             );
         return false;
     }
