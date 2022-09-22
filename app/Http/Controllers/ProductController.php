@@ -34,6 +34,7 @@ class ProductController extends Controller
             'comp_id' => 'required',
             'city' => 'required',
             'batch_no' => 'required',
+            'sample_size' => 'required|numeric|min:0|not_in:0'
         ]);
 
         $comp_id = $req->input("comp_id");
@@ -41,6 +42,7 @@ class ProductController extends Controller
         $status = $req->input("status");
         $batch_no = $req->input("batch_no");
         $city = $req->input("city");
+        $sample_size = $req->input("sample_size");
         
         if(!$this->isAdmin($user)) $this->logout($req);
 
@@ -55,6 +57,7 @@ class ProductController extends Controller
             "batch_no" => $batch_no,
             "city" => $city,
             "status" => $status,
+            "sample_size" => $sample_size
         ]);
 
         if(!$create_prod_res)

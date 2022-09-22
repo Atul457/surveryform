@@ -70,13 +70,13 @@
             ]
         },
         {
-            "role": "both",
+            "role": "admin",
             "name": "Forms",
             "icon": "edit-2",
             "slug": "",
             "submenu": [
                 {
-                    "role": "both",
+                    "role": "admin",
                     "url": "myforms",
                     "name": "My forms",
                     "icon": "circle",
@@ -88,6 +88,13 @@
                     "name": "Create form",
                     "icon": "circle",
                     "slug": "create_form_view"
+                },
+                {
+                    "role": "admin",
+                    "url": "allocateformview",
+                    "name": "Allocate form",
+                    "icon": "circle",
+                    "slug": "allocateformview"
                 }
             ]
         },
@@ -95,14 +102,14 @@
             "role": "admin",
             "name": "Cities and Areas",
             "icon": "globe",
-            "slug": "",
+            "slug":  "",
             "submenu": [
                 {
                     "role": "admin",
-                    "url": "citynareas",
+                    "url": "cities",
                     "name": "View",
                     "icon": "circle",
-                    "slug": "citynareas"
+                    "slug": "cities"
                 },
                 {
                     "role": "admin",
@@ -119,6 +126,13 @@
                     "slug": "addareaview"
                 }
             ]
+        },
+        {
+            "role": "user",
+            "name": "My Forms",
+            "icon": "edit-2",
+            "slug": "userforms",
+            "url": "userforms"
         }
     ]
 }

@@ -34,7 +34,8 @@
                     <form 
                         class="form form-horizontal" 
                         action="{{url('createproduct')}}" 
-                        method="post" 
+                        method="post"
+                        onsubmit="return createForm()"
                         id="createProdForm">
                         <div class="row">
                             @csrf
@@ -71,12 +72,21 @@
                             </div>
                             
                             <div class="col-12 col-md-4 mb-2">
-                            <input 
+                                <input 
                                     type="text" 
                                     id="city_name" 
                                     class="form-control" 
                                     name="city" 
                                     placeholder="City" />
+                            </div>
+
+                            <div class="col-12 col-md-4 mb-2">
+                                <input 
+                                    type="number" 
+                                    id="sample_size" 
+                                    class="form-control" 
+                                    name="sample_size" 
+                                    placeholder="Sample size" />
                             </div>
                             
                             <div class="col-12 col-md-4 mb-2">

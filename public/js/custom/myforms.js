@@ -96,13 +96,26 @@ $(function () {
                     },
                 },
                 {
+                    data: "view_report",
+                    render: function (value) {
+                        if (value === null) return "";
+                        return `<div class="d-flex flex-wrap align-items-centerr">
+                        <a href="${
+                            window.location.origin
+                        }/survey/public/editform/${value}">
+                                        ${feather.icons["eye"].toSvg({
+                                            class: "text-primary",
+                                        })}
+                                    </a>
+                                <div>`;
+                    },
+                },
+                {
                     data: "action",
                     render: function (value) {
                         if (value === null) return "";
                         return `<div class="d-flex flex-wrap align-items-center">
-                                    <a href="${
-                                        window.location.origin
-                                    }/survey/public/editform/${value}">
+                                    <a href="${window.location.origin}/survey/public/${value}">
                                         ${feather.icons["edit"].toSvg({
                                             class: "text-primary me-1",
                                         })}

@@ -132,6 +132,15 @@
                     Loading areas
                 </select>
             </div>
+            
+            <div class="col-md-6 mb-1">
+                <label class="form-label" for="sampleSize">Sample size</label>
+                <input
+                    type="number"
+                    class="form-control"
+                    name="sample_size"
+                    id="sampleSize"/>
+            </div>
         </div>
 
         <div class="d-flex justify-content-end mt-2 mb-3">

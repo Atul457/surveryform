@@ -60,16 +60,14 @@
 								<th></th>
 								<th>Sr. No</th>
 								<th>Form Name</th>
-								<th>Company Name</th>
-								<th>Start date</th>
-								<th>End date</th>
-								<th>Status</th>
+								<th>Form's Company</th>
+								<th>Form's Product</th>
+								<th>City</th>
+								<th>Area</th>
+								<th>Share</th>
+								<th>View Report</th>
 								<th>Created at</th>
 								<th>Updated at</th>
-								<!-- <th>Share</th> -->
-								<th>Allocated to</th>
-								<th>View Report</th>
-								<th>Action</th>
 							</tr>
 						</thead>
 					</table>
@@ -80,45 +78,78 @@
 
 	<!-- Modals -->
 
-	<!-- Delete form modal -->
-	<div
-		class="modal fade text-start modal-danger deleteModal"
-		id="deleteSurveyFormModal"
+	 <!-- Share form modal -->
+	 <div
+		class="modal fade text-start modal-primary shareFormModal"
+		id="shareFormModal"
 		tabindex="-1"
-		aria-labelledby="deleteSurveyFormModal"
+		aria-labelledby="shareFormModal"
 		aria-hidden="true"
 		>
-		<div class="modal-dialog modal-dialog-centered">
+		<div class="modal-dialog modal-dialog-centered modal-lg">
 			<div class="modal-content">
 				<div class="modal-header">
-					<h5 class="modal-title text-danger">Delete survey form</h5>
+					<h5 class="modal-title text-primary">Share form</h5>
 					<button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
 				</div>
-				<div class="modal-body">
-					Are you sure you want to delete this survey form?
-					<br/>
-					All the filled form details will be deleted
-					<form action="{{url('deleteform')}}" id="deleteSuveyForm" method="post" class="d-none">
-						@csrf
-						<input 
-								type="hidden" 
-								name="form_id" 
-								id="del_survey_id"/>
-					</form>
+				<div class="modal-body pb-2">
+					<div class="share_fields">Copy the link below and share it to anyone</div>
+					<input 
+						class="form-control share_fields"
+						type="text" 
+						id="form_link"/>
+
+					<div id="cunsumer_inputs_cont" class="share_fields">
+						<div class="phone_num_fields share_fields">
+							<div class="row shareModalinputs">
+
+								<input
+									type="text"
+									placeholder="Name"
+									autocomplete="off"
+									class="name form-control">
+
+								<input
+									type="number"
+									placeholder="Consumer phone no"
+									autocomplete="off"
+									onkeyup="validateNumber(this)"
+									class="number form-control">
+
+								<input
+									type="text"
+									placeholder="Location"
+									autocomplete="off"
+									class="location form-control">
+
+							</div>
+							
+							<button
+								type="button"
+								class="btn btn-danger ml-1 remove_phone_btn">Remove</button>
+						</div>
+					</div>
+
+					<div class="form_add_removeBtns share_fields">
+						<button
+							type="button"
+							class="btn btn-success"
+							onclick="addField()">Add</button>
+					</div>
 				</div>
+
 				<div class="modal-footer">
-					<button 
-							type="button" 
-							class="btn btn-danger"
-							onclick="confirmDeleteSuveyForm()"
-							id="updatePassBtn">
-							Delete
+					<button
+						type="button"
+						onclick="shareForm()"
+						class="btn btn-primary">
+						Send message
 					</button>
 				</div>
 			</div>
 		</div>
 	</div>
-	<!-- Delete form modal -->
+	<!-- Share form modal -->
 
 	<!-- Modals -->
 </section>
@@ -136,5 +167,5 @@
 
 @section('page-script')
 {{-- Page js files --}}
-	<script src="{{ asset('js\custom\myforms.js') }}"></script>
+	<script src="{{ asset('js\custom\userforms.js') }}"></script>
 @endsection

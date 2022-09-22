@@ -43,7 +43,7 @@ Route::withoutMiddleware([ProtectedRoute::class, AdminRoute::class])->group(func
     Route::post('login_user', [UserController::class, 'login_user']);
 });
 
-// User Routes
+// Admin Routes
 Route::withoutMiddleware([AuthProtectedRoute::class])->group(function () {      
     
     // User
@@ -95,17 +95,8 @@ Route::withoutMiddleware([AuthProtectedRoute::class])->group(function () {
     
     // Filled forms
     Route::get('getuserforms', [FormsFilledController::class, 'getUserForms']);
-    
-    // userRoutes
-    Route::withoutMiddleware([AdminRoute::class])->group(function () {      
-
-        // Filled forms
-        Route::get('forms_filled', [FormsFilledController::class, 'index'])->name('forms_filled');
-        Route::post('saveform', [FormsFilledController::class, 'create']);
-        Route::get('successpage', [FormsFilledController::class, 'success']);
-        
-    });
-    // userRoutes
+    Route::get('getreportadmin/{form_id}', [FormsFilledController::class, 'getReportAdmin']);
+    Route::get('view_report_admin/{share_id}', [FormsFilledController::class, 'viewReportAdmin'])->name("myforms");
     
     // Cities
     Route::get('cities', [CitiesController::class, 'cities'])->name("cities");
@@ -127,7 +118,22 @@ Route::withoutMiddleware([AuthProtectedRoute::class])->group(function () {
     
 });
 
+// UserRoutes
+
+Route::withoutMiddleware([AuthProtectedRoute::class, AdminRoute::class])->group(function () {      
+    
+    // Forms
+    Route::get('userforms', [SurveyFormController::class, 'userview'])->name('userforms');
+    Route::get('getuserforms', [SurveyFormController::class, 'getUserForms']);
+    
+    // Forms filled
+    Route::get('getreport/{share_id}', [FormsFilledController::class, 'getReport']);
+    Route::get('viewreport/{share_id}', [FormsFilledController::class, 'viewReport'])->name('userforms');
+    Route::get('forms_filled', [FormsFilledController::class, 'index'])->name('forms_filled');
+    Route::post('saveform', [FormsFilledController::class, 'create']);
+    Route::get('successpage', [FormsFilledController::class, 'success']);
+
+});
+
+
 Route::get('share/{share_id}', [SurveyFormController::class, 'shareForm'])->withoutMiddleware([ProtectedRoute::class, AuthProtectedRoute::class, AdminAuthProtectedRoutes::class, AdminProtectedRoutes::class, AdminRoute::class]);
-
-
-// My routes

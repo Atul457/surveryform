@@ -43,17 +43,17 @@ class SurveyFormController extends Controller
     }
 
     // Show my forms
-    public function myForms(SurveyForm $survey, User $user, Company $comp, Request $req){
+    public function myForms(SurveyForm $survey, User $user, Request $req){
 
-        // Validating the user
-        if(!$this->isUserStatusActive()){
-            $this->unAuthenticatedUser($req);
+        // Validating the admin
+        if(!$this->isAdmin($user)){
+            $this->unAuthenticatedUser($req, "You are not a admin");
             $res = ["data" => []];
-            return json_encode($res);
+             return json_encode($res);
         }
         
         $data = $survey
-        ->select("*", "survey_forms.id as action", "survey_forms.id as forms_allocated", "survey_forms.id as share", "survey_forms.id as responsive_id", "companies.comp_name",  "survey_forms.status as status", "survey_forms.id as id", "survey_forms.start_date", "survey_forms.end_date")
+        ->select("*", "survey_forms.id as action", "survey_forms.id as forms_allocated", "survey_forms.id as share", "survey_forms.id as responsive_id", "companies.comp_name",  "survey_forms.status as status", "survey_forms.id as id", "survey_forms.id as view_report", "survey_forms.start_date", "survey_forms.end_date")
         ->leftJoin("products", "products.id", "=", "prod_ref")
         ->leftJoin("companies", "companies.id", "=", "products.comp_id")
         ->get()
@@ -135,6 +135,11 @@ class SurveyFormController extends Controller
         $message = "Forms allocated successfully";
         $req->session()->flash('success', $message);
         return redirect("myforms");
+    }
+
+    // User view 
+    public function userView(){
+        return view("content/sidebar/form/userforms");
     }
 
     // Form allocation view
@@ -245,10 +250,8 @@ class SurveyFormController extends Controller
     }
 
     public function shareForm(userFormLink $userFormLink, Request $req, $share_id){
-        // "survey_forms.*", "companies.comp_name", "companies.comp_care_no", "companies.comp_addr", "users.name", "users.phone_no", "products.batch_no"
 
         $active = 1;
-
         $fill_up_form = $userFormLink
         ->select("user_form_links.*", "users.name", "users.phone_no", "products.batch_no", "survey_forms.form_name", "survey_forms.form_json", "companies.comp_name", "companies.comp_care_no", "companies.comp_addr", "survey_forms.start_date", "survey_forms.end_date")
         ->leftJoin("users", "users.id", "=", "user_form_links.user_ref")
@@ -267,9 +270,6 @@ class SurveyFormController extends Controller
         }
 
         return view("public.fill_up_form.form", ["form" => $fill_up_form[0]]);
-
-        // echo "<pre>";
-        // print_r($fill_up_form);
     }
     
 
@@ -484,16 +484,28 @@ class SurveyFormController extends Controller
         
     }
 
-    public function getMyFormsUser(Request $req,  FormsFilled $formsFilled, User $user){
+    public function getUserForms(userFormLink $userFormLink, User $user, Request $req)
+    {
+         // Validating the user
+         if(!$this->isUserStatusActive()){
+            $this->unAuthenticatedUser($req);
+            $res = ["data" => []];
+            return json_encode($res);
+        }
 
-        if(!$this->isUserStatusActive()) return $this->logout($req);
-
-        $res = $formsFilled
+        $data = $userFormLink
+        ->select("user_form_links.created_at", "user_form_links.id as share_id", "user_form_links.updated_at", "areas.area_name", "cities.city_name", "survey_forms.form_name", "products.prod_name as form_prod_name", "companies.comp_name as form_comp_name", "user_form_links.id as view_report")
         ->where("user_ref", session("id"))
+        ->leftJoin("areas", "areas.id", "=", "user_form_links.area_ref")
+        ->leftJoin("cities", "cities.id", "=", "areas.city_ref")
+        ->leftJoin("survey_forms", "survey_forms.id", "=", "user_form_links.survey_form_ref")
+        ->leftJoin("products", "products.id", "=", "survey_forms.prod_ref")
+        ->leftJoin("companies", "companies.id", "=", "products.comp_id")
         ->get()
         ->toArray();
-        echo "<pre>";
-        print_r($res);
+
+       $res2["data"] = $data;
+       return json_encode($res2);
     }
 
     /**

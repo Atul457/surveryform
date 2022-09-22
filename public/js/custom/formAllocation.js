@@ -209,6 +209,7 @@ function allocateForm() {
         selectedForms = $("#selectedForms"),
         surveyAllocationForm = $("#surveyAllocationForm"),
         usersSelectBox = $("#usersSelectBox"),
+        sampleSize = $("#sampleSize"),
         areasSelectBox = $("#areasSelectBox");
 
     $(surveyAllocationForm).find(".error").remove();
@@ -234,7 +235,20 @@ function allocateForm() {
         return false;
     }
 
-    return true;
+    if (
+        sampleSize.val().trim() === "" ||
+        !testIsNumber(sampleSize.val()) ||
+        !parseInt(sampleSize.val()) > 0
+    ) {
+        sampleSize
+            .parent()
+            .append(
+                "<div class='error'>Please enter a number more than 0.</div>"
+            );
+        return false;
+    }
+
+    return false;
 }
 
 function removeAddedForm(formIdToRemove) {

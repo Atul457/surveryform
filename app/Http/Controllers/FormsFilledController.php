@@ -28,15 +28,19 @@ class FormsFilledController extends Controller
      */
     public function create(Request $req, FormsFilled $formsFilled)
     {
+
+        $req->validate([
+            "data_filled" => "required",
+            "user_form_link_ref" => "required|numeric"
+        ]);
+
         $data_filled = $req->input("data_filled");
-        $survey_form_ref = $req->input("survey_form_ref");
-        $user_ref = $req->input("user_ref");
+        $user_form_link_ref = $req->input("user_form_link_ref");
 
         $res = $formsFilled
         ->insert([
             'data_filled' => $data_filled,
-            'survey_form_ref' => $survey_form_ref,
-            'user_ref' => $user_ref
+            'user_form_link_ref' => $user_form_link_ref
         ]);
 
         if(!$res)
@@ -81,6 +85,66 @@ class FormsFilledController extends Controller
     public function store(Request $request)
     {
         //
+    }
+
+     // Redirects user to the report view page
+     public function viewReport(Request $req, FormsFilled $formsFilled, $share_id)
+     {
+        return view("content.sidebar.form.viewreport", [
+            "share_id" => $share_id
+        ]);
+    }
+
+    public function viewReportAdmin(Request $req, FormsFilled $formsFilled, $form_id)
+    {
+       return view("content.sidebar.form.viewreportadmin", [
+           "form_id" => $form_id
+       ]);
+   }
+
+
+    public function getReport(FormsFilled $formsFilled, userFormLink $userFormLink, Request $req, $share_id){     
+
+        $reports = $userFormLink
+        ->where([
+            "user_form_links.id" => $share_id,
+            "user_ref" => session("id")
+            ])
+        ->get()
+        ->toArray();
+        $form_belongs_to_user = count($reports);
+        if(!$form_belongs_to_user){ 
+            return response(['error' => true, 'messsage' => 'Something went wrong'], 404);
+        }
+        
+        $reports = $formsFilled
+            ->where("user_form_link_ref", $share_id)
+            ->get()
+            ->toArray();
+
+        $res2["data"] = $reports;
+        return json_encode($res2);
+    }
+
+
+    public function getReportAdmin(FormsFilled $formsFilled, userFormLink $userFormLink, Request $req, $form_id){
+
+        $report_ids = $userFormLink
+        ->select("areas.area_name", "user_form_links.*", "areas.city_ref", "cities.city_name")
+        ->where("survey_form_ref", $form_id)
+        ->leftJoin("areas", "areas.id", "=", "user_form_links.area_ref")
+        ->leftJoin("cities", "cities.id", "=", "areas.city_ref")
+        ->pluck("user_form_links.id")
+        ->toArray();
+
+        $reports = $formsFilled
+        ->whereIn("user_form_link_ref", $report_ids)
+        ->get()
+        ->toArray();
+
+        $res2["data"] = $reports;
+        return json_encode($res2);
+
     }
 
     /**

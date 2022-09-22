@@ -174,6 +174,12 @@ label {
     background: limegreen;
 }
 
+.filters {
+    font-size: 20px;
+    font-weight: 500;
+    margin-bottom: 10px;
+}
+
 
 @media (max-width: 768px) {
 }

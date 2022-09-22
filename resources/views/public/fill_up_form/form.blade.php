@@ -94,7 +94,7 @@
       <input
         type="hidden"
         id="survey_form_ref"
-        name="survey_form_ref"
+        name="user_form_link_ref"
         value='{{$form["id"]}}'/>
 
       <div class="fb-render">

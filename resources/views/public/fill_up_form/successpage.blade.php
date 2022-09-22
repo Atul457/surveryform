@@ -16,17 +16,18 @@
   </div>
   @endif
 
-  @if(Session::has("success"))
-  <div class="card pt-1">
-    <div class="alert alert-success p-1">
-      {{Session::get('success')}}
-      <br>
-      <small>
-        Thanks for filling up the form.
-      </small>
+  <div class="card col-12 page_header">
+    <div class="comp_details">
+      <div class="card_header">
+        {{Session::get('success')}} 
+      </div>
     </div>
+        
+    <div class="form_header_fields">
+      <label>Thanks for filling up the form.</label>
+    </div>
+
   </div>
-  @endif
 
 </div>
 @endsection

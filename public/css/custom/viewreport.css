@@ -1,0 +1,32 @@
+.report_ques {
+    font-weight: bold;
+    margin-bottom: 10px;
+}
+
+.report_ques_ans {
+    display: flex;
+    justify-content: flex-start;
+    align-items: center;
+    flex-wrap: wrap;
+}
+
+.report_ques_ans>div{
+    padding-left: 0px;
+}
+
+.answer_cont {
+    display: flex;
+    justify-content: flex-start;
+    align-items: center;
+    flex-wrap: wrap;
+    padding-left: 0px;
+}
+
+.answer_cont div:first-child {
+    margin-right: 10px;
+    text-transform: capitalize;
+}
+
+.ansResults {
+    padding-right: 10px;
+}
