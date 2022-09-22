@@ -44,15 +44,6 @@
 		
 		<div class="col-12">
 			<div class="card">
-				<div class="card-header border-bottom d-flex justify-content-end">
-					<a href="{{url('create_form_view')}}">
-						<button
-							class="btn btn-primary waves-effect waves-float waves-light">
-							<i data-feather='plus'></i> Create Form
-						</button>
-					</a>
-				</div>
-				<hr class="my-0" />
 				<div class="card-datatable">
 					<table class="dt-advanced-search table">
 						<thead>
