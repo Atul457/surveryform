@@ -48,7 +48,11 @@ class SurveyFormController extends Controller
         ->get()
         ->toArray();
 
-       $res2["data"] = $data;
+        $res2 = [
+            "status" => true,
+            "data" => $data
+        ];
+        
        return json_encode($res2);
     }
 }

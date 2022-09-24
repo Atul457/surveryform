@@ -57,7 +57,11 @@ class FormsFilledController extends Controller
             ->get()
             ->toArray();
 
-        $res2["data"] = $reports;
+        $res2 = [
+            "status" => true,
+            "data" => $reports
+        ];
+        
         return json_encode($res2);
     }
 

@@ -17,10 +17,12 @@ use \App\Http\Controllers\api\FormsFilledController;
 |
 */
 
+Route::middleware([\App\Http\Middleware\ToJson::class])->group(function () {
 Route::middleware('auth:sanctum')->group(function(){
     Route::get('myforms', [SurveyFormController::class, 'getUserForms']);
     Route::post('logout', [UserController::class, 'logout']);
     Route::get('getreport/{share_id}', [FormsFilledController::class, 'getReport']);
+});
 });
 
 
