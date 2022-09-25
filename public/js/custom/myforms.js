@@ -195,7 +195,7 @@ function confirmDeleteSuveyForm() {
 
 function copyForm(formId) {
     $.ajax({
-        url: `${window.location.origin}/duplicateform/${formId}`,
+        url: `${window.location.origin}/survey/public/duplicateform/${formId}`,
         method: "get",
         success: (data) => {
             console.log(data);
