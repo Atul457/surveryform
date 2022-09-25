@@ -4,6 +4,8 @@ namespace App\Http\Controllers;
 
 use App\Models\FormsFilled;
 use App\Models\SurveyForm;
+use App\Models\Cities;
+use App\Models\Areas;
 use App\Models\User;
 use App\Models\userFormLink;
 use Illuminate\Http\Request;
@@ -97,9 +99,16 @@ class FormsFilledController extends Controller
 
     public function viewReportAdmin(Request $req, FormsFilled $formsFilled, $form_id)
     {
+        $inactive = 0;
+        $cities_res = Cities::orderBy("city_name", "asc")
+        ->get()
+        ->toArray();
+
        return view("content.sidebar.form.viewreportadmin", [
-           "form_id" => $form_id
+           "form_id" => $form_id,
+           "cities" => $cities_res
        ]);
+
    }
 
 
@@ -129,12 +138,16 @@ class FormsFilledController extends Controller
 
     public function getReportAdmin(FormsFilled $formsFilled, userFormLink $userFormLink, Request $req, $form_id){
 
+        $city_id = $req->input("city_id");
+        $area_id = $req->input("area_id");
         $report_ids = $userFormLink
         ->select("areas.area_name", "user_form_links.*", "areas.city_ref", "cities.city_name")
         ->where("survey_form_ref", $form_id)
         ->leftJoin("areas", "areas.id", "=", "user_form_links.area_ref")
-        ->leftJoin("cities", "cities.id", "=", "areas.city_ref")
-        ->pluck("user_form_links.id")
+        ->leftJoin("cities", "cities.id", "=", "areas.city_ref");
+        if($city_id) $report_ids = $report_ids->where("cities.id",  $city_id);
+        if($area_id) $report_ids = $report_ids->where("areas.id",  $area_id);
+        $report_ids = $report_ids->pluck("user_form_links.id")
         ->toArray();
 
         $reports = $formsFilled

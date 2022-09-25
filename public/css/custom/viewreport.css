@@ -10,7 +10,18 @@
     flex-wrap: wrap;
 }
 
-.report_ques_ans>div{
+.filtersCont {
+    display: flex;
+    justify-content: flex-start;
+}
+
+.filterCont {
+    width: 32%;
+    margin-right: 15px;
+    margin-bottom: 5px;
+}
+
+.report_ques_ans > div {
     padding-left: 0px;
 }
 
@@ -29,4 +40,10 @@
 
 .ansResults {
     padding-right: 10px;
+}
+
+@media (max-width: 768px) {
+    .filterCont {
+        width: 50%;
+    }
 }

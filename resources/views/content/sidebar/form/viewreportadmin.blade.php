@@ -40,12 +40,36 @@
                         </div>
                     @endif
 
-                <!-- <div class="col-12 card p-2">
+                <div class="col-12 card p-2">
                     <div class="filters">Filters</div>
                     <div class="filtersCont">
-                        city, area
+                        <div class="filterCont">
+                            <label class="form-label" for="citiesSelectBox">Cities</label>
+                            <select 
+                                class="select2InModal form-select"
+                                name="city_ref"
+                                onchange="getReport()"
+                                id="citiesSelectBox">
+                                <option value="0">Select city</option>
+                                @foreach($cities as $city)
+                                <option value="{{$city['id']}}">{{$city['city_name']}}</option>
+                                @endforeach
+                            </select>
+                        </div>
+                        
+                        <div class="filterCont">
+                            <label class="form-label" for="areasSelectBox">Area</label>
+                            <select 
+                                onchange="getReport(true)"
+                                class="select2InModal form-select"
+                                name="area_ref"
+                                id="areasSelectBox">
+                                Loading areas
+                            </select>
+                        </div>
+
                     </div>
-                </div> -->
+                </div>
 
                 <div class="col-12">
                     <div class="survey_result" id="surveyResult">

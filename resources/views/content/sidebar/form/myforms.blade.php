@@ -66,9 +66,9 @@
 								<th>Status</th>
 								<th>Created at</th>
 								<th>Updated at</th>
-								<!-- <th>Share</th> -->
 								<th>Allocated to</th>
 								<th>View Report</th>
+								<th>Copy Form</th>
 								<th>Action</th>
 							</tr>
 						</thead>

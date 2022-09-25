@@ -225,8 +225,8 @@ function format(city) {
     if (city.loading) return city.text;
 
     var markup =
-      "<div class='select2-result-repository clearfix'>" +
-      city.text +
+        "<div class='select2-result-repository clearfix'>" +
+        city.text +
         "</div>";
 
     return $(markup);
@@ -259,11 +259,14 @@ function getAreas(city_id) {
     })
         .done(function (data) {
             data = JSON.parse(data)?.data ?? [];
-            data.forEach((area) => {
-                id = area.id;
-                area_name = area.area_name;
-                areasHtml += `<option value="${id}">${area_name}</option>`;
-            });
+            if (data.length === 0)
+                areasHtml += `<option>No areas found</option>`;
+            else
+                data.forEach((area) => {
+                    id = area.id;
+                    area_name = area.area_name;
+                    areasHtml += `<option value="${id}">${area_name}</option>`;
+                });
             areasSelectBox.html(areasHtml);
         })
         .fail(function (err) {
@@ -273,7 +276,7 @@ function getAreas(city_id) {
 
 $(document).ready(function () {
     let citiesSelectBox = document.querySelector("#citiesSelectBox"),
-    city_id;
+        city_id;
     if (citiesSelectBox && citiesSelectBox.length) {
         city_id = citiesSelectBox.value;
         getAreas(city_id);

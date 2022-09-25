@@ -8,10 +8,13 @@ use App\Models\Product;
 use App\Models\User;
 use App\Models\Cities;
 use App\Models\UserCompany_link;
+use App\Models\FormsFilled;
 use App\Models\userFormLink;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Carbon;
 use Illuminate\Validation\ValidationException;
+use Illuminate\Support\Facades\Validator;
 
 class SurveyFormController extends Controller
 {
@@ -53,7 +56,7 @@ class SurveyFormController extends Controller
         }
         
         $data = $survey
-        ->select("*", "survey_forms.id as action", "survey_forms.id as forms_allocated", "survey_forms.id as share", "survey_forms.id as responsive_id", "companies.comp_name",  "survey_forms.status as status", "survey_forms.id as id", "survey_forms.id as view_report", "survey_forms.start_date", "survey_forms.end_date")
+        ->select("*", "survey_forms.id as action", "survey_forms.id as copy_form", "survey_forms.id as forms_allocated", "survey_forms.id as share", "survey_forms.id as responsive_id", "companies.comp_name",  "survey_forms.status as status", "survey_forms.id as id", "survey_forms.id as view_report", "survey_forms.start_date", "survey_forms.end_date", "survey_forms.created_at", "survey_forms.updated_at")
         ->leftJoin("products", "products.id", "=", "prod_ref")
         ->leftJoin("companies", "companies.id", "=", "products.comp_id")
         ->get()
@@ -61,6 +64,36 @@ class SurveyFormController extends Controller
 
        $res2["data"] = $data;
        return json_encode($res2);
+    }
+
+    public function duplicateForm(Request $req, SurveyForm $survey, $form_id){
+        if(!$form_id)
+            return response([
+                "error" => "Form id is a required field"
+            ], 401);
+        
+
+        $form = SurveyForm::find($form_id);
+
+        if(!$form)
+            return response([
+                "error" => "Unable to copy"
+            ], 500);
+
+        $copy_of_form = $form->replicate();
+        $copy_of_form->created_at = Carbon::now();
+        $copy_of_form->updated_at = Carbon::now();
+        $is_added = $copy_of_form->save();
+
+        if(!$is_added)
+            return response([
+                "error" => "Unable to copy"
+            ], 500);
+
+        return response([
+            "message" => "Form duplicated successfully"
+        ], 201);
+
     }
     
     // Logout
@@ -466,6 +499,18 @@ class SurveyFormController extends Controller
         $end_date = $req->input("end_date");
 
         if(!$this->isUserStatusActive()) return $this->logout($req);
+        
+        $ids_to_check = userFormLink::where("survey_form_ref", $form_id)
+        ->pluck("id")
+        ->toArray();
+
+        $form_filled_count = FormsFilled::whereIn("user_form_link_ref", $ids_to_check)
+        ->count();
+
+        if($form_filled_count > 0)
+            return throw ValidationException::withMessages([
+                'error' => "You can't update the form, since some of the users have filled the form, and updating the form may cause error in reports."
+            ]);
         
         $updated = $surveyForm->where("id", $form_id)->update([
             'form_json' => $form_json,

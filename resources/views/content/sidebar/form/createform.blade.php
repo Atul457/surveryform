@@ -99,7 +99,7 @@
               placeholder="Start date"
               class="form-control"
               name="start_date"
-              min="<?php echo date("Y-m-d"); ?>"
+              value="<?php echo date("Y-m-d"); ?>"
               id="start_date"/>
           </div>
 
@@ -109,7 +109,7 @@
               type="date" 
               placeholder="End date"
               class="form-control"
-              min="<?php echo date("Y-m-d"); ?>"
+              value="<?php echo date("Y-m-d"); ?>"
               name="end_date"
               id="end_date"/>
           </div>

@@ -1,11 +1,78 @@
 let allRecords = [];
+const citiesSelectBox = $("#citiesSelectBox"),
+    areasSelectBox = $("#areasSelectBox");
 
-// console.log(shareId);
+if (citiesSelectBox.length)
+    citiesSelectBox.each(function () {
+        var $this = $(this);
+        $this.wrap('<div class="position-relative"></div>');
+        $this.select2({
+            dropdownAutoWidth: true,
+            width: "100%",
+            dropdownParent: $this.parent(),
+        });
+    });
 
-$(document).ready(function () {
-    let htmlHolderCont = $("#surveyResult")
+if (areasSelectBox.length)
+    areasSelectBox.each(function () {
+        var $this = $(this);
+        $this.wrap('<div class="position-relative"></div>');
+        $this.select2({
+            dropdownAutoWidth: true,
+            width: "100%",
+            dropdownParent: $this.parent(),
+        });
+    });
+
+function showRelatedAreas(ref) {
+    let city_id = ref.value;
+    getAreas(city_id);
+}
+
+function getAreas(city_id) {
+    let areasHtml = "",
+        id = null,
+        area_name = "";
+
+    $.ajax({
+        url: `${window.location.origin}/survey/public/getareas/${city_id}`,
+    })
+        .done(function (data) {
+            data = JSON.parse(data)?.data ?? [];
+            if (data.length === 0)
+                areasHtml += `<option value="0">No areas found</option>`;
+            else {
+                areasHtml += `<option value="0">Select area</option>`;
+                data.forEach((area) => {
+                    id = area.id;
+                    area_name = area.area_name;
+                    areasHtml += `<option value="${id}">${area_name}</option>`;
+                });
+            }
+            areasSelectBox.html(areasHtml);
+        })
+        .fail(function (err) {
+            console.log(err);
+        });
+}
+
+function getReport(isAreaChanged = false) {
+    let htmlHolderCont = $("#surveyResult"),
+        city_id = citiesSelectBox.val(),
+        area_id = areasSelectBox.val();
+
+    if (isAreaChanged !== true) getAreas(city_id);
+
     $.ajax({
         url: `${window.location.origin}/survey/public/getreportadmin/${formId}`,
+        type: "post",
+        headers: {
+            "X-CSRF-TOKEN": $('meta[name="csrf-token"]').attr("content"),
+        },
+        data: {
+            ...(parseInt(city_id) && { city_id }),
+            ...(parseInt(area_id) && { area_id }),
+        },
     })
         .done(function (data) {
             reports = JSON.parse(data)?.data ?? [];
@@ -16,12 +83,16 @@ $(document).ready(function () {
         })
         .fail(function (err) {
             htmlHolderCont.html(`
-            <div class="report_item card p-2">
-                <div class="alert alert-danger mb-0 p-1">
-                ${err?.responseJSON?.messsage ?? "Something went wrong"}
-            </div>
-            </div>`)
+        <div class="report_item card p-2">
+            <div class="alert alert-danger mb-0 p-1">
+            ${err?.responseJSON?.messsage ?? "Something went wrong"}
+        </div>
+        </div>`);
         });
+}
+
+$(document).ready(function () {
+    getReport();
 });
 
 function renderResults() {
@@ -100,10 +171,7 @@ function renderResults() {
                 </div>`);
     });
 
-    console.log({ outerMost });
-
     allRecords.forEach((singleRecord) => {
-        // console.log(singleRecord);
         singleRecord.forEach((singleQuestion, sqIndex) => {
             if (singleQuestion?.values?.length) {
                 let timesToLoop = singleQuestion?.userData ?? [];

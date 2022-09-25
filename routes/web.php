@@ -65,6 +65,7 @@ Route::withoutMiddleware([AuthProtectedRoute::class])->group(function () {
     Route::get('formsallocated/{form_id}', [SurveyFormController::class, 'formsAllocated']);
     Route::get('formsallocatedview/{form_id}', [SurveyFormController::class, 'formsAllocatedView']);
     Route::post('deallocateform', [SurveyFormController::class, 'deallocateForm']);
+    Route::get('duplicateform/{form_id}', [SurveyFormController::class, 'duplicateForm']);
     
     // Admin
     Route::get('createuserview', [UserController::class, 'create_user_view'])->name('create_user_view');
@@ -95,7 +96,7 @@ Route::withoutMiddleware([AuthProtectedRoute::class])->group(function () {
     
     // Filled forms
     Route::get('getuserforms', [FormsFilledController::class, 'getUserForms']);
-    Route::get('getreportadmin/{form_id}', [FormsFilledController::class, 'getReportAdmin']);
+    Route::post('getreportadmin/{form_id}', [FormsFilledController::class, 'getReportAdmin']);
     Route::get('view_report_admin/{share_id}', [FormsFilledController::class, 'viewReportAdmin'])->name("myforms");
     
     // Cities

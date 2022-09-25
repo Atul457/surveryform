@@ -33,11 +33,13 @@ var normalizeDate = function (dateString) {
 };
 // Advanced Search Functions Ends
 
+var dt_adv_filter_table, dt_adv_filter;
+
 $(function () {
-    var dt_adv_filter_table = $(".dt-advanced-search");
+    dt_adv_filter_table = $(".dt-advanced-search");
     // Advanced Search
     if (dt_adv_filter_table.length) {
-        var dt_adv_filter = dt_adv_filter_table.DataTable({
+        dt_adv_filter = dt_adv_filter_table.DataTable({
             ajax: `${window.location.origin}/survey/public/getMyforms`,
             order: [[5, "desc"]],
             columns: [
@@ -111,6 +113,19 @@ $(function () {
                     },
                 },
                 {
+                    data: "copy_form",
+                    render: function (value) {
+                        if (value === null) return "";
+                        return `<div class="d-flex flex-wrap align-items-center">
+                                    <span class="cursor-pointer" onclick="copyForm(${value})">
+                                        ${feather.icons["copy"].toSvg({
+                                            class: "text-primary",
+                                        })}
+                                    </span>
+                                <div>`;
+                    },
+                },
+                {
                     data: "action",
                     render: function (value) {
                         if (value === null) return "";
@@ -178,3 +193,41 @@ function confirmDeleteSuveyForm() {
     }
 }
 
+function copyForm(formId) {
+    $.ajax({
+        url: `${window.location.origin}/duplicateform/${formId}`,
+        method: "get",
+        success: (data) => {
+            console.log(data);
+            dt_adv_filter.ajax.reload();
+            $("#advanced-search-datatable").before(`
+                <div class="alert alert-success alert-dismissible fade show" role="alert">
+                <div class="alert-body">
+                    Form duplicated successfully.
+                </div>
+                <button type="button" class="btn-close" data-dismiss="alert" aria-label="Close"></button>
+                </div>
+            `);
+            removeAlerts();
+        },
+        error: (err) => {
+            $("#advanced-search-datatable").before(`
+                <div class="alert alert-danger alert-dismissible fade show" role="alert">
+                <div class="alert-body">
+                    ${err?.responseJSON?.error ?? "Something went wrong"}
+                </div>
+                <button type="button" class="btn-close" data-dismiss="alert" aria-label="Close"></button>
+                </div>
+            `);
+        },
+    });
+}
+
+function removeAlerts() {
+    setTimeout(() => {
+        let target = $(".alert");
+        target.hide("slow", function () {
+            target.remove();
+        });
+    }, 1000);
+}

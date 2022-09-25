@@ -135,7 +135,6 @@
                                 class="form-control"
                                 name="start_date"
                                 value="{{$form['start_date']}}"
-                                min="<?php echo date("Y-m-d"); ?>"
                                 id="start_date"/>
                             </div>
 
@@ -146,7 +145,6 @@
                                 placeholder="End date"
                                 class="form-control"
                                 value="{{$form['end_date']}}"
-                                min="<?php echo date("Y-m-d"); ?>"
                                 name="end_date"
                                 id="end_date"/>
                             </div>
