@@ -6,6 +6,7 @@ use App\Models\Cities;
 use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Validation\ValidationException;
+use Illuminate\Support\Facades\Auth;
 
 class CitiesController extends Controller
 {
@@ -21,14 +22,8 @@ class CitiesController extends Controller
 
     // Validates the admin
     public function isAdmin(User $user, Request $req){
-        $email = session("email");
-        $is_admin_user = 1;
-        $is_admin = $user
-        ->where("email", $email)
-        ->where("is_admin", $is_admin_user)
-        ->get();
-
-        return count($is_admin) > 0 ? 1 : 0;
+        $res = Auth::user()->is_admin;
+        return $res ? 1 : 0;
     }
 
     // Logout the user

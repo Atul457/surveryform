@@ -4,6 +4,7 @@ namespace App\Http\Middleware;
 
 use Closure;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 
 class AdminProtectedRoutes
 {
@@ -22,9 +23,10 @@ class AdminProtectedRoutes
         else
             $message = "Your account may have been inactivated";
 
-        if($request->session()->has('email') && $request->session()->has('is_admin') && !($inactivated)) return $next($request);
+        if(Auth::check() && Auth::user()->is_admin && !($inactivated)) return $next($request);
         
-        $request->session()->flush();
+        Auth::logout();
+        $request->session()->invalidate();
 
         if($inactivated) $request->session()->flash('error', $message);
         else $request->session()->flash('error', 'Login to access homepage');

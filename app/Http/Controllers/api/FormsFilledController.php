@@ -61,7 +61,7 @@ class FormsFilledController extends Controller
             "status" => true,
             "data" => $reports
         ];
-        
+
         return json_encode($res2);
     }
 

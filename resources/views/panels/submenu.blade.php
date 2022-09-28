@@ -2,11 +2,11 @@
 <ul class="menu-content">
   @if(isset($menu))
   @foreach($menu as $submenu)
-  @if (($submenu->role === "admin") && (Session::get("is_admin") != "1"))
+  @if (($submenu->role === "admin") && (!Auth::user()->is_admin))
     @continue
   @endif
     
-  @if (($submenu->role === "user") && (Session::get("is_admin") == "1"))
+  @if (($submenu->role === "user") && (Auth::user()->is_admin))
     @continue
   @endif
   <li 

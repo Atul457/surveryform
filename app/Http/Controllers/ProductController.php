@@ -8,6 +8,7 @@ use App\Models\User;
 use App\Models\AdminUsers;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Validation\ValidationException;
 
 class ProductController extends Controller
@@ -86,18 +87,14 @@ class ProductController extends Controller
     }
 
     public function isAdmin(User $user){
-        $res = $user
-        ->where("email", session("email"))
-        ->where("is_admin", 1)
-        ->get()
-        ->toArray();
-
-        return count($res) > 0 ? 1 : 0;
+        $res = Auth::user()->is_admin;
+        return $res ? 1 : 0;
     }
 
     public function unAuthenticatedUser(Request $req, $message = 0){
-        $req->session()->flush();
-        
+
+        Auth::logout();
+        $req->session()->invalidate();        
         if($message != 0)
             return session([
                 'inactivated' => true,
@@ -107,6 +104,7 @@ class ProductController extends Controller
         return session([
             'inactivated' => true
         ]);
+        
     }
 
     public function createProductView(Company $comp, User $user, Request $req){

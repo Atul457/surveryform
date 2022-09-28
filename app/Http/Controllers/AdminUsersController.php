@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\AdminUsers;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Http\Request;
 use Illuminate\Validation\ValidationException;
 
@@ -22,10 +23,8 @@ class AdminUsersController extends Controller
 
      // Validates the admin
      public function isAdmin(AdminUsers $user, Request $req){
-        $email = session("email");
-        $is_admin = 1;
-        $is_admin = $user->where("email", $email)->where("id", session("id"))->get();
-        return count($is_admin);
+        $res = Auth::user()->is_admin;
+        return $res ? 1 : 0;
     }
 
     /**

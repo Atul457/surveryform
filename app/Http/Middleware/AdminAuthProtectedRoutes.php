@@ -4,6 +4,7 @@ namespace App\Http\Middleware;
 
 use Closure;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 
 class AdminAuthProtectedRoutes
 {
@@ -16,14 +17,8 @@ class AdminAuthProtectedRoutes
      */
     public function handle(Request $request, Closure $next)
     {
-        if($request->session()->has('email') || $request->session()->has('is_admin')) return redirect()->back();
-        // print_r($request->session()->has('email') );
-        // print_r($request->session()->has('is_admin'));
-        // die;
+        if(Auth::check() || Auth::user()->is_admin) return redirect()->back();
 
-        // echo "adminauthprotected";
-        // print_r(session()->all());  
-        // die;
         return $next($request);
     }
 }

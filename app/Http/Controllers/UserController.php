@@ -13,6 +13,7 @@ use App\Models\UserCompany_link;
 use App\Models\Cities;
 use Illuminate\Validation\ValidationException;
 use Response;
+use Illuminate\Support\Facades\Auth;
 
 class UserController extends Controller
 {
@@ -65,41 +66,25 @@ class UserController extends Controller
 
     // Logs the user in
     public function login_user(Request $req, User $user){
-        $validated = $req->validate([
+
+        $credentials = $req->validate([
             'email' => 'required|email',
             'password' => 'required|min:6',
         ]);
 
-        $email = $req->input("email");
-        $password = $req->input("password");
+        if (Auth::attempt($credentials)) {
 
-        $result = $user
-        ->select("*")
-        ->where("email", $email)
-        ->get()
-        ->toArray();
+            if(Auth::user()->status == 0)
+                throw ValidationException::withMessages(['not_found' => "You account has been deactived by the admin"]);
 
-        if(count($result) === 0)
-            throw ValidationException::withMessages(['not_found' => "Invalid credentials"]);
+            $req->session()->regenerate();
 
-        if($result[0]["status"] == 0)
-            throw ValidationException::withMessages(['not_found' => "You account has been deactived by the admin"]);
+            if(Auth::user()->is_admin) return redirect('myforms');
+            return redirect('userforms');
+        }
+        
+        throw ValidationException::withMessages(['not_found' => "Invalid credentials"]);
 
-        if(!count($result)) 
-            throw ValidationException::withMessages(['not_found' => "Employee with this id doesn't exist"]);
-
-        if(!Hash::check($password, $result[0]["password"]))
-            throw ValidationException::withMessages(['unauthorized' => "Invalid credentials"]);
-
-        session([
-            'email' => $email,
-            'name' => $result[0]["name"],
-            'id' => $result[0]["id"],
-            "is_admin" => $result[0]["is_admin"]
-        ]);
-
-        if($result[0]["is_admin"] == "0") return redirect('userforms');
-        return redirect('myforms');
     }
 
     // getUsers
@@ -128,14 +113,8 @@ class UserController extends Controller
 
     // Validates the admin
     public function isAdmin(User $user, Request $req){
-        $email = session("email");
-        $is_admin_user = 1;
-        $is_admin = $user
-        ->where("email", $email)
-        ->where("is_admin", $is_admin_user)
-        ->get();
-
-        return count($is_admin) > 0 ? 1 : 0;
+        $res = Auth::user()->is_admin;
+        return $res ? 1 : 0;
     }
 
     // Creates the user

@@ -60,63 +60,25 @@
       <a class="nav-link dropdown-toggle dropdown-user-link" id="dropdown-user" href="javascript:void(0);"
         data-bs-toggle="dropdown" aria-haspopup="true">
         <div class="user-nav d-sm-flex d-none">
-          @if (Session::has('name') && Session::has('name'))
+          @if (Auth::check())
             <span class="user-name fw-bolder">
-              {{Session::get('name')}}
+              {{Auth::user()->name}}
             </span>
             <span class="user-status">
-              {{Session::get('email')}}
+              {{Auth::user()->email}}
             </span>
           @endif
         </div>
         <span class="avatar">
           <img class="round"
-            src="{{ Auth::user() ? Auth::user()->profile_photo_url : asset('images/portrait/small/avatar-s-11.jpg') }}"
+            src="{{ asset('images/portrait/small/avatar-s-11.jpg') }}"
             alt="avatar" height="40" width="40">
           <span class="avatar-status-online"></span>
         </span>
       </a>
       <div class="dropdown-menu dropdown-menu-end" aria-labelledby="dropdown-user">
-        <!-- <h6 class="dropdown-header">Manage Profile</h6>
-        <div class="dropdown-divider"></div> -->
-        @if (Auth::check() && Laravel\Jetstream\Jetstream::hasApiFeatures())
-          <a class="dropdown-item" href="{{ route('api-tokens.index') }}">
-            <i class="me-50" data-feather="key"></i> API Tokens
-          </a>
-        @endif
-        <!-- <a class="dropdown-item" href="#">
-          <i class="me-50" data-feather="settings"></i> Settings
-        </a> -->
 
-        @if (Auth::User() && Laravel\Jetstream\Jetstream::hasTeamFeatures())
-          <div class="dropdown-divider"></div>
-          <h6 class="dropdown-header">Manage Team</h6>
-          <div class="dropdown-divider"></div>
-          <a class="dropdown-item"
-            href="{{ Auth::user() ? route('teams.show', Auth::user()->currentTeam->id) : 'javascript:void(0)' }}">
-            <i class="me-50" data-feather="settings"></i> Team Settings
-          </a>
-          @can('create', Laravel\Jetstream\Jetstream::newTeamModel())
-            <a class="dropdown-item" href="{{ route('teams.create') }}">
-              <i class="me-50" data-feather="users"></i> Create New Team
-            </a>
-          @endcan
-
-          <div class="dropdown-divider"></div>
-          <h6 class="dropdown-header">
-            Switch Teams
-          </h6>
-          <div class="dropdown-divider"></div>
-          @if (Auth::user())
-            @foreach (Auth::user()->allTeams() as $team)
-              {{-- Below commented code read by artisan command while installing jetstream. !! Do not remove if you want to use jetstream. --}}
-
-              {{-- <x-jet-switchable-team :team="$team" /> --}}
-            @endforeach
-          @endif
-          <div class="dropdown-divider"></div>
-        @endif
-        @if (Session::has('email'))
+        @if (Auth::user()->email)
           <button 
             class="dropdown-item w-100" 
             role="button"
@@ -124,17 +86,12 @@
             data-bs-target="#updatePassModal">
               <i class="me-50" data-feather='lock'></i> Update password
           </button>
-
-          @if(session()->has('is_admin') == "1")
-              <a class="dropdown-item" href="{{ route('logout') }}"
-            @endif
-
+          
+          <a class="dropdown-item" href="{{ route('logout') }}"
             onclick="event.preventDefault(); document.getElementById('logout-form').submit();">
             <i class="me-50" data-feather="power"></i> Logout
           </a>
-          @if(session()->has('is_admin') == "1")
             <form method="POST" id="logout-form" action="{{ route('logout') }}" class="d-none">
-          @endif
             @csrf
           </form>
         @endif

@@ -15,6 +15,7 @@ use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Carbon;
 use Illuminate\Validation\ValidationException;
 use Illuminate\Support\Facades\Validator;
+use Illuminate\Support\Facades\Auth;
 
 class SurveyFormController extends Controller
 {
@@ -34,15 +35,8 @@ class SurveyFormController extends Controller
 
     // Checks whether user is admin or not
     public function isAdmin(User $user){
-        if(session("is_admin") != 1) return 0;
-
-        $res = $user
-        ->where("email", session("email"))
-        ->where("is_admin", 1)
-        ->get()
-        ->toArray();
-
-        return count($res) > 0 ? 1 : 0;
+        if(!Auth::user()->is_admin) return 0;
+        return 1;
     }
 
     // Show my forms
@@ -98,14 +92,17 @@ class SurveyFormController extends Controller
     
     // Logout
     public function logout(Request $req){
-        $req->session()->flush();
+        Auth::logout();
+        $req->session()->invalidate();
         $req->session()->flash('error', "Your account may have been inactivated");
         return redirect("login");
     }    
 
     // Logout on second request to any route
     public function unAuthenticatedUser(Request $req, $message = 0){
-        $req->session()->flush();
+
+        Auth::logout();
+        $req->session()->invalidate();
 
         if($message != 0)
             return session([
@@ -116,6 +113,7 @@ class SurveyFormController extends Controller
         return session([
             'inactivated' => true
         ]);
+        
     }
 
     public function allocateForm(Request $req, userFormLink $userFormLink){
@@ -195,10 +193,9 @@ class SurveyFormController extends Controller
         ]);
     }
 
-    public function doesProductExist(Product $product, User $user){
-
-        $productId = $user
-        ->where("id", session("id"))
+    public function doesProductExist(Product $product, $prod_id){
+        $productId = $product
+        ->where("id", $prod_id)
         ->where("status", 1)
         ->pluck("id")
         ->toArray();
@@ -313,7 +310,6 @@ class SurveyFormController extends Controller
      */
     public function create(Request $req, Product $product, User $user, SurveyForm $surveyForm)
     {
-
         $validated = $req->validate([
             'form_name' => 'required|min:2',
             'prod_ref' => 'required',
@@ -332,7 +328,7 @@ class SurveyFormController extends Controller
 
         if(!$this->isUserStatusActive()) $this->logout($req);
         
-        $comp_result = $this->doesProductExist($product, $user);
+        $comp_result = $this->doesProductExist($product, $prod_ref);
 
         if(!$comp_result)
             throw ValidationException::withMessages(['error' => "Product you had selected may have been deleted or inactivated by the admin"]);
@@ -462,13 +458,7 @@ class SurveyFormController extends Controller
     // Validating the users is active or not
     public function isUserStatusActive()
     {   
-        $user_id = DB::table("users")
-        ->where('email', session('email'))
-        ->where('status', 1)
-        ->pluck("id")
-        ->toArray();
-
-        return count($user_id) > 0 ? true : false;
+        return Auth::user()->status;
     }
 
     /**
@@ -540,7 +530,7 @@ class SurveyFormController extends Controller
 
         $data = $userFormLink
         ->select("user_form_links.created_at", "user_form_links.id as share_id", "user_form_links.updated_at", "areas.area_name", "cities.city_name", "survey_forms.form_name", "products.prod_name as form_prod_name", "companies.comp_name as form_comp_name", "user_form_links.id as view_report")
-        ->where("user_ref", session("id"))
+        ->where("user_ref", Auth::user()->id)
         ->leftJoin("areas", "areas.id", "=", "user_form_links.area_ref")
         ->leftJoin("cities", "cities.id", "=", "areas.city_ref")
         ->leftJoin("survey_forms", "survey_forms.id", "=", "user_form_links.survey_form_ref")
@@ -562,7 +552,7 @@ class SurveyFormController extends Controller
     public function destroy(SurveyForm $surveyForm, Request $req, Company $comp)
     {
         $id = $req->input('form_id');
-        $user_id = session("id");
+        $user_id = Auth::user()->id;
 
         if(!$this->isUserStatusActive()) return $this->logout($req);
 

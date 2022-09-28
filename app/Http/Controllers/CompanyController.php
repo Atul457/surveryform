@@ -8,6 +8,8 @@ use App\Models\AdminUsers;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Http\Request;
 use Illuminate\Validation\ValidationException;
+use Illuminate\Support\Facades\Auth;
+
 
 class CompanyController extends Controller
 {
@@ -22,37 +24,29 @@ class CompanyController extends Controller
     }
 
     public function isAdmin(User $user){
-        $res = $user
-        ->where("email", session("email"))
-        ->where("is_admin", 1)
-        ->get()
-        ->toArray();
-
-        return count($res) > 0 ? 1 : 0;
+        if(!Auth::user()->is_admin) return 0;
+        return 1;
     }
 
     public function isAdminStatusActive()
     {   
-        $adminuser_id = DB::table("admin_users")
-        ->where('email', session('email'))
-        ->where('status', 1)
-        ->pluck("id")
-        ->toArray();
-
-        return count($adminuser_id) > 0 ? 1 : 0;
+        return Auth::user()->status;
     }
 
     // Logout
     public function logout(Request $req){
-        $req->session()->flush();
+        Auth::logout();
+        $req->session()->invalidate();
         session([
             'inactivated' => true
         ]);
     }
 
     public function unAuthenticatedUser(Request $req, $message = 0){
-        $req->session()->flush();
-        
+
+        Auth::logout();
+        $req->session()->invalidate();
+
         if($message != 0)
             return session([
                 'inactivated' => true,
@@ -62,6 +56,7 @@ class CompanyController extends Controller
         return session([
             'inactivated' => true
         ]);
+
     }
 
     public function createCompanyView(){
@@ -84,7 +79,7 @@ class CompanyController extends Controller
         $company_addr = $req->input("comp_addr");
         $company_care_no = $req->input("comp_care_no");
         $status = $req->input("status");
-        $email = session("email");
+        $email = Auth::user()->email;
         
         if(!$this->isAdmin($user)){
             $this->unAuthenticatedUser($req, "You are not an admin");
@@ -151,7 +146,8 @@ class CompanyController extends Controller
 
         // Validating the user
         if(!$this->isAdmin($user)){
-            $req->session()->flush();
+            Auth::logout();
+            $req->session()->invalidate();
             $req->session()->flash('error', "Your account may have been inactivated");
             return redirect("login");
         }
@@ -209,7 +205,8 @@ class CompanyController extends Controller
     {
         $id = $req->input('company_id');
         if(!$this->isAdmin($user)){
-            $req->session()->flush();
+            Auth::logout();
+            $req->session()->invalidate();
             $req->session()->flash('error', "Your account may have been inactivated");
             return redirect("login");
         }

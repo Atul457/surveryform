@@ -4,6 +4,7 @@ namespace App\Http\Middleware;
 
 use Closure;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 
 class AuthProtectedRoute
 {
@@ -16,7 +17,7 @@ class AuthProtectedRoute
      */
     public function handle(Request $request, Closure $next)
     {
-        if($request->session()->has('email')) return redirect('myforms');
+        if(Auth::check()) return redirect('myforms');
         return $next($request);
     }
 }

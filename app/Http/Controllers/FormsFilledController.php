@@ -10,6 +10,7 @@ use App\Models\User;
 use App\Models\userFormLink;
 use Illuminate\Http\Request;
 use Illuminate\Validation\ValidationException;
+use Illuminate\Support\Facades\Auth;
 
 class FormsFilledController extends Controller
 {
@@ -56,7 +57,8 @@ class FormsFilledController extends Controller
 
     // Logout
     public function logout(Request $req){
-        $req->session()->flush();
+        Auth::logout();
+        $req->session()->invalidate();
         $req->session()->flash('error', "Your account may have been inactivated");
         return redirect("login");
     }
@@ -69,13 +71,7 @@ class FormsFilledController extends Controller
     // Validating the users is active or not
     public function isUserStatusActive(User $user)
     {   
-        $user_id = $user
-        ->where('email', session('email'))
-        ->where('status', 1)
-        ->pluck("id")
-        ->toArray();
-
-        return count($user_id) > 0 ? true : false;
+        return Auth::user()->status;
     }
 
     /**
@@ -114,10 +110,11 @@ class FormsFilledController extends Controller
 
     public function getReport(FormsFilled $formsFilled, userFormLink $userFormLink, Request $req, $share_id){     
 
+        $user_id = Auth::user()->id;
         $reports = $userFormLink
         ->where([
             "user_form_links.id" => $share_id,
-            "user_ref" => session("id")
+            "user_ref" => $user_id
             ])
         ->get()
         ->toArray();

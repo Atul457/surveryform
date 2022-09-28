@@ -36,11 +36,11 @@ $configData = Helper::applClasses();
             @endphp
 
            
-            @if (($menu->role === "admin") && (Session::get("is_admin") != "1"))
+            @if (($menu->role === "admin") && (!Auth::user()->is_admin))
               @continue
             @endif
             
-            @if (($menu->role === "user") && (Session::get("is_admin") == "1"))
+            @if (($menu->role === "user") && (Auth::user()->is_admin))
               @continue
             @endif
             <li
