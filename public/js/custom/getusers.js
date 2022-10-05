@@ -43,9 +43,9 @@ $(function () {
         assetPath = $("body").attr("data-asset-path");
     }
     // Advanced Search
-    if (dt_adv_filter_table.length) { 
+    if (dt_adv_filter_table.length) {
         var dt_adv_filter = dt_adv_filter_table.DataTable({
-            ajax: `${window.location.origin}/survey/public/getUsers`,
+            ajax: `${baseurl}/getUsers`,
             order: [[5, "desc"]],
             columns: [
                 {
@@ -89,23 +89,27 @@ $(function () {
                     },
                 },
                 {
+                    data: "viewpermissions",
+                    orderable: false,
+                    render: function (value) {
+                        if (value === null) return "";
+                        if (!showPermissionIcon) return "";
+                        return `<div class="d-flex flex-wrap justify-content-center">
+                                        ${feather.icons["eye"].toSvg({
+                                            class: "me-1 text-primary cursor-pointer",
+                                            onclick: `viewUserPermissions(${value})"`,
+                                        })}
+                                <div>`;
+                    },
+                },
+                {
                     data: "action",
                     orderable: false,
                     render: function (value) {
                         if (value === null) return "";
                         return `<div class="d-flex flex-wrap align-items-center">
-                                    <a href="${
-                                        window.location.origin
-                                    }/survey/public/edituser/${value}">
-                                        ${feather.icons["edit"].toSvg({
-                                            class: "me-1",
-                                        })}
-                                    </a>
-                                    <span onclick="deleteUser(${value})" class="cursor-pointer">
-                                        ${feather.icons["trash"].toSvg({
-                                            class: "text-primary",
-                                        })}
-                                    </span>
+                                   ${getEditIcon(1, value)}
+                                   ${getEditIcon(2, value)}
                                 <div>`;
                     },
                 },
@@ -131,7 +135,6 @@ $(function () {
             },
         });
     }
-    
 
     // on key up from input field
     $("input.dt-input").on("keyup", function () {
@@ -144,6 +147,173 @@ $(function () {
         .removeClass("form-select-sm")
         .removeClass("form-control-sm");
 });
+
+function getPermissions(userId) {
+    const permissionModules = $("#permissionModules");
+    let permHtml = "";
+    permissionModules.html("");
+    $("#userId").val(userId);
+
+    $.ajax({
+        url: `${baseurl}/getpermissions/${userId}`,
+    })
+        .done(function (data) {
+            data = JSON.parse(data)?.data ?? [];
+            const { all_permissions_modules, permissions_assigned } = data;
+            // console.table(all_permissions_modules);
+            // console.log({ permissions_assigned });
+
+            all_permissions_modules.forEach(({ module_name }) => {
+                permHtml += `<div class="permission_module_cont" id="moduleCont${module_name}" name="${module_name}">
+                <h5 class="fw-bolder text-capitalize">${module_name}</h5>
+                <div class="permission_checkBoxes">
+                    ${getPermissionHtml(module_name, permissions_assigned)}
+                </div>
+              </div>`;
+            });
+            permissionModules.html(permHtml);
+        })
+        .fail(function (err) {
+            console.log(err);
+        });
+}
+
+function getPermissionHtml(module_name, permissions_assigned) {
+    const permissions = permissions_assigned.filter((curr) => {
+        return curr.module_name == module_name;
+    });
+    let havePermission = permissions[0]?.permissions
+        ? JSON.parse(permissions[0]?.permissions)
+        : [];
+    let permissionHtml = "";
+    const pemissionsArr = ["create", "view", "edit", "delete", "update"];
+    pemissionsArr.forEach((permission) => {
+        permissionHtml += `<div class="checkbox_group">
+            <label for="${module_name}_${permission}">${permission}</label>
+            <input type="checkbox" name="${permission}" ${
+            havePermission.includes(permission) ? "checked" : ""
+        } id="${module_name}_${permission}"/>
+        </div>`;
+    });
+    return permissionHtml;
+}
+
+function updatePermissions() {
+    const moduleNodes = document.querySelectorAll(".permission_module_cont"),
+        userId = $("#userId").val(),
+        updatePermissionsBtn = $("#updatePermissionsBtn");
+
+    let moduleName,
+        updatedPermissionsArr = [];
+    (permissionGrantedArr = []), (currModulePermNodes = []);
+
+    moduleNodes.forEach((currNode) => {
+        moduleName = currNode.getAttribute("name");
+        if (moduleName) {
+            currModulePermNodes = currNode.querySelectorAll(`.checkbox_group`);
+            var permissionGrantedArrElem = [];
+            currModulePermNodes.forEach((currPermNode) => {
+                let node = currPermNode.querySelector("[name]");
+                let { checked, name } = node;
+                if (checked) {
+                    permissionGrantedArrElem = [
+                        ...permissionGrantedArrElem,
+                        name,
+                    ];
+                }
+            });
+            updatedPermissionsArr = [
+                ...updatedPermissionsArr,
+                {
+                    moduleName,
+                    permissionGrantedArrElem,
+                },
+            ];
+        }
+    });
+
+    updatePermissionsBtn.html(
+        ` <div class="spinner-border spinner-border-sm text-white" role="status"></div>`
+    );
+
+    $.ajax({
+        url: `${baseurl}/updatepermissions/${userId}`,
+        type: "post",
+        data: { updatedPermissionsArr },
+        headers: {
+            "X-CSRF-TOKEN": $('meta[name="csrf-token"]').attr("content"),
+        },
+        success: (data) => {
+            $("#permissionModules").after(`
+                <div class="text-center text-success response fw-bolder mt-1">
+                    ${data?.message ?? "Permissions updated successfullly."}
+                </div>
+            `);
+            updatePermissionsBtn.html("Update permissions");
+            removeMessage();
+        },
+        error: (err) => {
+            $("#permissionModules").after(`
+                <div class="text-center text-error response fw-bolder mt-1">
+                    ${err?.responseJSON?.error ?? "Something went wrong"}
+                </div>
+            `);
+            updatePermissionsBtn.html("Update permissions");
+            removeMessage();
+        },
+    });
+}
+
+function removeMessage() {
+    setTimeout(() => {
+        let target = $(".response");
+        target.hide("slow", function () {
+            target.remove();
+        });
+    }, 1000);
+}
+
+function removeAlerts() {
+    setTimeout(() => {
+        let target = $(".alert");
+        target.hide("slow", function () {
+            target.remove();
+        });
+    }, 1000);
+}
+
+function viewUserPermissions(userId) {
+    let viewPermissionsModal = $("#viewPermissionsModal");
+    viewPermissionsModal.modal("show");
+    getPermissions(userId);
+}
+
+function getEditIcon(iconType, userId = 0) {
+    // 1 => show edit icon
+    // 2 => show delete icon
+    // 3 => show permission icon
+    switch (iconType) {
+        case 1:
+            return showEditIcon
+                ? `<a href="${baseurl}/edituser/${userId}">
+        ${feather.icons["edit"].toSvg({
+            class: "me-1",
+        })}
+    </a>`
+                : "";
+        case 2:
+            return showDeleteIcon
+                ? ` <span onclick="deleteUser(${userId})" class="cursor-pointer">
+                ${feather.icons["trash"].toSvg({
+                    class: "text-primary",
+                })}
+            </span>`
+                : "";
+
+        default:
+            break;
+    }
+}
 
 function deleteUser(id) {
     let input_elem = $("#del_user_id");

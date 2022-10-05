@@ -143,6 +143,7 @@
             </div>
         </div>
 
+        @accessible("allocate_form")
         <div class="d-flex justify-content-end mt-2 mb-3">
           <button 
             type="submit" 
@@ -150,6 +151,7 @@
               Allocate form
           </button>
         </div>
+        @endaccessible
       </form>
     </div>
   </div>

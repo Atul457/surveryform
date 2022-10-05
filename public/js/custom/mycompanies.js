@@ -45,7 +45,7 @@ $(function () {
     // Advanced Search
     if (dt_adv_filter_table.length) {
         var dt_adv_filter = dt_adv_filter_table.DataTable({
-            ajax: `${window.location.origin}/survey/public/getcompanies`,
+            ajax: `${baseurl}/getcompanies`,
             order: [[5, "desc"]],
             columns: [
                 {
@@ -68,8 +68,8 @@ $(function () {
                     render: function (value) {
                         if (value === null) return "";
                         return `<span class="badge rounded-pill badge-light-${
-                            value == 0 ? "danger" : "success"
-                        }"}>${value == 0 ? "Inactive" : "Active"}</span>`;
+                            value === 0 ? "danger" : "success"
+                        }"}>${value === 0 ? "Inactive" : "Active"}</span>`;
                     },
                 },
                 {
@@ -92,18 +92,8 @@ $(function () {
                     render: function (value) {
                         if (value === null) return "";
                         return `<div class="d-flex flex-wrap align-items-center">
-                                    <a href="${
-                                        window.location.origin
-                                    }/survey/public/editcompany/${value}">
-                                        ${feather.icons["edit"].toSvg({
-                                            class: "me-1",
-                                        })}
-                                    </a>
-                                    <span onclick="deleteCompany(${value})" class="cursor-pointer">
-                                        ${feather.icons["trash"].toSvg({
-                                            class: "text-primary",
-                                        })}
-                                    </span>
+                                   ${getEditIcon(1, value)}
+                                   ${getEditIcon(2, value)}
                                 <div>`;
                     },
                 },
@@ -140,6 +130,33 @@ $(function () {
         .removeClass("form-select-sm")
         .removeClass("form-control-sm");
 });
+
+
+function getEditIcon(iconType, compId = 0) {
+    // 1 => show edit icon
+    // 2 => show delete icon
+    switch (iconType) {
+        case 1:
+            return showEditIcon
+                ? `<a href="${baseurl}/editcompany/${compId}">
+        ${feather.icons["edit"].toSvg({
+            class: "me-1",
+        })}
+    </a>`
+                : "";
+        case 2:
+            return showDeleteIcon
+                ? ` <span onclick="deleteCompany(${compId})" class="cursor-pointer">
+                ${feather.icons["trash"].toSvg({
+                    class: "text-primary",
+                })}
+            </span>`
+                : "";
+
+        default:
+            break;
+    }
+}
 
 function deleteCompany(id) {
     let input_elem = $("#del_company_id");

@@ -35,7 +35,7 @@ function getAreas(city_id) {
         area_name = "";
 
     $.ajax({
-        url: `${window.location.origin}/survey/public/getareas/${city_id}`,
+        url: `${baseurl}/getareas/${city_id}`,
     })
         .done(function (data) {
             data = JSON.parse(data)?.data ?? [];
@@ -64,7 +64,7 @@ function getReport(isAreaChanged = false) {
     if (isAreaChanged !== true) getAreas(city_id);
 
     $.ajax({
-        url: `${window.location.origin}/survey/public/getreportadmin/${formId}`,
+        url: `${baseurl}/getreportadmin/${formId}`,
         type: "post",
         headers: {
             "X-CSRF-TOKEN": $('meta[name="csrf-token"]').attr("content"),

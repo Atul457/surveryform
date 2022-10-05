@@ -50,6 +50,7 @@
 
                             <div class="col-12">
                                 <div class="card">
+                                    @accessible("add_area")
                                     <div class="border-bottom d-flex justify-content-end">
                                     <div class="cities_n_areasfoot">
                                         <a href="{{url('addareaview')}}">
@@ -58,6 +59,7 @@
                                     </div>
                                     </div>
                                     <hr class="my-0" />
+                                    @endaccessible
                                     <div class="card-datatable">
                                         <table class="dt-advanced-search table" id="areasOfACity">
                                             <thead>
@@ -135,7 +137,9 @@
 @section('page-script')
 {{-- Page js files --}}
     <script>
-        var cityId = "{{$cityid}}"
+        var cityId = "{{$cityid}}",
+        showEditIcon = `@accessible('edit_area')${true}@endaccessible` === "true",
+        showDeleteIcon = `@accessible('delete_area')${true}@endaccessible` === "true"
     </script>
 	<script src="{{ asset('js\custom\citiesNAreas.js') }}"></script>
 @endsection

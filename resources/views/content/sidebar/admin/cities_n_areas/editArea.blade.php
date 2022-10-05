@@ -69,9 +69,11 @@
                                 name="old_city_ref"/>
                         </div>
 
+                        @accessible("update_area")
                         <div class="col-md-2 col-12 mb-1">
                             <button class="btn btn-primary">Update</button>
                         </div>
+                        @endaccessible
                     </div>
                 </div>
             </div>

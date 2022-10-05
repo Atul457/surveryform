@@ -6,7 +6,7 @@ use Closure;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 
-class AdminRoute
+class IsAdmin
 {
     /**
      * Handle an incoming request.
@@ -17,9 +17,6 @@ class AdminRoute
      */
     public function handle(Request $request, Closure $next)
     {
-        if(Auth::user()->is_admin == "1") return $next($request);
         return redirect('userforms');
-
-        return $next($request);
     }
 }

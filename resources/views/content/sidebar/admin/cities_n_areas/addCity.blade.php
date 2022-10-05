@@ -44,9 +44,11 @@
                                 id="city_name"/>
                         </div>
 
+                        @accessible("create_city")
                         <div class="col-md-3 col-12 my-1">
                             <button class="btn btn-primary">Add City</button>
                         </div>
+                        @endaccessible
                     </div>
                 </div>
             </div>

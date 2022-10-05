@@ -39,7 +39,7 @@ $(function () {
     // Cities table
     if (citiesDatatable.length) {
         citiesDatatable.DataTable({
-            ajax: `${window.location.origin}/survey/public/getcities`,
+            ajax: `${baseurl}/getcities`,
             order: [[5, "desc"]],
             columns: [
                 {
@@ -74,10 +74,9 @@ $(function () {
                     orderable: false,
                     render: function (value) {
                         if (value === null) return "";
+                        if (!showViewAreasIcon) return "";
                         return `<div class="d-flex flex-wrap align-items-center justify-content-center">
-                                    <a href="${
-                                        window.location.origin
-                                    }/survey/public/areas/${value}">
+                                    <a href="${baseurl}/areas/${value}">
                                         ${feather.icons["eye"].toSvg({
                                             class: "me-1",
                                         })}
@@ -90,19 +89,9 @@ $(function () {
                     orderable: false,
                     render: function (value) {
                         if (value === null) return "";
-                        return `<div class="d-flex flex-wrap align-items-center justify-content-center">
-                                    <a href="${
-                                        window.location.origin
-                                    }/survey/public/editcity/${value}">
-                                        ${feather.icons["edit"].toSvg({
-                                            class: "me-1",
-                                        })}
-                                    </a>
-                                    <span onclick="deleteCity(${value})" class="cursor-pointer">
-                                        ${feather.icons["trash"].toSvg({
-                                            class: "text-primary",
-                                        })}
-                                    </span>
+                        return `<div class="d-flex flex-wrap align-items-center">
+                                   ${getCityEditIcon(1, value)}
+                                   ${getCityEditIcon(2, value)}
                                 <div>`;
                     },
                 },
@@ -133,7 +122,7 @@ $(function () {
     // Cities table
     if (areasDatatable.length) {
         areasDatatable.DataTable({
-            ajax: `${window.location.origin}/survey/public/getareas/${cityId}`,
+            ajax: `${baseurl}/getareas/${cityId}`,
             order: [[5, "desc"]],
             columns: [
                 {
@@ -168,20 +157,10 @@ $(function () {
                     orderable: false,
                     render: function (value) {
                         if (value === null) return "";
-                        return `<div class="d-flex flex-wrap align-items-center justify-content-center">
-                                     <a href="${
-                                         window.location.origin
-                                     }/survey/public/editarea/${value}">
-                                         ${feather.icons["edit"].toSvg({
-                                             class: "me-1",
-                                         })}
-                                     </a>
-                                     <span onclick="deleteArea(${value})" class="cursor-pointer">
-                                         ${feather.icons["trash"].toSvg({
-                                             class: "text-primary",
-                                         })}
-                                     </span>
-                                 <div>`;
+                        return `<div class="d-flex flex-wrap align-items-center">
+                        ${getAreasEditIcon(1, value)}
+                        ${getAreasEditIcon(2, value)}
+                     <div>`;
                     },
                 },
             ],
@@ -206,6 +185,58 @@ $(function () {
         });
     }
 });
+
+function getCityEditIcon(iconType, userId = 0) {
+    // 1 => show edit icon
+    // 2 => show delete icon
+    switch (iconType) {
+        case 1:
+            return showEditIcon
+                ? `<a href="${baseurl}/editcity/${userId}">
+        ${feather.icons["edit"].toSvg({
+            class: "me-1",
+        })}
+    </a>`
+                : "";
+        case 2:
+            return showDeleteIcon
+                ? ` <span onclick="deleteCity(${userId})" class="cursor-pointer">
+                ${feather.icons["trash"].toSvg({
+                    class: "text-primary",
+                })}
+            </span>`
+                : "";
+
+        default:
+            break;
+    }
+}
+
+function getAreasEditIcon(iconType, userId = 0) {
+    // 1 => show edit icon
+    // 2 => show delete icon
+    switch (iconType) {
+        case 1:
+            return showEditIcon
+                ? `<a href="${baseurl}/editarea/${userId}">
+        ${feather.icons["edit"].toSvg({
+            class: "me-1",
+        })}
+    </a>`
+                : "";
+        case 2:
+            return showDeleteIcon
+                ? ` <span onclick="deleteArea(${userId})" class="cursor-pointer">
+                ${feather.icons["trash"].toSvg({
+                    class: "text-primary",
+                })}
+            </span>`
+                : "";
+
+        default:
+            break;
+    }
+}
 
 var citiesSelectBox = $("#citiesSelectBox");
 var areasSelectBox = $("#areasSelectBox");
@@ -255,7 +286,7 @@ function getAreas(city_id) {
         (area_name = "");
 
     $.ajax({
-        url: `${window.location.origin}/survey/public/getareas/${city_id}`,
+        url: `${baseurl}/getareas/${city_id}`,
     })
         .done(function (data) {
             data = JSON.parse(data)?.data ?? [];

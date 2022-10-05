@@ -50,17 +50,23 @@
 
                         <div class="col-12">
                             <div class="card">
+                                @allnotaccessible("addcityview", "addareaview")
                                 <div class="border-bottom d-flex justify-content-end">
                                 <div class="cities_n_areasfoot">
+                                    @accessible("addcityview")
                                     <a href="{{url('addcityview')}}">
                                         <button class="btn btn-primary cities_n_areasbtns">Add City</button>
                                     </a>
+                                    @endaccessible
+                                    @accessible("addareaview")
                                     <a href="{{url('addareaview')}}">
                                         <button class="btn btn-primary cities_n_areasbtns">Add Area</button>
                                     </a>
+                                    @endaccessible
                                 </div>
                                 </div>
                                 <hr class="my-0" />
+                                @endallnotaccessible
                                 <div class="card-datatable">
                                     <table class="dt-advanced-search table" id="citiesDatatable">
                                         <thead>
@@ -138,5 +144,10 @@
 
 @section('page-script')
 {{-- Page js files --}}
+    <script>
+        const showViewAreasIcon = `@accessible('areas')${true}@endaccessible` === "true",
+        showEditIcon = `@accessible('edit_city')${true}@endaccessible` === "true",
+        showDeleteIcon = `@accessible('delete_city')${true}@endaccessible` === "true"
+    </script>
 	<script src="{{ asset('js\custom\citiesNAreas.js') }}"></script>
 @endsection

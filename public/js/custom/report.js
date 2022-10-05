@@ -1,9 +1,11 @@
 let allRecords = [];
 
+// console.log(shareId);
+
 $(document).ready(function () {
     let htmlHolderCont = $("#surveyResult")
     $.ajax({
-        url: `${window.location.origin}/survey/public/getreport/${shareId}`,
+        url: `${baseurl}/getreport/${shareId}`,
     })
         .done(function (data) {
             reports = JSON.parse(data)?.data ?? [];

@@ -17,10 +17,6 @@ use Illuminate\Support\Facades\Auth;
 
 class UserController extends Controller
 {
-    public function new_line(){
-        echo "</br>";
-    }
-
      // Logout
      public function logoutUser(Request $req, $message){
         $req->session()->flush();
@@ -37,9 +33,6 @@ class UserController extends Controller
 
     // Takes the user to create user view
     public function create_user_view(Product $prod, User $user, Request $req, Company $comp){
-
-        if(!$this->isAdmin($user, $req))
-            throw ValidationException::withMessages(['error' => "You are not an admin."]);
 
         $inactive = 0;
         $product = $prod->select("*")
@@ -89,32 +82,18 @@ class UserController extends Controller
 
     // getUsers
     public function getUsers(Request $req, User $user, UserCompany_link $link)
-    {       
-
-        if(!$this->isAdmin($user, $req)){
-            $this->logoutUser($req, "You are not an admin");
-            $res = ["data" => []];
-            return json_encode($res);
-       }
-
+    { 
         $data = $link
-        ->select("user_company_links.user_ref", "user_company_links.comp_ref", "users.*", "companies.comp_name", "users.id as action", "users.id as action")
+        ->select("user_company_links.user_ref", "user_company_links.comp_ref", "users.*", "companies.comp_name", "users.id as action", "users.id as action", "users.id as viewpermissions")
         ->leftJoin("users", "users.id", "=", "user_company_links.user_ref")
         ->leftJoin("companies", "companies.id", "=", "user_company_links.comp_ref")
         ->where("users.is_admin", 0)
+        ->where("users.id", "!=", Auth::user()->id)
         ->get()
         ->toArray();
 
         $res2["data"] = $data;
-
-        // echo "<pre>";
         return json_encode($res2);
-    }
-
-    // Validates the admin
-    public function isAdmin(User $user, Request $req){
-        $res = Auth::user()->is_admin;
-        return $res ? 1 : 0;
     }
 
     // Creates the user
@@ -135,9 +114,6 @@ class UserController extends Controller
         $emp_code = $req->input("emp_code");
         $phone_no = $req->input("phone_no");
         $comp_ref = $req->input("comp_ref");
-
-        if(!$this->isAdmin($user, $req))
-            throw ValidationException::withMessages(['error' => "You are not an admin."]);
         
         $id = User::insertGetId([
             "name"=>$name,
@@ -190,8 +166,6 @@ class UserController extends Controller
     // Edit user
     public function edit(User $user, Request $req, Company $comp, Product $prod, UserCompany_link $link, $id)
     {
-        if(!$this->isAdmin($user, $req)) return $this->logout($req);
-
         $single_user = $user->select("*")->where("id", $id)
         ->where("id", "=",  $id)
         ->get()
@@ -235,9 +209,6 @@ class UserController extends Controller
     // Updates the user
     public function updateUser(Request $req, User $user, AdminUsers $admin_users, UserCompany_link $link)
     {
-        if(!$this->isAdmin($user, $req))
-            throw ValidationException::withMessages(['error' => "You are not an admin."]);
-
         $validated = $req->validate([
             'name' => 'required|min:2',
             'emp_code' => 'required',
@@ -315,10 +286,8 @@ class UserController extends Controller
     }
 
     public function destroy(Request $req, User $user, AdminUsers $admin_users){
-        if(!$this->isAdmin($user, $req))
-            throw ValidationException::withMessages(['error' => "You are not an admin."]);
-        $id = $req->input('user_id');
 
+        $id = $req->input('user_id');
         $single_user = $user->select("*")->where("id", $id)
         ->get()
         ->toArray();

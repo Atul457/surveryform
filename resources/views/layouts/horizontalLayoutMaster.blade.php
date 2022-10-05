@@ -58,6 +58,10 @@ data-asset-path="{{ asset('/')}}">
   <div class="sidenav-overlay"></div>
   <div class="drag-target"></div>
 
+  <script>
+    const baseurl = "{{url('')}}"
+  </script>
+
   {{-- include footer --}}
   @include('panels/footer')
 

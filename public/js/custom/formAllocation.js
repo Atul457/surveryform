@@ -9,6 +9,7 @@ if (companiesSelectBox.length)
     companiesSelectBox.each(function () {
         var $this = $(this);
         $this.wrap('<div class="position-relative"></div>');
+        
         $this.select2({
             dropdownAutoWidth: true,
             width: "100%",
@@ -65,7 +66,7 @@ function getUsersOfComp() {
         user_name = "";
 
     $.ajax({
-        url: `${window.location.origin}/survey/public/getusersofcomp/${company_selected}`,
+        url: `${baseurl}/getusersofcomp/${company_selected}`,
     })
         .done(function (data) {
             data = JSON.parse(data)?.data ?? [];
@@ -93,7 +94,7 @@ function getFormsOfProd(isInitialLoad = false) {
         form_name = "";
 
     $.ajax({
-        url: `${window.location.origin}/survey/public/getformsofprod/${prodSelected}`,
+        url: `${baseurl}/getformsofprod/${prodSelected}`,
     })
         .done(function (data) {
             data = JSON.parse(data)?.data ?? [];
@@ -121,7 +122,7 @@ function getProductOfComp(isInitialLoad = false) {
         prod_name = "";
 
     $.ajax({
-        url: `${window.location.origin}/survey/public/getprodofcomp/${company_selected}`,
+        url: `${baseurl}/getprodofcomp/${company_selected}`,
     })
         .done(function (data) {
             data = JSON.parse(data)?.data ?? [];
@@ -243,7 +244,7 @@ function allocateForm() {
         sampleSize
             .parent()
             .append(
-                "<div class='error'>Please enter a number more than 0</div>"
+                "<div class='error'>Please enter a number more than 0.</div>"
             );
         return false;
     }
@@ -314,7 +315,7 @@ function getAreas(city_id) {
         area_name = "";
 
     $.ajax({
-        url: `${window.location.origin}/survey/public/getareas/${city_id}`,
+        url: `${baseurl}/getareas/${city_id}`,
     })
         .done(function (data) {
             data = JSON.parse(data)?.data ?? [];

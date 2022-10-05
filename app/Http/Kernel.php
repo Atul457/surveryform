@@ -34,9 +34,9 @@ class Kernel extends HttpKernel
             \Illuminate\Cookie\Middleware\AddQueuedCookiesToResponse::class,
             \Illuminate\Session\Middleware\StartSession::class,
             // \Illuminate\Session\Middleware\AuthenticateSession::class,
-            \App\Http\Middleware\ProtectedRoute::class,
-            \App\Http\Middleware\AdminRoute::class,
-            \App\Http\Middleware\AuthProtectedRoute::class,
+            // \App\Http\Middleware\ProtectedRoute::class,
+            // \App\Http\Middleware\AdminRoute::class,
+            // \App\Http\Middleware\AuthProtectedRoute::class,
             // \App\Http\Middleware\AdminAuthProtectedRoutes::class,
             \Illuminate\View\Middleware\ShareErrorsFromSession::class,
             \App\Http\Middleware\VerifyCsrfToken::class,
@@ -68,7 +68,9 @@ class Kernel extends HttpKernel
         'password.confirm' => \Illuminate\Auth\Middleware\RequirePassword::class,
         'signed' => \Illuminate\Routing\Middleware\ValidateSignature::class,
         'throttle' => \Illuminate\Routing\Middleware\ThrottleRequests::class,
-        'verified' => \Illuminate\Auth\Middleware\EnsureEmailIsVerified::class
+        'verified' => \Illuminate\Auth\Middleware\EnsureEmailIsVerified::class,
+        'isAdmin' => \App\Http\Middleware\IsAdmin::class,
+        'user_permissions' => \App\Http\Middleware\UserPermissions::class
     ];
 
     protected $middlewarePriority = [

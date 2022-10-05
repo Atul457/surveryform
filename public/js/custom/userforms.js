@@ -38,7 +38,7 @@ $(function () {
     // Advanced Search
     if (dt_adv_filter_table.length) {
         var dt_adv_filter = dt_adv_filter_table.DataTable({
-            ajax: `${window.location.origin}/survey/public/getuserforms`,
+            ajax: `${baseurl}/getuserforms`,
             order: [[5, "desc"]],
             columns: [
                 {
@@ -79,8 +79,8 @@ $(function () {
                         if (value === null) return "";
                         return `<div class="d-flex flex-wrap align-items-centerr">
                                     <a href="${
-                                        window.location.origin
-                                    }/survey/public/viewreport/${value}">
+                                        baseurl
+                                    }/viewreport/${value}">
                                         ${feather.icons["eye"].toSvg({
                                             class: "text-primary",
                                         })}
@@ -140,7 +140,7 @@ $(function () {
 function openShareFormModal(shareId) {
     let shareFormRef = $("#shareFormModal");
     let form_link = $("#form_link");
-    form_link.val(`${window.location.origin}/survey/public/share/${shareId}`);
+    form_link.val(`${baseurl}/share/${shareId}`);
     shareFormRef.modal("show");
 }
 

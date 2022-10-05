@@ -152,6 +152,7 @@
                         </div>
 
                         <textarea name="formBuilderUpdater" id="formUpdater" class="d-none"></textarea>
+                            @accessible("update_form")
                             <div class="d-flex justify-content-end mt-2 mb-3">
                                 <button 
                                     type="submit"
@@ -159,12 +160,13 @@
                                     Update form
                                 </button>
                             </div>
-                    </form>
+                            @endaccessible
+                        </form>
+                    </div>
+                    @endif
                 </div>
-                @endif
             </div>
         </div>
-    </div>
     </section>
   </div>
 </div>

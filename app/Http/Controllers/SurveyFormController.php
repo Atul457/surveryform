@@ -26,29 +26,12 @@ class SurveyFormController extends Controller
      */
     public function index(User $user, Request $req)
     {
-        if(!$this->isAdmin($user))  {
-            $this->unAuthenticatedUser($req, "You are not an admin");
-            throw ValidationException::withMessages(['error' => "You are not an admin"]);;
-        }
         return view("content/sidebar/form/myforms");
     }
 
-    // Checks whether user is admin or not
-    public function isAdmin(User $user){
-        if(!Auth::user()->is_admin) return 0;
-        return 1;
-    }
-
     // Show my forms
-    public function myForms(SurveyForm $survey, User $user, Request $req){
-
-        // Validating the admin
-        if(!$this->isAdmin($user)){
-            $this->unAuthenticatedUser($req, "You are not a admin");
-            $res = ["data" => []];
-             return json_encode($res);
-        }
-        
+    public function myForms(SurveyForm $survey, User $user, Request $req)
+    {    
         $data = $survey
         ->select("*", "survey_forms.id as action", "survey_forms.id as copy_form", "survey_forms.id as forms_allocated", "survey_forms.id as share", "survey_forms.id as responsive_id", "companies.comp_name",  "survey_forms.status as status", "survey_forms.id as id", "survey_forms.id as view_report", "survey_forms.start_date", "survey_forms.end_date", "survey_forms.created_at", "survey_forms.updated_at")
         ->leftJoin("products", "products.id", "=", "prod_ref")
@@ -205,12 +188,6 @@ class SurveyFormController extends Controller
     // Get users against a company
     public function getUsersOfComp(Product $product, Request $req, User $user, UserCompany_link $user_comp_link, $id)
     {
-        if(!$this->isAdmin($user)){
-            $this->unAuthenticatedUser($req, "You are not a admin");
-            $res = ["data" => []];
-             return json_encode($res);
-        }
-
         $products = UserCompany_link::select("user_company_links.*", "companies.comp_name", "users.name as user_name", "users.id as user_id")
         ->leftJoin("companies", "companies.id", "=", "user_company_links.comp_ref")
         ->leftJoin("users", "users.id", "=", "user_company_links.user_ref")
@@ -238,14 +215,8 @@ class SurveyFormController extends Controller
         ]);
     }
 
-    public function formsAllocated(Request $req, userFormLink $userFormLink, User $user, $form_id){
-
-        if(!$this->isAdmin($user)){
-            $this->unAuthenticatedUser($req, "You are not a admin");
-            $res = ["data" => []];
-            return json_encode($res);
-        }
-       
+    public function formsAllocated(Request $req, userFormLink $userFormLink, User $user, $form_id)
+    {   
         $forms_allocated = userFormLink::select( "user_form_links.id as action", "user_form_links.id as share_id", "user_form_links.id as responsive_id", "user_form_links.*", "users.name", "users.email", "user_company_links.comp_ref", "users.id as user_id", "companies.comp_name", "areas.area_name", "cities.city_name")
         ->leftJoin("areas", "areas.id", "=", "user_form_links.area_ref")
         ->leftJoin("cities", "cities.id", "=", "areas.city_ref")
@@ -263,12 +234,6 @@ class SurveyFormController extends Controller
     // Get forms against a company
     public function getFormsOfProduct(Request $req, SurveyForm $survey, User $user, $prod_id)
     {
-        if(!$this->isAdmin($user)){
-            $this->unAuthenticatedUser($req, "You are not a admin");
-            $res = ["data" => []];
-             return json_encode($res);
-        }
-
         $products = SurveyForm::select("id as form_id", "form_name")
         ->where('prod_ref', $prod_id)
         ->get()
@@ -438,11 +403,6 @@ class SurveyFormController extends Controller
         $req->validate([
             "share_id" => "required"
         ]);
-
-        if(!$this->isAdmin($user))  {
-            $this->unAuthenticatedUser($req, "You are not an admin");
-            throw ValidationException::withMessages(['error' => "You are not an admin"]);;
-        }
 
         $share_id = $req->input("share_id");
         $deleted = $userFormLink->where('id', $share_id)->delete();

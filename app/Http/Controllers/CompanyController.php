@@ -23,16 +23,6 @@ class CompanyController extends Controller
         return view("content/sidebar/company/mycompanies");
     }
 
-    public function isAdmin(User $user){
-        if(!Auth::user()->is_admin) return 0;
-        return 1;
-    }
-
-    public function isAdminStatusActive()
-    {   
-        return Auth::user()->status;
-    }
-
     // Logout
     public function logout(Request $req){
         Auth::logout();
@@ -81,11 +71,6 @@ class CompanyController extends Controller
         $status = $req->input("status");
         $email = Auth::user()->email;
         
-        if(!$this->isAdmin($user)){
-            $this->unAuthenticatedUser($req, "You are not an admin");
-            throw ValidationException::withMessages(['error' => "You are not an admin"]);
-        }
-        
         $res = DB::insert(
             "insert into companies (comp_name, status, comp_addr, comp_care_no) values (?, ?, ?, ?)",
             [$company_name,  $status, $company_addr, $company_care_no]
@@ -118,13 +103,6 @@ class CompanyController extends Controller
      */
     public function getCompanies(Request $req, Company $company, User $user)
     {
-        // Validating the user
-        if(!$this->isAdmin($user)){
-            $this->unAuthenticatedUser($req);
-            $res = ["data" => []];
-            return json_encode($res);
-        }
-
         $data = $company
             ->select('*', 'id as responsive_id', 'id as action')
             ->get()
@@ -143,15 +121,6 @@ class CompanyController extends Controller
     public function edit(Company $company, Request $req, User $user, $id)
     {
         $comp = $company->select("*")->where("id", $id)->get()->toArray();
-
-        // Validating the user
-        if(!$this->isAdmin($user)){
-            Auth::logout();
-            $req->session()->invalidate();
-            $req->session()->flash('error', "Your account may have been inactivated");
-            return redirect("login");
-        }
-
         if(count($comp) == 0) 
             throw ValidationException::withMessages([
                 'error' => "You may have deleted the company, that you are trying to edit."
@@ -174,11 +143,6 @@ class CompanyController extends Controller
         $company_addr = $req->input("comp_addr");
         $company_care_no = $req->input("comp_care_no");
         $status = $req->input('status');
-
-        if(!$this->isAdmin($user)){
-            $this->unAuthenticatedUser($req, "You are not an admin");
-            throw ValidationException::withMessages(['error' => "You are not an admin"]);
-        }
         
         $updated = $company->where("id", $id)->update([
             'comp_name' => $comp_name,
@@ -204,13 +168,6 @@ class CompanyController extends Controller
     public function destroy(Company $company, Request $req, User $user)
     {
         $id = $req->input('company_id');
-        if(!$this->isAdmin($user)){
-            Auth::logout();
-            $req->session()->invalidate();
-            $req->session()->flash('error', "Your account may have been inactivated");
-            return redirect("login");
-        }
-
         $deleted = $company->where('id', $id)->delete();
         if($deleted)
             return redirect()->back()->with('success', 'Company deleted successfully');

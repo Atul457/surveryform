@@ -12,6 +12,41 @@
     right: -14px;
 }
 
+.permission_checkBoxes {
+    display: flex;
+    align-items: center;
+    flex-wrap: wrap;
+    margin: 10px 0px;
+}
+
+.checkbox_group > label {
+    cursor: pointer;
+    margin-right: 10px;
+    font-size: 16px;
+    line-height: 19px;
+    text-transform: capitalize;
+}
+.checkbox_group > input[type="checkbox"] {
+    transform: scale(1.2);
+    cursor: pointer;
+    width: 19px;
+}
+
+.permission_checkBoxes .checkbox_group {
+    margin: 5px 32px 0px 0px;
+    display: flex;
+    align-items: center;
+}
+
+.updatePermissionsBtn {
+    width: 192px;
+}
+
+.permission_module_cont {
+    border-bottom: 1px solid #ccc;
+    margin-bottom: 1rem;
+}
+
 .error {
     font-size: 11px;
     color: red;
@@ -148,11 +183,11 @@ label {
     padding: 0px 10px;
 }
 
-.selectedForms .itemAdded{
+.selectedForms .itemAdded {
     padding: 0px;
 }
 
-.formPills{
+.formPills {
     cursor: pointer;
 }
 
@@ -179,7 +214,6 @@ label {
     font-weight: 500;
     margin-bottom: 10px;
 }
-
 
 @media (max-width: 768px) {
 }

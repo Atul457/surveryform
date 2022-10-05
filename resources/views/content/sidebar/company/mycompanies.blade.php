@@ -45,14 +45,16 @@
     
     <div class="col-12">
       <div class="card">
+        @accessible("create_comp_view")
         <div class="card-header border-bottom d-flex justify-content-end">
-          <a href="{{url('viewcompany')}}">
-            <button 
+          <a href="{{url('create_comp_view')}}">
+            <button
               class="btn btn-primary waves-effect waves-float waves-light">
               <i data-feather='plus'></i> Create Company
             </button>
           </a>
         </div>
+        @endaccessible
         <hr class="my-0" />
         <div class="card-datatable">
           <table class="dt-advanced-search table">
@@ -129,5 +131,10 @@
 
 @section('page-script')
   {{-- Page js files --}}
+  <script>
+    const showDeleteIcon = `@accessible('deletecompany')${true}@endaccessible` === "true",
+    showEditIcon = `@accessible('edit_company')${true}@endaccessible` === "true"
+    console.log({showDeleteIcon, showEditIcon})
+  </script>
   <script src="{{ asset('js\custom\mycompanies.js') }}"></script>
 @endsection

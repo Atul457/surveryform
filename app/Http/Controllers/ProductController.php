@@ -44,8 +44,6 @@ class ProductController extends Controller
         $batch_no = $req->input("batch_no");
         $city = $req->input("city");
         $sample_size = $req->input("sample_size");
-        
-        if(!$this->isAdmin($user)) $this->logout($req);
 
         $comp_exists = $comp->where("id", $comp_id)->get()->toArray();
 
@@ -86,11 +84,6 @@ class ProductController extends Controller
         ]);
     }
 
-    public function isAdmin(User $user){
-        $res = Auth::user()->is_admin;
-        return $res ? 1 : 0;
-    }
-
     public function unAuthenticatedUser(Request $req, $message = 0){
 
         Auth::logout();
@@ -107,13 +100,8 @@ class ProductController extends Controller
         
     }
 
-    public function createProductView(Company $comp, User $user, Request $req){
-        
-        if(!$this->isAdmin($user)){
-            $this->unAuthenticatedUser($req, "You are not an admin");
-            throw ValidationException::withMessages(['error' => "You are not an admin"]);
-        }
-
+    public function createProductView(Company $comp, User $user, Request $req)
+    {
         $inactive = 0;
         $companies = $comp->select("*")
         ->where("status", "!=" , $inactive)
@@ -133,12 +121,6 @@ class ProductController extends Controller
      */
     public function show(Product $product, Company $company, Request $req, User $user)
     {
-        if(!$this->isAdmin($user)){
-            $this->unAuthenticatedUser($req, "You are not a admin");
-            $res = ["data" => []];
-             return json_encode($res);
-        }
-
         $data = $company
         ->select("comp_name", "products.id as responsive_id", "products.batch_no", "products.city", "companies.id as comp_id", "products.prod_name", "products.id as prod_id", "products.created_at", "products.updated_at", "products.status")
         ->Rightjoin("products", "products.comp_id", "=", "companies.id")
@@ -152,19 +134,11 @@ class ProductController extends Controller
     // Get products against a company
     public function getProdOfComp(Product $product, Request $req, User $user, $id)
     {
-        if(!$this->isAdmin($user)){
-            $this->unAuthenticatedUser($req, "You are not a admin");
-            $res = ["data" => []];
-             return json_encode($res);
-        }
-
         $inactive = 0;
-
         $products = Product::where('comp_id', $id)
         ->where("status", "!=", $inactive)
         ->get()
         ->toArray();
-
 
         $res2["data"] = $products;
         return json_encode($res2);
@@ -203,8 +177,6 @@ class ProductController extends Controller
     public function destroy(Product $product, User $user, Request $req)
     {
         $id = $req->input('product_id');
-
-        if(!$this->isAdmin($user)) return $this->logout();
 
         $deleted = $product->where('id', $id)->delete();
         if($deleted)

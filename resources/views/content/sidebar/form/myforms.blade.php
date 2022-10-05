@@ -44,6 +44,7 @@
 		
 		<div class="col-12">
 			<div class="card">
+				@accessible("create_form_view")
 				<div class="card-header border-bottom d-flex justify-content-end">
 					<a href="{{url('create_form_view')}}">
 						<button
@@ -53,6 +54,7 @@
 					</a>
 				</div>
 				<hr class="my-0" />
+				@endaccessible
 				<div class="card-datatable">
 					<table class="dt-advanced-search table">
 						<thead>
@@ -136,5 +138,12 @@
 
 @section('page-script')
 {{-- Page js files --}}
+	<script>
+		const showDeleteIcon = `@accessible('delete_form')${true}@endaccessible` === "true",
+		showEditIcon = `@accessible('edit_form')${true}@endaccessible` === "true",
+		showViewReportIcon = `@accessible('view_report_admin')${true}@endaccessible` === "true",
+		showDuplicateFormIcon = `@accessible('duplicate_form')${true}@endaccessible` === "true",
+		showAllocatedtoIcon = `@accessible('forms_allocated_view')${true}@endaccessible` === "true"
+	</script>
 	<script src="{{ asset('js\custom\myforms.js') }}"></script>
 @endsection

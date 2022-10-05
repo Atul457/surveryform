@@ -21,12 +21,6 @@ class AdminUsersController extends Controller
         //
     }
 
-     // Validates the admin
-     public function isAdmin(AdminUsers $user, Request $req){
-        $res = Auth::user()->is_admin;
-        return $res ? 1 : 0;
-    }
-
     /**
      * Show the form for creating a new resource.
      *

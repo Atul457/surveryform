@@ -20,38 +20,17 @@ class CitiesController extends Controller
         //
     }
 
-    // Validates the admin
-    public function isAdmin(User $user, Request $req){
-        $res = Auth::user()->is_admin;
-        return $res ? 1 : 0;
-    }
-
     // Logout the user
     public function logout(Request $req){
-        $req->session()->flush();
-        $req->session()->flash('success', 'Logged out successfully');
-        return redirect("login");
     }
 
     // Logout user on next request
     public function logoutUser(Request $req, $message){
-        $req->session()->flush();
-        session([
-            'message' => $message,
-            'inactivated' => true
-        ]);
     }
 
     // getCities
     public function getCities(Request $req, User $user, Cities $cities)
     {       
-
-        if(!$this->isAdmin($user, $req)){
-            $this->logoutUser($req, "You are not an admin");
-            $res = ["data" => []];
-            return json_encode($res);
-       }
-
        $cities_res = $cities
         ->orderBy("city_name", "asc")
         ->select("*", "id as action", "id as view_areas")
@@ -74,8 +53,6 @@ class CitiesController extends Controller
         ]);
 
         $city_name = $req->input("city_name");
-
-        if(!$this->isAdmin($user, $req)) return $this->logout($req);
         
         $res = $cities->insert([
             "city_name" => $city_name
@@ -100,7 +77,6 @@ class CitiesController extends Controller
 
     // Display cities
     public function cities(User $user, Request $req, Cities $cities){
-        if(!$this->isAdmin($user, $req)) return $this->logout($req);
         return view("content.sidebar.admin.cities_n_areas.cities");
     }
 
@@ -128,13 +104,6 @@ class CitiesController extends Controller
         ->where("id", $city_id)
         ->get()
         ->toArray();
-
-        // Validating the user
-        if(!$this->isAdmin($user, $req)){
-            $req->session()->flush();
-            $req->session()->flash('error', "Your are not an admin");
-            return redirect("login");
-        }
 
         if(count($city) == 0) 
             throw ValidationException::withMessages([
@@ -172,11 +141,6 @@ class CitiesController extends Controller
         if(count($isDuplicateName) != 0) {
             throw ValidationException::withMessages(['error' => "A city with name provided already exists."]);
         }
-
-        if(!$this->isAdmin($user, $req)){
-            $this->logoutUser($req, "You are not an admin");
-            throw ValidationException::withMessages(['error' => "You are not an admin"]);
-        }
         
         $updated = $cities->where("id", $id)->update([
             'city_name' => $city_name,
@@ -198,17 +162,8 @@ class CitiesController extends Controller
      */
     public function deleteCity(Request $req, User $user, Cities $cities)
     {
-        $req->validate([
-            "city_id"=> "required"
-        ]);
-
+        $req->validate(["city_id"=> "required"]);
         $id = $req->input('city_id');
-        if(!$this->isAdmin($user, $req)){
-            $req->session()->flush();
-            $req->session()->flash('error', "Your account may have been inactivated");
-            return redirect("login");
-        }
-
         $deleted = $cities->where('id', $id)->delete();
         if($deleted)
             return redirect()->back()->with('success', 'City deleted successfully');

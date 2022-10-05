@@ -33,13 +33,18 @@ var normalizeDate = function (dateString) {
 };
 // Advanced Search Functions Ends
 
-var dt_adv_filter_table, dt_adv_filter;
-
 $(function () {
-    dt_adv_filter_table = $(".dt-advanced-search");
+    var isRtl = $("html").attr("data-textdirection") === "rtl";
+
+    var dt_adv_filter_table = $(".dt-advanced-search");
+    // assetPath = "../../../app-assets/";
+
+    if ($("body").attr("data-framework") === "laravel") {
+        assetPath = $("body").attr("data-asset-path");
+    }
     // Advanced Search
     if (dt_adv_filter_table.length) {
-        dt_adv_filter = dt_adv_filter_table.DataTable({
+        var dt_adv_filter = dt_adv_filter_table.DataTable({
             ajax: `${baseurl}/getMyforms`,
             order: [[5, "desc"]],
             columns: [
@@ -83,43 +88,12 @@ $(function () {
                     },
                 },
                 {
-                    data: "forms_allocated",
+                    data: "action",
                     render: function (value) {
                         if (value === null) return "";
-                        if (!showAllocatedtoIcon) return "";
-                        return `<div class="d-flex flex-wrap align-items-centerr">
-                                    <a href="${baseurl}/formsallocatedview/${value}">
-                                        ${feather.icons["eye"].toSvg({
-                                            class: "text-primary",
-                                        })}
-                                    </a>
-                                <div>`;
-                    },
-                },
-                {
-                    data: "view_report",
-                    render: function (value) {
-                        if (value === null) return "";
-                        if (!showViewReportIcon) return "";
-                        return `<div class="d-flex flex-wrap align-items-centerr">
-                                    <a href="${baseurl}/view_report_admin/${
-                            value ?? 0
-                        }">
-                                        ${feather.icons["eye"].toSvg({
-                                            class: "text-primary",
-                                        })}
-                                    </a>
-                                <div>`;
-                    },
-                },
-                {
-                    data: "copy_form",
-                    render: function (value) {
-                        if (value === null) return "";
-                        if (!showDuplicateFormIcon) return "";
                         return `<div class="d-flex flex-wrap align-items-center">
-                                    <span class="cursor-pointer" onclick="copyForm(${value})">
-                                        ${feather.icons["copy"].toSvg({
+                                    <span onclick="openShareFormModal(${value})" class="cursor-pointer">
+                                        ${feather.icons["share-2"].toSvg({
                                             class: "text-primary",
                                         })}
                                     </span>
@@ -127,13 +101,23 @@ $(function () {
                     },
                 },
                 {
-                    data: "action",
+                    data: "share",
                     render: function (value) {
                         if (value === null) return "";
                         return `<div class="d-flex flex-wrap align-items-center">
-                        ${getEditIcon(1, value)}
-                        ${getEditIcon(2, value)}
-                     <div>`;
+                                    <a href="${
+                                        baseurl
+                                    }/editform/${value}">
+                                        ${feather.icons["edit"].toSvg({
+                                            class: "me-1",
+                                        })}
+                                    </a>
+                                    <span onclick="deleteSurveyForm(${value})" class="cursor-pointer">
+                                        ${feather.icons["trash"].toSvg({
+                                            class: "text-primary",
+                                        })}
+                                    </span>
+                                <div>`;
                     },
                 },
             ],
@@ -170,83 +154,3 @@ $(function () {
         .removeClass("form-select-sm")
         .removeClass("form-control-sm");
 });
-
-function getEditIcon(iconType, formId = 0) {
-    // 1 => show edit icon
-    // 2 => show delete icon
-    switch (iconType) {
-        case 1:
-            return showEditIcon
-                ? `<a href="${baseurl}/editform/${formId}">
-        ${feather.icons["edit"].toSvg({
-            class: "me-1",
-        })}
-    </a>`
-                : "";
-        case 2:
-            return showDeleteIcon
-                ? ` <span onclick="deleteSurveyForm(${formId})" class="cursor-pointer">
-                ${feather.icons["trash"].toSvg({
-                    class: "text-primary",
-                })}
-            </span>`
-                : "";
-
-        default:
-            break;
-    }
-}
-
-function deleteSurveyForm(id) {
-    let input_elem = $("#del_survey_id");
-    $("#deleteSurveyFormModal").modal("show");
-    if (input_elem.length) {
-        input_elem.val(id);
-    }
-}
-
-function confirmDeleteSuveyForm() {
-    let deleteSurveyForm = $("#deleteSuveyForm");
-    if (deleteSurveyForm.length) {
-        deleteSurveyForm.submit();
-    }
-}
-
-function copyForm(formId) {
-    $.ajax({
-        url: `${baseurl}/duplicateform/${formId}`,
-        method: "get",
-        success: (data) => {
-            console.log(data);
-            dt_adv_filter.ajax.reload();
-            $("#advanced-search-datatable").before(`
-                <div class="alert alert-success alert-dismissible fade show" role="alert">
-                <div class="alert-body">
-                    Form duplicated successfully.
-                </div>
-                <button type="button" class="btn-close" data-dismiss="alert" aria-label="Close"></button>
-                </div>
-            `);
-            removeAlerts();
-        },
-        error: (err) => {
-            $("#advanced-search-datatable").before(`
-                <div class="alert alert-danger alert-dismissible fade show" role="alert">
-                <div class="alert-body">
-                    ${err?.responseJSON?.error ?? "Something went wrong"}
-                </div>
-                <button type="button" class="btn-close" data-dismiss="alert" aria-label="Close"></button>
-                </div>
-            `);
-        },
-    });
-}
-
-function removeAlerts() {
-    setTimeout(() => {
-        let target = $(".alert");
-        target.hide("slow", function () {
-            target.remove();
-        });
-    }, 1000);
-}

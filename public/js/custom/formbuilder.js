@@ -151,7 +151,7 @@ if (elemRef.length) {
 
 if (updatElemRef.length) {
     let formJsonHolder = $("#form_json");
-
+    
     formUpdaterRef = updatElemRef.formBuilder({
         // additional form action buttons- save, data, clear
         actionButtons: [],
@@ -394,8 +394,8 @@ function getProductOfComp(isInitialLoad = false) {
 
     $.ajax({
         url: `${
-            window.location.origin
-        }/survey/public/getprodofcomp/${company_selected.val()}`,
+            baseurl
+        }/getprodofcomp/${company_selected.val()}`,
     })
         .done(function (data) {
             data = JSON.parse(data)?.data ?? [];

@@ -16,26 +16,15 @@ class AreasController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function index()
-    {
-        //
-    }
 
     // Display areas of a city
     public function areas(User $user, Request $req, Cities $cities, $cityid){
-        if(!$this->isAdmin($user, $req)) return $this->logout($req);
         return view("content.sidebar.admin.cities_n_areas.areasOfCity", ["cityid" => $cityid]);
     }
 
-    /**
-     * Show the form for creating a new resource.
-     *
-     * @return \Illuminate\Http\Response
-     */
+    // Add area
     public function addArea(Request $req, User $user, Areas $areas)
     {
-        if(!$this->isAdmin($user, $req)) return $this->logout($req);
-
         $validated = $req->validate([
             'area_name' => 'required|min:2|unique:areas',
             'city_ref' => 'required'
@@ -44,7 +33,6 @@ class AreasController extends Controller
         $area_name = $req->input("area_name");
         $city_ref = $req->input("city_ref");
 
-        
         $res = $areas->insert([
             "area_name" => $area_name,
             "city_ref" => $city_ref
@@ -62,16 +50,6 @@ class AreasController extends Controller
      * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\Response
      */
-    public function store(Request $request)
-    {
-        //
-    }
-
-    // Validates the admin
-    public function isAdmin(User $user, Request $req){
-        $res = Auth::user()->is_admin;
-        return $res ? 1 : 0;
-    }
 
     // Logout the user
     public function logout(Request $req){
@@ -88,7 +66,6 @@ class AreasController extends Controller
      */
     public function addAreaView(Areas $areas, Cities $cities, User $user, Request $req)
     {
-        if(!$this->isAdmin($user, $req)) return $this->logout($req);
         $cities_res = $cities
         ->orderBy("city_name", "asc")
         ->get()
@@ -97,17 +74,8 @@ class AreasController extends Controller
         ["cities" => $cities_res ]);
     }
 
-    /**
-     * Show the form for editing the specified resource.
-     *
-     * @param  \App\Models\Areas  $areas
-     * @return \Illuminate\Http\Response
-     */
     public function editArea(Areas $areas, User $user, Request $req, Cities $cities, $area_id)
     {
-        // Validating the user
-        if(!$this->isAdmin($user, $req)) return $this->logout($req);
-
         $area = $areas
         ->where("id", $area_id)
         ->get()
@@ -138,9 +106,6 @@ class AreasController extends Controller
      */
     public function updateArea(Request $req, Areas $areas, User $user)
     {
-        // Validating the user
-        if(!$this->isAdmin($user, $req)) return $this->logout($req);
-
         $req->validate([
             "city_ref" => "required",
             "area_name" => "required|min:2",
@@ -195,17 +160,8 @@ class AreasController extends Controller
      */
     public function deleteArea(Request $req, User $user, Areas $areas)
     {
-        $req->validate([
-            "area_id"=> "required"
-        ]);
-
+        $req->validate(["area_id"=> "required"]);
         $id = $req->input('area_id');
-        if(!$this->isAdmin($user, $req)){
-            $req->session()->flush();
-            $req->session()->flash('error', "Your account may have been inactivated");
-            return redirect("login");
-        }
-
         $deleted = $areas->where('id', $id)->delete();
         if($deleted)
             return redirect()->back()->with('success', 'Area deleted successfully');

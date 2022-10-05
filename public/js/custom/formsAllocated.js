@@ -41,7 +41,7 @@ $(function () {
     //FormAllocated Datatable
     if (formsAllocated.length) {
         var formsAllocated = formsAllocated.DataTable({
-            ajax: `${window.location.origin}/survey/public/formsallocated/${form_id_for_datatable}`,
+            ajax: `${baseurl}/formsallocated/${form_id_for_datatable}`,
             order: [[5, "desc"]],
             columns: [
                 {
@@ -95,6 +95,7 @@ $(function () {
                     orderable: false,
                     render: function (value) {
                         if (value === null) return "";
+                        if (!showDeallocateIcon) return "";
                         return `<div class="d-flex flex-wrap align-items-center">
                                     <span onclick="deallocateForm(${value})" class="cursor-pointer">
                                         ${feather.icons["trash"].toSvg({
@@ -141,7 +142,7 @@ $(function () {
 function openShareFormModal(shareId) {
     let shareFormRef = $("#shareFormModal");
     let form_link = $("#form_link");
-    form_link.val(`${window.location.origin}/survey/public/share/${shareId}`);
+    form_link.val(`${baseurl}/share/${shareId}`);
     shareFormRef.modal("show");
 }
 

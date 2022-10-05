@@ -7,6 +7,7 @@ use Illuminate\Foundation\Support\Providers\RouteServiceProvider as ServiceProvi
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\RateLimiter;
 use Illuminate\Support\Facades\Route;
+use Illuminate\Routing\Route as MacroableRoute;
 
 class RouteServiceProvider extends ServiceProvider
 {
@@ -17,7 +18,8 @@ class RouteServiceProvider extends ServiceProvider
      *
      * @var string
      */
-    public const HOME = '/home';
+    public const ADMINHOME = '/mycompanies';
+    public const USERHOME = '/userforms';
 
     /**
      * Define your route model bindings, pattern filters, etc.
@@ -26,6 +28,19 @@ class RouteServiceProvider extends ServiceProvider
      */
     public function boot()
     {
+        parent::boot();
+        MacroableRoute::macro('module',function(string $moduleName,string $modulePermission='view'){
+			if(empty($this->moduleName)){
+				$this->moduleName = '';
+			}
+			if(empty($this->modulePermission)){
+				$this->modulePermission = '';
+			}
+			$this->moduleName .= $moduleName;
+			$this->modulePermission .= $modulePermission;
+			return $this;
+		});
+
         $this->configureRateLimiting();
 
         $this->routes(function () {

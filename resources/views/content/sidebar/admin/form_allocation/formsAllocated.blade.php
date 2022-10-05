@@ -54,6 +54,7 @@
     
     <div class="col-12">
       <div class="card">
+        @accessible("allocateformview")
         <div class="card-header border-bottom d-flex justify-content-end">
             <a href="{{url('allocateformview')}}">
                 <button
@@ -62,6 +63,7 @@
                 </button>
             </a>
         </div>
+        @endaccessible
         <hr class="my-0" />
         <div class="card-datatable">
           <table class="dt-advanced-search table" id="formsAllocated">
@@ -215,8 +217,9 @@
 
 @section('page-script')
 {{-- Page js files --}}
-    <script>
-        const form_id_for_datatable = "{{$form_id}}"
-    </script>
+  <script>
+      const form_id_for_datatable = "{{$form_id}}"
+      const showDeallocateIcon = `@accessible('deallocate_form')${true}@endaccessible` === "true"
+  </script>
   <script src="{{asset('js/custom/formsAllocated.js')}}"></script>
 @endsection

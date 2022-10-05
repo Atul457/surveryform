@@ -2,13 +2,6 @@
 <ul class="menu-content">
   @if(isset($menu))
   @foreach($menu as $submenu)
-  @if (($submenu->role === "admin") && (!Auth::user()->is_admin))
-    @continue
-  @endif
-    
-  @if (($submenu->role === "user") && (Auth::user()->is_admin))
-    @continue
-  @endif
   <li 
     @if($submenu->slug === Route::currentRouteName()) class="active" @endif
     @if(isset($submenu->id) && Route::currentRouteName() === "editcompany") 

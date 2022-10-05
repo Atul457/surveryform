@@ -85,9 +85,11 @@
                                 class="form-control">{{$comp['comp_addr']}}</textarea>
                             </div>
 
+                            @accessible("update_company")
                             <div class="col-12 col-md-4">
                                 <button type="submit" class="btn btn-primary me-1">Update</button>
                             </div>
+                            @endaccessible
                         </div>
                     </form>
                 </div>

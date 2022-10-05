@@ -124,5 +124,8 @@
 
 @section('page-script')
   {{-- Page js files --}}
+  <script>
+    const showDeleteIcon = `@accessible('delete_product')${true}@endaccessible` === "true"
+  </script>
   <script src="{{ asset('js\custom\getProducts.js') }}"></script>
 @endsection
