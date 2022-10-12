@@ -151,6 +151,7 @@ class SurveyFormController extends Controller
 
     // Checks whether the product size given while created it, is less than the count of total forms assigned
     public function isProdSizeCompleteAssigned($form_id){
+       
         $totalAssignedCount = userFormLink::where([
             "survey_form_ref" => $form_id,
         ])
@@ -161,11 +162,16 @@ class SurveyFormController extends Controller
         $totalAssignedCount = $totalAssignedCount[0]["total"] ?? 0;
         $maxSampleSize = Product::where("id", $form_id)->pluck("sample_size")->toArray();
         $maxSampleSize = $maxSampleSize[0] ?? 0;
+
+        echo "<pre>";
+        $remaining = $totalAssignedCount <= $maxSampleSize ? ($maxSampleSize - $totalAssignedCount) : 0;
         print_r([
+            "form_id" => $form_id,
             "totalAssignedCount" => $totalAssignedCount,
             "maxSampleSize" => $maxSampleSize,
+            "remaining" => $remaining,
         ]);
-        $remaining = $totalAssignedCount <= $maxSampleSize ? ($maxSampleSize - $totalAssignedCount) : 0;
+        die();
         return $remaining;
     }
 
