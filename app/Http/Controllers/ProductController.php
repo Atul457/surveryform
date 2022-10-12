@@ -122,7 +122,7 @@ class ProductController extends Controller
     public function show(Product $product, Company $company, Request $req, User $user)
     {
         $data = $company
-        ->select("comp_name", "products.id as responsive_id", "products.batch_no", "products.city", "companies.id as comp_id", "products.prod_name", "products.id as prod_id", "products.created_at", "products.updated_at", "products.status")
+        ->select("comp_name", "products.id as responsive_id", "products.batch_no",  "products.sample_size", "products.city", "companies.id as comp_id", "products.prod_name", "products.id as prod_id", "products.created_at", "products.updated_at", "products.status")
         ->Rightjoin("products", "products.comp_id", "=", "companies.id")
         ->get()
         ->toArray();

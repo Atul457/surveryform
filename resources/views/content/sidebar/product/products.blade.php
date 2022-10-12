@@ -57,6 +57,7 @@
                 <th>Company Name</th>
                 <th>Product Name</th>
                 <th>Batch code</th>
+                <th>Product size</th>
                 <th>City</th>
                 <th>Status</th>
                 <th>Created at</th>

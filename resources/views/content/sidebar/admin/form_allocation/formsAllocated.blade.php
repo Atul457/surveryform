@@ -74,6 +74,7 @@
                 <th>User Name</th>
                 <th>User Email</th>
                 <th>Company Name</th>
+                <th>Product Size</th>
                 <th>City Name</th>
                 <th>Area Name</th>
                 <th>Share</th>
@@ -189,11 +190,12 @@
 					</div>
 				</div>
 
-				<div class="modal-footer">
+				<div class="modal-footer justify-content-center">
 					<button
 						type="button"
+            id="sendMessageBtn"
 						onclick="shareForm()"
-						class="btn btn-primary">
+						class="btn btn-primary updatePermissionsBtn">
 						Send message
 					</button>
 				</div>

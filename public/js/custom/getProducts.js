@@ -62,6 +62,7 @@ $(function () {
                 { data: "comp_name" },
                 { data: "prod_name" },
                 { data: "batch_no" },
+                { data: "sample_size" },
                 { data: "city" },
                 {
                     data: "status",

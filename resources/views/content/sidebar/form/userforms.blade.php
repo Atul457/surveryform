@@ -55,6 +55,9 @@
 								<th>Form's Product</th>
 								<th>City</th>
 								<th>Area</th>
+								<th>Surveys assigned</th>
+								<th>Surveys completed</th>
+								<th>Surveys remaining</th>
 								<th>Share</th>
 								<th>View Report</th>
 								<th>Created at</th>
@@ -129,11 +132,12 @@
 					</div>
 				</div>
 
-				<div class="modal-footer">
+				<div class="modal-footer justify-content-center">
 					<button
 						type="button"
 						onclick="shareForm()"
-						class="btn btn-primary">
+						id="sendMessageBtn"
+						class="btn btn-primary updatePermissionsBtn">
 						Send message
 					</button>
 				</div>

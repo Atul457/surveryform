@@ -6,6 +6,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Hash;
 use App\Models\User;
+use App\Models\Otp;
 use App\Models\Company;
 use App\Models\Product;
 use App\Models\AdminUsers;
@@ -17,6 +18,8 @@ use Illuminate\Support\Facades\Auth;
 
 class UserController extends Controller
 {
+    protected $test_numbers = ["8837684275"];
+
      // Logout
      public function logoutUser(Request $req, $message){
         $req->session()->flush();
@@ -305,5 +308,102 @@ class UserController extends Controller
         ]);
     }
 
+    // Forgot pass
+
+    // Forgot password
+    public function forgotpass(Request $req){
+
+        $validated = $req->validate([
+            'email' => 'required|email'
+        ]);
+
+        $min = 1000;
+        $max = 9999;
+        $active = 1;
+        $mobile = "";
+
+        $email = $req->input("email");    
+        $otp = rand($min, $max);
+        
+        $user = User::select("*")
+        ->where("email", $email)
+        ->get()
+        ->toArray();
+
+
+        if(count($user)){
+            $user =  $user[0];
+           
+            if($user["status"] != $active)
+                throw ValidationException::withMessages(['not_found' => "You account has been deactived by the admin"]);
+
+            $mobile = $user["phone_no"];
+            // $mobile =urlencode("9779755869,8837684275");
+            if(in_array($mobile, $this->test_numbers)) $otp = '1234';
+
+            $data = [
+                "user_ref" =>  $user["id"],
+                "otp" => $otp
+            ];
+            $to_search = ["user_ref" => $user["id"]];
+            
+            $record = Otp::where($to_search);
+            if ($record->exists()) $res = $record->update($data);
+            else $res = Otp::insert($data);
+
+            $curl = curl_init();
+            $message = "Dear ".$user['name'].",\nOTP to login to eRSPL is ".$otp.". Please do not share with anyone.";
+            $message = urlencode($message);
+            curl_setopt_array($curl, array(
+            CURLOPT_URL => "https://api.zapsms.co.in/api/v2/SendSMS?SenderId=eRSPLe&Is_Unicode=false&Is_Flash=false&Message=$message&MobileNumbers=$mobile&ApiKey=lsdzpI6f%2BipF%2BwG1j4iwQ%2FjIQS9PS4VC0uftsQih4hY%3D&ClientId=c814d93d-a836-4f39-8b47-6798657c8072",
+            CURLOPT_RETURNTRANSFER => true,
+            CURLOPT_ENCODING => "",
+            CURLOPT_MAXREDIRS => 10,
+            CURLOPT_TIMEOUT => 30,
+            CURLOPT_HTTP_VERSION => CURL_HTTP_VERSION_1_1,
+            CURLOPT_CUSTOMREQUEST => "GET",
+            CURLOPT_SSL_VERIFYHOST => 0,
+            CURLOPT_SSL_VERIFYPEER => 0,
+            ));
+            $response = curl_exec($curl);
+            $err = curl_error($curl);
+            curl_close($curl);
+
+            return redirect("resetpass_page")->with('user_id', $user["id"]);
+        
+        }
+
+        throw ValidationException::withMessages(['not_found' => "Account with the email id entered doesn't exist"]);
+
+    }
+
+    public function resetpass_page(){
+        return view("content/auth/resetpass");
+    }
+
+    public function forgotpass_page(){
+        return view("content/auth/forgotpass");
+    }
+    
+    public function resetpass(Request $req){
+        $validated = $req->validate([
+            'otp' => 'required'
+        ]);
+
+        $otp = $req->input("otp");    
+        $user_id = $req->input("user_id") ?? 0; 
+
+        $to_search = [
+            "otp" => $otp,
+            "user_ref" => $user_id,
+        ];
+
+        $record = Otp::where($to_search);
+        if (!$record->exists() ||  $user_id == 0) throw ValidationException::withMessages(['error' => "Invalid otp."]);
+        $user = User::where('id', $user_id)->first();
+        Auth::login($user);
+        return redirect("login");
+        
+    }
     
 }

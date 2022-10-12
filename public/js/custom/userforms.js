@@ -58,6 +58,9 @@ $(function () {
                 { data: "form_prod_name" },
                 { data: "city_name" },
                 { data: "area_name" },
+                { data: "sample_size" },
+                { data: "filled_count" },
+                { data: "remaining_count" },
                 {
                     data: null,
                     render: function (data, type, row) {

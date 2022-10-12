@@ -69,6 +69,7 @@
 								<th>Created at</th>
 								<th>Updated at</th>
 								<th>Allocated to</th>
+								<th>Share</th>
 								<th>View Report</th>
 								<th>Copy Form</th>
 								<th>Action</th>

@@ -59,6 +59,7 @@ $(function () {
                 { data: "name" },
                 { data: "email" },
                 { data: "comp_name" },
+                { data: "sample_size" },
                 { data: "city_name" },
                 { data: "area_name" },
                 {
@@ -181,6 +182,7 @@ function shareForm() {
     let consumersArr = [],
         i = 0,
         errorCount = 0;
+    const sendMessageBtn = $("#sendMessageBtn");
     $("#shareFormModal").find(".error").remove();
     $(".shareModalinputs").each(function () {
         let phone_num = $(this).children(".number"),
@@ -235,9 +237,47 @@ function shareForm() {
         }
     });
 
-    if (i !== 0 && errorCount === 0 && consumersArr.length > 0)
-        return console.log({ "submit form": consumersArr });
-    // showAlert();
+    if (i !== 0 && errorCount === 0 && consumersArr.length > 0) {
+        sendMessageBtn.html(
+            ` <div class="spinner-border spinner-border-sm text-white" role="status"></div>`
+        );
+
+        $.ajax({
+            url: `${baseurl}/share_form`,
+            type: "post",
+            data: { consumersArr },
+            headers: {
+                "X-CSRF-TOKEN": $('meta[name="csrf-token"]').attr("content"),
+            },
+            success: (data) => {
+                $("#shareFormModal .modal-header").after(`
+                <div class="text-center text-success response fw-bolder mt-1">
+                ${data?.message ?? "Messages sent to successfully."}
+                </div>
+                `);
+                sendMessageBtn.html("Send Message");
+                removeMessage();
+            },
+            error: (err) => {
+                $("#shareFormModal .modal-header").after(`
+                    <div class="text-center text-error response fw-bolder mt-1">
+                        ${err?.responseJSON?.error ?? "Something went wrong"}
+                    </div>
+                `);
+                sendMessageBtn.html("Send Message");
+                removeMessage();
+            },
+        });
+    }
+}
+
+function removeMessage() {
+    setTimeout(() => {
+        let target = $(".response");
+        target.hide("slow", function () {
+            target.remove();
+        });
+    }, 1000);
 }
 
 function showAlert() {

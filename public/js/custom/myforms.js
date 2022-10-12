@@ -55,7 +55,16 @@ $(function () {
                         return meta.row + 1;
                     },
                 },
-                { data: "form_name" },
+                {
+                    data: "form_name",
+                    render: function (data, type, row) {
+                        const is_copied = row.is_copied == "1";
+                        const copiedFormHtml = is_copied
+                            ? ` <span class="badge rounded-pill badge-light-success">Copied</span>`
+                            : "";
+                        return `<span>${row?.form_name}</span> ${copiedFormHtml}`;
+                    },
+                },
                 { data: "comp_name" },
                 { data: "start_date" },
                 { data: "end_date" },
@@ -63,7 +72,7 @@ $(function () {
                     data: "status",
                     render: function (value) {
                         if (value === null) return "";
-                        return `<span class="badge rounded-pill badge-light-${
+                        return `<span class="badge m-1 rounded-pill badge-light-${
                             value === 0 ? "danger" : "success"
                         }"}>${value === 0 ? "Inactive" : "Active"}</span>`;
                     },
@@ -90,6 +99,20 @@ $(function () {
                         return `<div class="d-flex flex-wrap align-items-centerr">
                                     <a href="${baseurl}/formsallocatedview/${value}">
                                         ${feather.icons["eye"].toSvg({
+                                            class: "text-primary",
+                                        })}
+                                    </a>
+                                <div>`;
+                    },
+                },
+                {
+                    data: "share_id",
+                    render: function (value) {
+                        if (value === null) return "";
+                        if (!showAllocatedtoIcon) return "";
+                        return `<div class="d-flex flex-wrap align-items-centerr">
+                                    <a href="${baseurl}/formsallocatedview/${value}">
+                                        ${feather.icons["share-2"].toSvg({
                                             class: "text-primary",
                                         })}
                                     </a>

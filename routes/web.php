@@ -40,6 +40,10 @@ Route::get('/', function () {
 Route::middleware("guest:web")->group(function () {
     Route::get('login', [UserController::class, 'login_view'])->name("login");
     Route::post('login_user', [UserController::class, 'login_user']);
+    Route::get('forgotpass_page', [UserController::class, 'forgotpass_page'])->name("forgotpass_page");
+    Route::post('forgotpass', [UserController::class, 'forgotpass'])->name("forgotpass");
+    Route::get('resetpass_page', [UserController::class, 'resetpass_page'])->name("resetpass_page");
+    Route::post('resetpass', [UserController::class, 'resetpass'])->name("resetpass");
 });
 
 // Auth routes
@@ -152,6 +156,7 @@ Route::middleware("auth:web")->group(function () {
     // Forms
     Route::get('userforms', [SurveyFormController::class, 'userview'])->name('userforms');
     Route::get('getuserforms', [SurveyFormController::class, 'getUserForms']);      
+    Route::post('share_form', [SurveyFormController::class, 'share_form']);      
     
     // Products
     Route::get('getprodofcomp/{id}', [ProductController::class, 'getProdOfComp'])->module("products", "view");

@@ -1,6 +1,6 @@
 @extends('layouts/fullLayoutMaster')
 
-@section('title', 'Login Page')
+@section('title', 'Forgot Password')
 
 @section('page-style')
   {{-- Page Css files --}}
@@ -36,43 +36,47 @@
           </div>
         @endif
 
-        <form class="auth-login-form mt-2" action="{{url('login_user')}}" method="POST">
+        <form class="auth-login-form mt-2" action="{{url('resetpass')}}" method="POST">
           @csrf
           <div class="mb-1">
-            <label for="login-email" class="form-label">Email</label>
+            <label for="login-email" class="form-label">Enter the Otp</label>
             <input
               type="text"
               class="form-control"
-              id="login-email"
-              name="email"
-              placeholder="john@example.com"
-              aria-describedby="login-email"
+              id="otp"
+              name="otp"
+              placeholder="Otp"
               tabindex="1"
               autofocus
+              required
             />
+            
+            @if(Session::has("user_id"))
+            <input
+                type="hidden"
+                class="form-control"
+                id="user_id"
+                name="user_id"
+                placeholder="user_id"
+                value="{{Session::get('user_id')}}"
+                tabindex="1"
+                autofocus
+                required
+                />
+            @endif
+          
           </div>
 
-          <div class="mb-1">
-            <div class="d-flex justify-content-between">
-              <label class="form-label" for="login-password">Password</label>
-              <a href="{{route('forgotpass_page')}}">
-                <small>Forgot Password?</small>
-              </a>
-            </div>
-            <div class="input-group input-group-merge form-password-toggle">
-              <input
-                type="password"
-                class="form-control form-control-merge"
-                id="login-password"
-                name="password"
-                tabindex="2"
-                placeholder="&#xb7;&#xb7;&#xb7;&#xb7;&#xb7;&#xb7;&#xb7;&#xb7;&#xb7;&#xb7;&#xb7;&#xb7;"
-                aria-describedby="login-password"
-              />
-              <span class="input-group-text cursor-pointer"><i data-feather="eye"></i></span>
-            </div>
-          </div>
-          <button class="btn btn-primary w-100 mt-2" tabindex="4">Login</button>
+          <button class="btn btn-primary w-100 mt-2" tabindex="4">Verify</button>
+          <p class="text-center mt-2">
+            <a href="{{route('login')}}"> 
+              <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-chevron-left">
+                <polyline points="15 18 9 12 15 6"></polyline>
+              </svg>
+              Back to login
+            </a>
+          </p>
+
         </form>
       </div>
     </div>
