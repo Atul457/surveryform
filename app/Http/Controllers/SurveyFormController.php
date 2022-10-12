@@ -160,7 +160,9 @@ class SurveyFormController extends Controller
         ->get()
         ->toArray();
         $totalAssignedCount = $totalAssignedCount[0]["total"] ?? 0;
-        $maxSampleSize = Product::where("id", $form_id)->pluck("sample_size")->toArray();
+        $prodid = SurveyForm::where("id", $form_id)->pluck("prod_ref")->toArray();
+        $prod_id = $prodid[0];
+        $maxSampleSize = Product::where("id", $prod_id)->pluck("sample_size")->toArray();
         $maxSampleSize = $maxSampleSize[0] ?? 0;
 
         echo "<pre>";
@@ -170,6 +172,8 @@ class SurveyFormController extends Controller
             "totalAssignedCount" => $totalAssignedCount,
             "maxSampleSize" => $maxSampleSize,
             "remaining" => $remaining,
+            "prod_id" => $prod_id,
+
         ]);
         die();
         return $remaining;
