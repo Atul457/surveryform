@@ -610,7 +610,7 @@ class SurveyFormController extends Controller
         foreach ($data as $key => $curr_form) {
             $filled_form_count = $filled_count_arr[$key][''.$curr_form["user_form_link_ref"].''] ?? 0;
             $curr_form['filled_count'] = $filled_form_count;
-            $curr_form['remaining_count'] = $curr_form["sample_size"] - $filled_form_count;
+            $curr_form['remaining_count'] = intval($curr_form["sample_size"]) - $filled_form_count;
             $final_data[] = $curr_form;
         }
 
