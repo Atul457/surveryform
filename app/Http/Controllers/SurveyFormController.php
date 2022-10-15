@@ -164,18 +164,7 @@ class SurveyFormController extends Controller
         $prod_id = $prodid[0];
         $maxSampleSize = Product::where("id", $prod_id)->pluck("sample_size")->toArray();
         $maxSampleSize = $maxSampleSize[0] ?? 0;
-
-        // echo "<pre>";
         $remaining = $totalAssignedCount <= $maxSampleSize ? ($maxSampleSize - $totalAssignedCount) : 0;
-        // print_r([
-        //     "form_id" => $form_id,
-        //     "totalAssignedCount" => $totalAssignedCount,
-        //     "maxSampleSize" => $maxSampleSize,
-        //     "remaining" => $remaining,
-        //     "prod_id" => $prod_id,
-
-        // ]);
-        // die();
         return $remaining;
     }
 
@@ -315,8 +304,13 @@ class SurveyFormController extends Controller
 
     public function formsAllocated(Request $req, userFormLink $userFormLink, User $user, $form_id)
     {   
-        $forms_allocated = userFormLink::select( "user_form_links.id as action", "user_form_links.id as share_id", "user_form_links.sample_size", "user_form_links.id as responsive_id", "user_form_links.*", "users.name", "users.email", "user_company_links.comp_ref", "users.id as user_id", "companies.comp_name", "areas.area_name", "cities.city_name")
+        $final_data = [];
+        $share_id_list = [];
+        
+        $forms_allocated = userFormLink::select( "user_form_links.id as action","user_form_links.id as user_form_link_ref","products.prod_name", "user_form_links.id as share_id", "user_form_links.sample_size", "user_form_links.id as responsive_id", "user_form_links.*", "users.name", "users.email", "user_company_links.comp_ref", "users.id as user_id", "companies.comp_name", "areas.area_name", "cities.city_name")
         ->leftJoin("areas", "areas.id", "=", "user_form_links.area_ref")
+        ->leftJoin("survey_forms", "survey_forms.id", "=", "user_form_links.survey_form_ref")
+        ->leftJoin("products", "products.id", "=", "survey_forms.prod_ref")
         ->leftJoin("cities", "cities.id", "=", "areas.city_ref")
         ->leftJoin("users", "users.id", "=", "user_form_links.user_ref")
         ->leftJoin("user_company_links", "user_company_links.user_ref", "=", "users.id")
@@ -324,8 +318,38 @@ class SurveyFormController extends Controller
         ->where("user_form_links.survey_form_ref", $form_id)
         ->get()
         ->toArray();
+        
+        foreach ($forms_allocated as $curr_form) {
+            $share_id_list[] = $curr_form["share_id"];
+        }
+        
+        $forms_filled_arr = FormsFilled::whereIn("user_form_link_ref", $share_id_list)
+        ->selectRaw("user_form_link_ref, COUNT(*) AS filled_forms_count")
+        ->groupBy("user_form_link_ref")
+        ->get()
+        ->toArray();
 
-        $res2["data"] = $forms_allocated;
+        $filled_count_arr = [];
+        foreach ($forms_filled_arr as $curr_form) {
+            $filled_forms_count = $curr_form["filled_forms_count"];
+            $user_form_link_ref = $curr_form["user_form_link_ref"];
+            array_push($filled_count_arr, [$user_form_link_ref => $filled_forms_count]);
+        }        
+
+        
+        foreach ($forms_allocated as $key => $curr_form) {
+            $filled_form_count = $filled_count_arr[$key][''.$curr_form["user_form_link_ref"].''] ?? 0;
+            $curr_form['filled_count'] = $filled_form_count;
+            $curr_form['remaining_count'] = intval($curr_form["sample_size"]) - $filled_form_count;
+            if($curr_form['is_admin_completed']){
+                $curr_form['completed_by'] = $curr_form['remaining_count'];
+                $curr_form['remaining_count'] = 0;
+            }
+            $curr_form['is_completed'] = ($curr_form['is_admin_completed'] || intval($curr_form["sample_size"]) == $filled_form_count) ? 1 : 0;
+            $final_data[] = $curr_form;
+        }
+
+        $res2["data"] = $final_data;
         return json_encode($res2);
     }
     
@@ -345,8 +369,10 @@ class SurveyFormController extends Controller
     public function shareForm(userFormLink $userFormLink, Request $req, $share_id){
 
         $active = 1;
+        $share_id_list = [];
+        $final_data = [];
         $fill_up_form = $userFormLink
-        ->select("user_form_links.*", "users.name", "users.phone_no", "products.batch_no", "survey_forms.form_name", "survey_forms.form_json", "companies.comp_name", "companies.comp_care_no", "companies.comp_addr", "survey_forms.start_date", "survey_forms.end_date")
+        ->select("user_form_links.*", "users.name", "users.phone_no", "products.batch_no", "survey_forms.form_name", "survey_forms.form_json", "companies.comp_name", "companies.comp_care_no", "companies.comp_addr", "survey_forms.start_date", "survey_forms.end_date", "user_form_links.id as user_form_link_ref")
         ->leftJoin("users", "users.id", "=", "user_form_links.user_ref")
         ->leftJoin("survey_forms", "survey_forms.id", "=", "user_form_links.survey_form_ref")
         ->leftJoin("products", "products.id", "=", "survey_forms.prod_ref")
@@ -356,9 +382,54 @@ class SurveyFormController extends Controller
         ->get()
         ->toArray();
 
+        
         if(count($fill_up_form) == 0)
         {
-            $req->session()->flash('error', "The form you are looking for doesn't exist");
+            $req->session()->flash('error', "The Survey form you are looking for doesn't exist");
+            return view("public.fill_up_form.form");
+        }
+        
+        // No matters how much is count, if is_admin_completed flag is 1 show that forms assigned are filled
+        if($fill_up_form[0]["is_admin_completed"]){
+            $req->session()->flash('error', "Oops..., The Survey form you are looking for is completed, no more users can fill it up");
+            return view("public.fill_up_form.form");
+        }
+
+        foreach ($fill_up_form as $curr_form) {
+            $share_id_list[] = $curr_form["id"];
+        }
+        
+        $forms_filled_arr = FormsFilled::whereIn("user_form_link_ref", $share_id_list)
+        ->selectRaw("user_form_link_ref, COUNT(*) AS filled_forms_count")
+        ->groupBy("user_form_link_ref")
+        ->get()
+        ->toArray();
+
+        // Means no one has filled the form yet
+        if(count($forms_filled_arr) == 0)
+            return view("public.fill_up_form.form", ["form" => $fill_up_form[0]]);
+
+        $filled_count_arr = [];
+        foreach ($forms_filled_arr as $curr_form) {
+            $filled_forms_count = $curr_form["filled_forms_count"];
+            $user_form_link_ref = $curr_form["user_form_link_ref"];
+            array_push($filled_count_arr, [$user_form_link_ref => $filled_forms_count]);
+        }  
+        
+        foreach ($fill_up_form as $key => $curr_form) {
+            $filled_form_count = $filled_count_arr[$key][''.$curr_form["user_form_link_ref"].''] ?? 0;
+            $curr_form['filled_count'] = $filled_form_count;
+            $curr_form['remaining_count'] = intval($curr_form["sample_size"]) - $filled_form_count;
+            if($curr_form['is_admin_completed']){
+                $curr_form['completed_by'] = $curr_form['remaining_count'];
+                $curr_form['remaining_count'] = 0;
+            }
+            $curr_form['is_completed'] = ($curr_form['is_admin_completed'] || intval($curr_form["sample_size"]) == $filled_form_count) ? 1 : 0;
+            $final_data[] = $curr_form;
+        }
+
+        if($final_data[0]["remaining_count"] == 0 || $fill_up_form[0]["is_admin_completed"]){
+            $req->session()->flash('error', "Oops..., The Survey form you are looking for is completed, no more users can fill it up");
             return view("public.fill_up_form.form");
         }
 

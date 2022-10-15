@@ -36,7 +36,7 @@ var normalizeDate = function (dateString) {
 $(function () {
     var isRtl = $("html").attr("data-textdirection") === "rtl";
 
-    var dt_adv_filter_table = $(".dt-advanced-search")
+    var dt_adv_filter_table = $(".dt-advanced-search");
 
     if ($("body").attr("data-framework") === "laravel") {
         assetPath = $("body").attr("data-asset-path");
@@ -89,16 +89,13 @@ $(function () {
                 },
                 {
                     data: "responsive_id",
-                    "orderable": false,
+                    orderable: false,
                     render: function (value) {
                         if (value === null) return "";
                         if (!showDeleteIcon) return "";
                         return `<div class="d-flex flex-wrap align-items-center">
-                                    <span onclick="deleteProduct(${value})" class="cursor-pointer">
-                                        ${feather.icons["trash"].toSvg({
-                                            class: "text-primary",
-                                        })}
-                                    </span>
+                                    ${getEditIcon(1, value)}
+                                    ${getEditIcon(2, value)}
                                 <div>`;
                     },
                 },
@@ -152,21 +149,21 @@ function confirmDeleteProduct() {
     }
 }
 
-function getEditIcon(iconType, compId = 0) {
+function getEditIcon(iconType, prodId = 0) {
     // 1 => show edit icon
     // 2 => show delete icon
     switch (iconType) {
         case 1:
             return showEditIcon
-                ? `<a href="${baseurl}/editcompany/${compId}">
-        ${feather.icons["edit"].toSvg({
-            class: "me-1",
-        })}
-    </a>`
+                ? `<a href="${baseurl}/editprodview/${prodId}">
+                        ${feather.icons["edit"].toSvg({
+                            class: "me-1",
+                        })}
+                    </a>`
                 : "";
         case 2:
             return showDeleteIcon
-                ? ` <span onclick="deleteCompany(${compId})" class="cursor-pointer">
+                ? ` <span onclick="deleteProduct(${prodId})" class="cursor-pointer">
                 ${feather.icons["trash"].toSvg({
                     class: "text-primary",
                 })}

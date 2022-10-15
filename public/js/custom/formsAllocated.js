@@ -58,10 +58,26 @@ $(function () {
                 },
                 { data: "name" },
                 { data: "email" },
+                { data: "prod_name" },
                 { data: "comp_name" },
                 { data: "sample_size" },
                 { data: "city_name" },
                 { data: "area_name" },
+                // { data: "sample_size" },
+                // { data: "filled_count" },
+                // { data: "remaining_count" },
+                {
+                    data: null,
+                    render: function (data, type, row) {
+                        if (row === null) return "";
+                        const is_completed = row.is_completed == 1;
+                        const completedLabel = is_completed
+                            ? `<span class="badge rounded-pill badge-light-success">Completed</span>`
+                            : `<span class="badge rounded-pill badge-light-warning">Incomplete</span>`;
+
+                        return completedLabel;
+                    },
+                },
                 {
                     data: null,
                     render: function (data, type, row) {
@@ -89,6 +105,19 @@ $(function () {
                     render: function (value) {
                         if (value === null) return "";
                         return normalizeDate(value);
+                    },
+                },
+                {
+                    data: null,
+                    orderable: false,
+                    render: function (data, type, row) {
+                        if (row === null) return "";
+                        return `<div class="d-flex flex-wrap align-items-center">
+                                    <a href="${baseurl}/allocation_details/${row.share_id}" class="cursor-pointer pe-1">
+                                        ${feather.icons["eye"].toSvg({
+                                            class: "text-primary",
+                                        })}
+                                    </a>`;
                     },
                 },
                 {

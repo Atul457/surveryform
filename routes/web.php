@@ -101,12 +101,16 @@ Route::middleware("auth:web")->group(function () {
             Route::get('getproducts', 'show')->module("products", "view");
             Route::post('deleteproduct', 'destroy')->name("delete_product")->module("products", "delete");
             Route::get('myproducts', 'index')->name("myproducts")->module("products", "view");
+            Route::get('editprodview/{prod_id}', 'editProductView')->name('editprodview')->module("products", "edit");
+            Route::post('update_prod', 'updateProduct')->name("update_prod")->module("products", "update");
         });  
         
         // Filled forms
         Route::controller(FormsFilledController::class)->group(function(){
             Route::post('getreportadmin/{form_id}', 'getReportAdmin')->name("get_report_admin")->module("forms_filled", "view");
             Route::get('view_report_admin/{share_id}', 'viewReportAdmin')->name("view_report_admin")->module("forms_filled", "view");
+            Route::get('allocation_details/{id}', 'allocationDetails')->name("allocation_details")->module("forms_filled", "view");
+            Route::post('complete_survey', 'completeSurvey')->name("complete_survey")->module("forms_filled", "create");
         }); 
         
         // Cities
@@ -161,6 +165,7 @@ Route::middleware("auth:web")->group(function () {
     // Products
     Route::get('getprodofcomp/{id}', [ProductController::class, 'getProdOfComp'])->module("products", "view");
     Route::get('getareas/{cityid}', [AreasController::class, 'getAreas'])->module("create_area", "create");
+    Route::get('export', [FormsFilledController::class, 'exportToPdf'])->name("export");
 
 });
 

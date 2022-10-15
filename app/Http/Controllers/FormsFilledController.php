@@ -157,6 +157,91 @@ class FormsFilledController extends Controller
 
     }
 
+    public function exportToPdf(Request $req){
+        // echo "<pre>";
+        print_r($req->all());
+    }
+
+    public function allocationDetails(Request $req, $id){
+
+        $final_data = [];
+        $share_id_list = [];
+        $forms_allocated = userFormLink::select( "user_form_links.id as action", "user_form_links.reason", "user_form_links.is_admin_completed","user_form_links.id as user_form_link_ref", "user_form_links.id as share_id", "user_form_links.sample_size", "user_form_links.id as responsive_id", "user_form_links.*", "users.name", "users.email", "user_company_links.comp_ref", "users.id as user_id", "companies.comp_name", "areas.area_name", "cities.city_name")
+        ->leftJoin("areas", "areas.id", "=", "user_form_links.area_ref")
+        ->leftJoin("cities", "cities.id", "=", "areas.city_ref")
+        ->leftJoin("users", "users.id", "=", "user_form_links.user_ref")
+        ->leftJoin("user_company_links", "user_company_links.user_ref", "=", "users.id")
+        ->leftJoin("companies", "companies.id", "=", "user_company_links.comp_ref")
+        ->where("user_form_links.id", $id)
+        ->get()
+        ->toArray();
+        
+        foreach ($forms_allocated as $curr_form) {
+            $share_id_list[] = $curr_form["share_id"];
+        }
+        
+        $forms_filled_arr = FormsFilled::whereIn("user_form_link_ref", $share_id_list)
+        ->selectRaw("user_form_link_ref, COUNT(*) AS filled_forms_count")
+        ->groupBy("user_form_link_ref")
+        ->get()
+        ->toArray();
+
+        $filled_count_arr = [];
+        foreach ($forms_filled_arr as $curr_form) {
+            $filled_forms_count = $curr_form["filled_forms_count"];
+            $user_form_link_ref = $curr_form["user_form_link_ref"];
+            array_push($filled_count_arr, [$user_form_link_ref => $filled_forms_count]);
+        }        
+
+        
+        foreach ($forms_allocated as $key => $curr_form) {
+            $filled_form_count = $filled_count_arr[$key][''.$curr_form["user_form_link_ref"].''] ?? 0;
+            $curr_form['filled_count'] = $filled_form_count;
+            $curr_form['remaining_count'] = intval($curr_form["sample_size"]) - $filled_form_count;
+            if($curr_form['is_admin_completed']){
+                $curr_form['completed_by'] = $curr_form['remaining_count'];
+                $curr_form['remaining_count'] = 0;
+            }
+            $curr_form['is_completed'] = ($curr_form['is_admin_completed'] || intval($curr_form["sample_size"]) == $filled_form_count) ? 1 : 0;
+            $final_data[] = $curr_form;
+        }
+
+        return view("content.sidebar.form.allocationdetails", [
+            "details" => $final_data
+        ]);
+    }
+
+    public function completeSurvey(Request $req){
+
+        $req->validate([
+            "id" => "required",
+            "complete" => "required",
+        ]);
+
+        $complete = $req->input("complete") ?? 1;
+
+        if($complete  && ($req->input("reason") ?? "") == "")
+            throw ValidationException::withMessages([
+                'error' => "Reason is a required field."
+            ]);
+
+        $reason = $req->input("reason");
+        $id = $req->input("id");
+
+        $check = userFormLink::where("id", $id)->update([
+            "is_admin_completed" => $complete,
+            "reason" => $complete == 1 ? $reason : ""
+        ]);
+
+        if(!$check)
+            throw ValidationException::withMessages([
+                'error' => "Something went wrong."
+            ]);
+    
+        return redirect()->back()->with('success', 'Updated form status successfully');
+        
+    }
+
     /**
      * Display the specified resource.
      *

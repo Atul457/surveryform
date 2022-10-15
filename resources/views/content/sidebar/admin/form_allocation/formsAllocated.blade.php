@@ -73,13 +73,19 @@
                 <th>Sr. No</th>
                 <th>User Name</th>
                 <th>User Email</th>
+                <th>Product Name</th>
                 <th>Company Name</th>
                 <th>Product Size</th>
                 <th>City Name</th>
                 <th>Area Name</th>
+                <!-- <th>Surveys assigned</th>
+								<th>Surveys completed</th>
+								<th>Surveys remaining</th> -->
+								<th>Completed</th>
                 <th>Share</th>
                 <th>Created at</th>
                 <th>Updated at</th>
+                <th>View</th>
                 <th>Deallocate</th>
               </tr>
             </thead>
