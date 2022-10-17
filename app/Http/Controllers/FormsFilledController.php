@@ -11,6 +11,7 @@ use App\Models\userFormLink;
 use Illuminate\Http\Request;
 use Illuminate\Validation\ValidationException;
 use Illuminate\Support\Facades\Auth;
+use Dompdf\Dompdf;
 
 class FormsFilledController extends Controller
 {
@@ -158,8 +159,177 @@ class FormsFilledController extends Controller
     }
 
     public function exportToPdf(Request $req){
-        // echo "<pre>";
-        print_r($req->all());
+
+        $city_id = 50;
+        $area_id = 20;
+        $form_id = 29;
+
+        $report_ids = userFormLink::select("areas.area_name", "user_form_links.*", "areas.city_ref", "cities.city_name")
+        ->where("survey_form_ref", $form_id)
+        ->leftJoin("areas", "areas.id", "=", "user_form_links.area_ref")
+        ->leftJoin("cities", "cities.id", "=", "areas.city_ref");
+        if($city_id) $report_ids = $report_ids->where("cities.id",  $city_id);
+        if($area_id) $report_ids = $report_ids->where("areas.id",  $area_id);
+        $report_ids = $report_ids->pluck("user_form_links.id")
+        ->toArray();
+
+        $reports = FormsFilled::whereIn("user_form_link_ref", $report_ids)
+        ->get()
+        ->toArray();
+echo "<pre>";
+        print_r($reports);
+
+        // Report
+
+        $firstRecored = $reports[0] ?? [];
+        $heading = "";
+        $html = "";
+
+        if (count($firstRecored) == 0) {
+            $html = '<div class="report_item card p-2">Looks like no one has filled the form yet.</div>';
+        }else{
+            $count = count($reports);
+            $userStr = $count > 1 ? "users" : "user";
+            $html = "<div class='report_item card p-2 mb-0 fw-bold'>
+                {$count} {$userStr} have filled the form till now.</div><br>";
+        }
+
+        $heading = $html;
+        $outerMost = [];
+
+        if(count($firstRecored)){
+            $first_record = json_decode($firstRecored["data_filled"], true);
+
+            foreach ($first_record as $sqIndex => $singleQues) {
+                $values = $singleQues["values"] ?? [];
+                $optionsHtml = "";
+                if (count($values)) {
+                    $inner = [];
+                    foreach ($values as $oIndex => $option) {
+                        $sq = $sqIndex + 1;
+                        $oi = $oIndex + 1;
+                        $str = "ques{$sq}-op{$oi}";
+                        $arr_to_push = [
+                            "id" => $str,
+                            "result" => 0,
+                        ];
+                        array_push($inner,  $arr_to_push);
+                    }
+                    $sq = $sqIndex + 1;
+                    $str = "ques{$sq}";
+                    $arr_to_push = [
+                        "id" => $str,
+                        "result" => $inner,
+                    ];
+                    array_push($outerMost, $arr_to_push);
+                } else {
+                    array_push($outerMost, []);
+                };
+            }
+
+                $all_records = [];
+                foreach($reports as $report){
+                    $all_records[] = $report['data_filled'];
+                }
+
+                $input_types_html_arr = [];
+                $html_arr_to_push = [];
+
+                foreach ($all_records as $key => $singleRecord) {
+                    $singleRecord = json_decode($singleRecord, true);
+                    $html_arr_to_push = [];
+                    foreach ($singleRecord as $sqIndex => $singleQuestion) {
+                        if (array_key_exists("values", $singleQuestion) && count($singleQuestion["values"])) {
+                            $timesToLoop = $singleQuestion["userData"] ?? [];
+                            foreach($timesToLoop as $currAns){
+                                if(array_key_exists("values", $singleQuestion)){
+                                foreach($singleQuestion["values"] as $coIndex => $currOption){
+                                    if ($currAns == $currOption["value"]) {
+                                        $outerMost[$sqIndex]["result"][$coIndex]["result"] =
+                                            $outerMost[$sqIndex]["result"][$coIndex]["result"] + 1;
+                                    }
+                                };
+                            }
+                            };
+                        } else {
+                            $html_ = "";
+                            $single_html = $singleQuestion["userData"][0];
+                            if(trim($single_html) != "") $html_arr_to_push[$sqIndex] = $single_html;
+                        }
+                    };
+                    if(count($html_arr_to_push)) $input_types_html_arr[] = $html_arr_to_push;
+                };
+
+                $totalUsersFilledTheForm = count($all_records);
+
+                $html = "";
+                foreach ($first_record as $sqIndex => $singleQues) {
+                    $values = $singleQues["values"] ?? [];
+                    $optionsHtml = "";
+                    if (count($values)) {
+                        $inner = [];
+                        foreach ($values as $oIndex => $option) {
+                            $sq = $sqIndex + 1;
+                            $oi = $oIndex + 1;
+                            $str = "ques{$sq}-op{$oi}";
+                            $arr_to_push = [
+                                "id" => $str,
+                                "result" => 0,
+                            ];
+                            array_push($inner,  $arr_to_push);
+    
+                            $inner_id = $inner[$oIndex]["id"];
+                            $label = $option["label"];
+                            $progbar_id = $inner[$oIndex]["id"];
+                            $totalFilled = $outerMost[$sqIndex]["result"][$oIndex]["result"]."/".$totalUsersFilledTheForm;
+                            $optionsHtml = $optionsHtml."<div class='answer_cont col-12 col-md-3 mb-1 mb-md-0' id='".$inner_id."'><div class='ansVal'>{$label}:  $totalFilled</div><div class='ansResults'></div><div id='".$progbar_id."'></div></div>";
+                        }
+                        $sq = $sqIndex + 1;
+                        $str = "ques{$sq}";
+                        $arr_to_push = [
+                            "id" => $str,
+                            "result" => $inner,
+                        ];
+                        array_push($outerMost, $arr_to_push);
+                    } else {
+                        array_push($outerMost, []);
+                    };
+    
+                    $isInputTypeQues = count($values) == 0;
+                    $ques_index = $sqIndex + 1;
+                    $ques_index = "ques{$ques_index}";
+                    $report_item_id = $outerMost[$sqIndex]["id"] ?? $ques_index;
+                    $ques_label = $singleQues["label"];
+                    $input_type_ques_id = "inputTypeQues{$ques_index}";
+                    $ans_html = "";
+                    foreach ($input_types_html_arr as $qus_key => $value) {
+                        if($isInputTypeQues){
+                            if(array_key_exists($sqIndex, $value)){
+                                $ans_html = $ans_html."<div>".$value[$sqIndex]."</div>";
+                            }
+                        }
+                    }
+
+                    $html_to_insert = !$isInputTypeQues ? $optionsHtml : $ans_html;
+    
+                    $html = $html."
+                            <div class='report_item card p-2' id='{$report_item_id}'><div class='report_ques'>{$ques_label}</div><div class='report_ques_ans row mx-0'>".$html_to_insert."</div></div>"."<br>"; 
+                    }
+
+                    $html = $heading.$html;
+
+                    echo $html;
+
+                    // instantiate and use the dompdf class
+                    // $dompdf = new Dompdf();
+                    // $dompdf->loadHtml($html);
+                    // $dompdf->setPaper('A4', 'landscape');
+                    // $dompdf->render();
+                    // ob_end_clean();
+                    // $dompdf->stream();
+                    
+            
+        }
     }
 
     public function allocationDetails(Request $req, $id){

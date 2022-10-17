@@ -47,6 +47,11 @@ class SurveyFormController extends Controller
         ->leftJoin("companies", "companies.id", "=", "products.comp_id")
         ->get()
         ->toArray();
+        
+        foreach($data as $key=>$form)
+        {
+            $data[$key]["share_link"] = url('')."/share/".$form["share_id"];
+        }
 
         $res2 = [
             "status" => true,
