@@ -200,7 +200,7 @@ class FormsFilledController extends Controller
                     <div align='right'>Customer care: $comp_care_no</div>
                     <div align='right'>Product name: $prod_name</div>
                 </div>
-                <div style='margin:0px auto 20px auto;font-size:18px;font-weight:bold;'>$form_name</div>
+                <div style='margin:0px auto 20px auto;font-size:18px;font-weight:bold;'>$form_name</div> 
                 ";
         }
 
