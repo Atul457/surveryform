@@ -1,9 +1,7 @@
 let allRecords = [];
 
-// console.log(shareId);
-
 $(document).ready(function () {
-    let htmlHolderCont = $("#surveyResult")
+    let htmlHolderCont = $("#surveyResult");
     $.ajax({
         url: `${baseurl}/getreport/${shareId}`,
     })
@@ -20,7 +18,7 @@ $(document).ready(function () {
                 <div class="alert alert-danger mb-0 p-1">
                 ${err?.responseJSON?.messsage ?? "Something went wrong"}
             </div>
-            </div>`)
+            </div>`);
             console.log();
         });
 });
@@ -43,10 +41,13 @@ function renderResults() {
     }
 
     htmlHolderCont.html(`
-    <div class="report_item card p-2 mb-0 fw-bold">
+    <div class="report_item card p-2 mb-0 fw-bold d-flex justify-content-between flex-wrap flex-row align-items-center">
+    <span>
         ${allRecords.length} ${
         allRecords.length > 1 ? "users" : "user"
     } have filled the form till now.
+    </span>
+    <button type="submit" class="btn btn-primary" onclick="exportToPdf()">Export to pdf</button>
     </div>.
     `);
 
@@ -100,8 +101,6 @@ function renderResults() {
                     </div>
                 </div>`);
     });
-
-    console.log({ outerMost });
 
     allRecords.forEach((singleRecord) => {
         // console.log(singleRecord);
@@ -187,3 +186,7 @@ function renderResults() {
             });
     });
 }
+
+const exportToPdf = () => {
+    window.location.href = `${baseurl}/export/${shareId}/0/0/${shareId}`;
+};

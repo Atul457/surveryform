@@ -43,10 +43,7 @@
                 <div class="col-12 card p-2">
                     <div class="d-flex justify-content-between flex-wrap">
                         <div class="filters">Filters</div>
-                        <!-- <form type="get" action="{{route('export')}}" onsubmit="exportToP">
-                            <textarea name="csv_html" id="csv_html"></textarea>
-                            <button type="submit" class="btn btn-primary">Export to pdf</button>
-                        </form> -->
+                        <button type="submit" class="btn btn-primary" onclick="exportToPdf()">Export to pdf</button>
                     </div>
                     <div class="filtersCont">
                         <div class="filterCont">

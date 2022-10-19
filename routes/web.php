@@ -165,7 +165,7 @@ Route::middleware("auth:web")->group(function () {
     // Products
     Route::get('getprodofcomp/{id}', [ProductController::class, 'getProdOfComp'])->module("products", "view");
     Route::get('getareas/{cityid}', [AreasController::class, 'getAreas'])->module("create_area", "create");
-    Route::get('export', [FormsFilledController::class, 'exportToPdf'])->name("export");
+    Route::get('export/{form_id}/{city_id}/{area_id}/{user_id}', [FormsFilledController::class, 'exportToPdf'])->name("export");
 
 });
 

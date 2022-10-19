@@ -255,4 +255,11 @@ function renderResults() {
     });
 }
 
+console.log({ formId });
 
+const exportToPdf = () => {
+    const city_id = citiesSelectBox.val();
+    const area_id = areasSelectBox.val();
+    window.location.href = `${baseurl}/export/${formId}/${city_id}/${area_id}/0`;
+    formId;
+};

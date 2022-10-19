@@ -158,11 +158,18 @@ class FormsFilledController extends Controller
 
     }
 
-    public function exportToPdf(Request $req){
+    public function exportToPdf(Request $req, $form_id, $city_id, $area_id, $user_id){
 
-        $city_id = 50;
-        $area_id = 20;
-        $form_id = 29;
+        $header_html = "";
+
+        if($user_id){
+            $array_of_filled_forms = FormsFilled::where("user_form_link_ref", $form_id)->select("user_form_link_ref")
+            ->get()->toArray();
+            if(count($array_of_filled_forms)) 
+                $user_form_link_ref = $array_of_filled_forms[0]["user_form_link_ref"];
+            $result = userFormLink::where("id", $user_form_link_ref)->get()->toArray();
+            $form_id = count($result) ? $result[0]["survey_form_ref"] : 0;
+        }
 
         $report_ids = userFormLink::select("areas.area_name", "user_form_links.*", "areas.city_ref", "cities.city_name")
         ->where("survey_form_ref", $form_id)
@@ -173,24 +180,47 @@ class FormsFilledController extends Controller
         $report_ids = $report_ids->pluck("user_form_links.id")
         ->toArray();
 
+        $form_details = SurveyForm::where("survey_forms.id", $form_id)
+        ->select("survey_forms.*", "products.prod_name", "products.comp_id", 'companies.comp_name', "companies.comp_care_no", "companies.comp_addr")
+        ->leftJoin("products", "products.id", "survey_forms.prod_ref")
+        ->leftJoin("companies", "companies.id", "products.comp_id")
+        ->get()->toArray();
+
+        if(count($form_details)){
+            $form_details = $form_details[0];
+            $comp_name = ucfirst($form_details['comp_name']);
+            $comp_addr = ucfirst($form_details['comp_addr']);
+            $form_name = ucfirst($form_details['form_name']);
+            $prod_name = ucfirst($form_details['prod_name']);
+            $comp_care_no = $form_details['comp_care_no'];
+            $header_html = "
+                <h2 align='center' style='margin-bottom:5px !important;'>$comp_name</h2>
+                <h4 align='center' style='margin-top:0px !important;'>$comp_addr</h4>
+                <div style='text-align:right;margin:0px auto 20px auto;'>
+                    <div align='right'>Customer care: $comp_care_no</div>
+                    <div align='right'>Customer care: $prod_name</div>
+                </div>
+                <div style='margin:0px auto 20px auto;font-size:18px;font-weight:bold;'>$form_name</div>
+                ";
+        }
+
+        if($user_id) $report_ids = [$user_id];
+
         $reports = FormsFilled::whereIn("user_form_link_ref", $report_ids)
         ->get()
         ->toArray();
-echo "<pre>";
-        print_r($reports);
 
         // Report
-
         $firstRecored = $reports[0] ?? [];
         $heading = "";
         $html = "";
 
         if (count($firstRecored) == 0) {
-            $html = '<div class="report_item card p-2">Looks like no one has filled the form yet.</div>';
+            $html = '<div class="report_item">Looks like no one has filled the form yet.</div>';
         }else{
             $count = count($reports);
             $userStr = $count > 1 ? "users" : "user";
-            $html = "<div class='report_item card p-2 mb-0 fw-bold'>
+            $html = "<div class='report_item'>
                 {$count} {$userStr} have filled the form till now.</div><br>";
         }
 
@@ -227,109 +257,108 @@ echo "<pre>";
                 };
             }
 
-                $all_records = [];
-                foreach($reports as $report){
-                    $all_records[] = $report['data_filled'];
-                }
+            $all_records = [];
+            foreach($reports as $report){
+                $all_records[] = $report['data_filled'];
+            }
 
-                $input_types_html_arr = [];
+            $input_types_html_arr = [];
+            $html_arr_to_push = [];
+
+            foreach ($all_records as $key => $singleRecord) {
+                $singleRecord = json_decode($singleRecord, true);
                 $html_arr_to_push = [];
-
-                foreach ($all_records as $key => $singleRecord) {
-                    $singleRecord = json_decode($singleRecord, true);
-                    $html_arr_to_push = [];
-                    foreach ($singleRecord as $sqIndex => $singleQuestion) {
-                        if (array_key_exists("values", $singleQuestion) && count($singleQuestion["values"])) {
-                            $timesToLoop = $singleQuestion["userData"] ?? [];
-                            foreach($timesToLoop as $currAns){
-                                if(array_key_exists("values", $singleQuestion)){
-                                foreach($singleQuestion["values"] as $coIndex => $currOption){
-                                    if ($currAns == $currOption["value"]) {
-                                        $outerMost[$sqIndex]["result"][$coIndex]["result"] =
-                                            $outerMost[$sqIndex]["result"][$coIndex]["result"] + 1;
-                                    }
-                                };
-                            }
+                foreach ($singleRecord as $sqIndex => $singleQuestion) {
+                    if (array_key_exists("values", $singleQuestion) && count($singleQuestion["values"])) {
+                        $timesToLoop = $singleQuestion["userData"] ?? [];
+                        foreach($timesToLoop as $currAns){
+                            if(array_key_exists("values", $singleQuestion)){
+                            foreach($singleQuestion["values"] as $coIndex => $currOption){
+                                if ($currAns == $currOption["value"]) {
+                                    $outerMost[$sqIndex]["result"][$coIndex]["result"] =
+                                        $outerMost[$sqIndex]["result"][$coIndex]["result"] + 1;
+                                }
                             };
-                        } else {
-                            $html_ = "";
-                            $single_html = $singleQuestion["userData"][0];
-                            if(trim($single_html) != "") $html_arr_to_push[$sqIndex] = $single_html;
                         }
-                    };
-                    if(count($html_arr_to_push)) $input_types_html_arr[] = $html_arr_to_push;
+                        };
+                    } else {
+                        $html_ = "";
+                        $single_html = $singleQuestion["userData"][0];
+                        if(trim($single_html) != "") $html_arr_to_push[$sqIndex] = $single_html;
+                    }
                 };
+                if(count($html_arr_to_push)) $input_types_html_arr[] = $html_arr_to_push;
+            };
 
-                $totalUsersFilledTheForm = count($all_records);
+            $totalUsersFilledTheForm = count($all_records);
 
-                $html = "";
-                foreach ($first_record as $sqIndex => $singleQues) {
-                    $values = $singleQues["values"] ?? [];
-                    $optionsHtml = "";
-                    if (count($values)) {
-                        $inner = [];
-                        foreach ($values as $oIndex => $option) {
-                            $sq = $sqIndex + 1;
-                            $oi = $oIndex + 1;
-                            $str = "ques{$sq}-op{$oi}";
-                            $arr_to_push = [
-                                "id" => $str,
-                                "result" => 0,
-                            ];
-                            array_push($inner,  $arr_to_push);
-    
-                            $inner_id = $inner[$oIndex]["id"];
-                            $label = $option["label"];
-                            $progbar_id = $inner[$oIndex]["id"];
-                            $totalFilled = $outerMost[$sqIndex]["result"][$oIndex]["result"]."/".$totalUsersFilledTheForm;
-                            $optionsHtml = $optionsHtml."<div class='answer_cont col-12 col-md-3 mb-1 mb-md-0' id='".$inner_id."'><div class='ansVal'>{$label}:  $totalFilled</div><div class='ansResults'></div><div id='".$progbar_id."'></div></div>";
-                        }
+            $html = "";
+            $i = 1;
+            foreach ($first_record as $sqIndex => $singleQues) {
+                $values = $singleQues["values"] ?? [];
+                $optionsHtml = "";
+                if (count($values)) {
+                    $inner = [];
+                    foreach ($values as $oIndex => $option) {
                         $sq = $sqIndex + 1;
-                        $str = "ques{$sq}";
+                        $oi = $oIndex + 1;
+                        $str = "ques{$sq}-op{$oi}";
                         $arr_to_push = [
                             "id" => $str,
-                            "result" => $inner,
+                            "result" => 0,
                         ];
-                        array_push($outerMost, $arr_to_push);
-                    } else {
-                        array_push($outerMost, []);
-                    };
-    
-                    $isInputTypeQues = count($values) == 0;
-                    $ques_index = $sqIndex + 1;
-                    $ques_index = "ques{$ques_index}";
-                    $report_item_id = $outerMost[$sqIndex]["id"] ?? $ques_index;
-                    $ques_label = $singleQues["label"];
-                    $input_type_ques_id = "inputTypeQues{$ques_index}";
-                    $ans_html = "";
-                    foreach ($input_types_html_arr as $qus_key => $value) {
-                        if($isInputTypeQues){
-                            if(array_key_exists($sqIndex, $value)){
-                                $ans_html = $ans_html."<div>".$value[$sqIndex]."</div>";
-                            }
+                        array_push($inner,  $arr_to_push);
+
+                        $inner_id = $inner[$oIndex]["id"];
+                        $label = $option["label"];
+                        $progbar_id = $inner[$oIndex]["id"];
+                        $totalFilled = $outerMost[$sqIndex]["result"][$oIndex]["result"]."/".$totalUsersFilledTheForm;
+                        $optionsHtml = $optionsHtml."<div class='answer_cont col-12 col-md-3 mb-1 mb-md-0' id='".$inner_id."'><div class='ansVal'>{$label}:  $totalFilled</div><div class='ansResults'></div><div id='".$progbar_id."'></div></div>";
+                    }
+                    $sq = $sqIndex + 1;
+                    $str = "ques{$sq}";
+                    $arr_to_push = [
+                        "id" => $str,
+                        "result" => $inner,
+                    ];
+                    array_push($outerMost, $arr_to_push);
+                } else {
+                    array_push($outerMost, []);
+                };
+
+                $isInputTypeQues = count($values) == 0;
+                $ques_index = $sqIndex + 1;
+                $ques_index = "ques{$ques_index}";
+                $report_item_id = $outerMost[$sqIndex]["id"] ?? $ques_index;
+                $ques_label = "Q$i) ".ucfirst($singleQues["label"]);
+                $i++;
+                $input_type_ques_id = "inputTypeQues{$ques_index}";
+                $ans_html = "";
+                foreach ($input_types_html_arr as $qus_key => $value) {
+                    if($isInputTypeQues){
+                        if(array_key_exists($sqIndex, $value)){
+                            $ans_html = $ans_html."<div>".ucfirst($value[$sqIndex])."</div>";
                         }
                     }
+                }
 
-                    $html_to_insert = !$isInputTypeQues ? $optionsHtml : $ans_html;
-    
-                    $html = $html."
-                            <div class='report_item card p-2' id='{$report_item_id}'><div class='report_ques'>{$ques_label}</div><div class='report_ques_ans row mx-0'>".$html_to_insert."</div></div>"."<br>"; 
-                    }
+                $html_to_insert = !$isInputTypeQues ? $optionsHtml : $ans_html;
 
-                    $html = $heading.$html;
+                $html = $html."
+                        <div class='report_item card p-2' id='{$report_item_id}'><div class='report_ques'>{$ques_label}</div><div class='report_ques_ans row mx-0'>".$html_to_insert."</div></div>"."<br>"; 
+                }
 
-                    echo $html;
+                $html = "<div style='margin:30px auto;max-width:1200px;font-family:arial;'>".$header_html.$heading.$html."<div>";
+            }
 
-                    // instantiate and use the dompdf class
-                    // $dompdf = new Dompdf();
-                    // $dompdf->loadHtml($html);
-                    // $dompdf->setPaper('A4', 'landscape');
-                    // $dompdf->render();
-                    // ob_end_clean();
-                    // $dompdf->stream();
-                    
-            
-        }
+            // instantiate and use the dompdf class
+            $dompdf = new Dompdf();
+            $dompdf->loadHtml($html);
+            $dompdf->render();
+            ob_end_clean();
+            $dompdf->stream();
+            $dompdf->output();
+            return redirect()->back();
     }
 
     public function allocationDetails(Request $req, $id){
