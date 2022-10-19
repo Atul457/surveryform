@@ -41,10 +41,7 @@
                     @endif
 
                 <div class="col-12 card p-2">
-                    <div class="d-flex justify-content-between flex-wrap">
-                        <div class="filters">Filters</div>
-                        <button type="submit" class="btn btn-primary" onclick="exportToPdf()">Export to pdf</button>
-                    </div>
+                    <div class="filters">Filters</div>
                     <div class="filtersCont">
                         <div class="filterCont">
                             <label class="form-label" for="citiesSelectBox">Cities</label>

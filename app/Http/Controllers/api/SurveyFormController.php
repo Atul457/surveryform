@@ -4,6 +4,8 @@ namespace App\Http\Controllers\api;
 
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
+use App\Models\ShareHistory;
+use Illuminate\Support\Carbon;
 use App\Models\userFormLink;
 use App\Models\User;
 
@@ -11,7 +13,7 @@ class SurveyFormController extends Controller
 {
 
     // Validating the users is active or not
-    public function isUserStatusActive(User $user, Request $req)
+    public function isUserStatusActive(Request $req)
     {   
         $email = $req->user()->email;
 
@@ -29,7 +31,7 @@ class SurveyFormController extends Controller
         $id = $req->user()->id;
 
          // Validating the user
-         if(!$this->isUserStatusActive($user, $req)){
+         if(!$this->isUserStatusActive($req)){
             return response([
                 "status" => false,
                 "message" => "Your account may have been deactived by the admin",
@@ -60,4 +62,83 @@ class SurveyFormController extends Controller
         
        return json_encode($res2);
     }
+
+    public function share_form(Request $req){
+
+        $id = $req->user()->id;
+
+         // Validating the user
+         if(!$this->isUserStatusActive($req)){
+            return response([
+                "status" => false,
+                "message" => "Your account may have been deactived by the admin",
+                "logout" => true
+            ], 401);
+        }
+
+        $consumersArr = $req->input("consumersArr") ?? [];
+        if(count($consumersArr) === 0)  
+            return response([
+                "status" => false,
+                "message" => "Please enter at least one consumer details"
+            ], 400);
+        $modifiedArr = [];
+        $error_count = 0;
+        foreach($consumersArr as $key => $value){
+            $inner = [];
+            $name = $value["name"] ?? "";
+            $phone = $value["phone"] ?? "";
+            if(trim($name) == "" || trim($phone) == ""){
+                $error_count++;
+            }
+            $inner["name"] = $name;
+            $inner["phone"] = $phone;
+            $phoneNumbers[] = $phone;
+            $inner["user_ref"] = $id;
+            $inner["location"] = $value["location"] ?? "";
+            $inner["created_at"] = Carbon::now();
+            $inner["updated_at"] = Carbon::now();
+            array_push($modifiedArr, $inner);
+        }
+
+        if($error_count > 0){
+            return response([
+                "status" => false,
+                "message" => "Invalid consumer details"
+            ], 400);
+        }
+
+        // send messages
+        foreach ($modifiedArr as $user_details) {
+            $curl = curl_init();
+            $mobile = $user_details["phone"];
+            $otp = $user_details["phone"];
+            $message = "Dear ".$user_details['name'].",\nOTP to login to eRSPL is ".$otp.". Please do not share with anyone.";
+            $message = urlencode($message);
+            curl_setopt_array($curl, array(
+            CURLOPT_URL => "https://api.zapsms.co.in/api/v2/SendSMS?SenderId=eRSPLe&Is_Unicode=false&Is_Flash=false&Message=$message&MobileNumbers=$mobile&ApiKey=lsdzpI6f%2BipF%2BwG1j4iwQ%2FjIQS9PS4VC0uftsQih4hY%3D&ClientId=c814d93d-a836-4f39-8b47-6798657c8072",
+            CURLOPT_RETURNTRANSFER => true,
+            CURLOPT_ENCODING => "",
+            CURLOPT_MAXREDIRS => 10,
+            CURLOPT_TIMEOUT => 30,
+            CURLOPT_HTTP_VERSION => CURL_HTTP_VERSION_1_1,
+            CURLOPT_CUSTOMREQUEST => "GET",
+            CURLOPT_SSL_VERIFYHOST => 0,
+            CURLOPT_SSL_VERIFYPEER => 0,
+            ));
+            $response = curl_exec($curl);
+            $err = curl_error($curl);
+            curl_close($curl);
+        }
+        // send messages      
+        
+        ShareHistory::insert($modifiedArr);
+        
+        return response([
+            "status" => true,
+            "message" => "Messages sent successfully."
+        ], 200);
+
+    }
+
 }

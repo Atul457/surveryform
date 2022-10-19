@@ -198,7 +198,7 @@ class FormsFilledController extends Controller
                 <h4 align='center' style='margin-top:0px !important;'>$comp_addr</h4>
                 <div style='text-align:right;margin:0px auto 20px auto;'>
                     <div align='right'>Customer care: $comp_care_no</div>
-                    <div align='right'>Customer care: $prod_name</div>
+                    <div align='right'>Product name: $prod_name</div>
                 </div>
                 <div style='margin:0px auto 20px auto;font-size:18px;font-weight:bold;'>$form_name</div>
                 ";

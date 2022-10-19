@@ -79,13 +79,25 @@ class SurveyFormController extends Controller
     public function share_form(Request $req){
 
         $consumersArr = $req->input("consumersArr") ?? [];
+        if(count($consumersArr) === 0)  
+            return response([
+                "status" => false,
+                "message" => "Please enter at least one consumer details"
+            ], 400);
         $modifiedArr = [];
+        $error_count = 0;
         foreach($consumersArr as $key => $value){
             $inner = [];
-            $inner["name"] = $value["name"];
-            $inner["phone"] = $value["phone"];
-            $phoneNumbers[] = $value["phone"];
-            $inner["location"] = $value["location"];
+            $name = $value["name"] ?? "";
+            $phone = $value["phone"] ?? "";
+            if(trim($name) == "" || trim($phone) == ""){
+                $error_count++;
+            }
+            $inner["name"] = $name;
+            $inner["phone"] = $phone;
+            $phoneNumbers[] = $phone;
+            $inner["user_ref"] = Auth::user()->id;
+            $inner["location"] = $value["location"] ?? "";
             $inner["created_at"] = Carbon::now();
             $inner["updated_at"] = Carbon::now();
             array_push($modifiedArr, $inner);
@@ -119,7 +131,7 @@ class SurveyFormController extends Controller
         
         return response([
             "status" => true,
-            "message" => "Messages sent to successfully."
+            "message" => "Messages sent successfully."
         ], 200);
 
     }

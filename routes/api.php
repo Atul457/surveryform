@@ -22,6 +22,7 @@ Route::middleware('auth:sanctum')->group(function(){
     Route::get('myforms', [SurveyFormController::class, 'getUserForms']);
     Route::post('logout', [UserController::class, 'logout']);
     Route::get('getreport/{share_id}', [FormsFilledController::class, 'getReport']);
+    Route::post('share_form', [SurveyFormController::class, 'share_form']);
 });
 });
 

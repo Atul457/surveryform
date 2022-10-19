@@ -113,10 +113,13 @@ function renderResults() {
     }
 
     htmlHolderCont.html(`
-    <div class="report_item card p-2 mb-0 fw-bold">
+    <div class="report_item card p-2 mb-0 fw-bold d-flex justify-content-between flex-wrap flex-row align-items-center">
+    <span>
         ${allRecords.length} ${
         allRecords.length > 1 ? "users" : "user"
     } have filled the form till now.
+    </span>
+    <button type="submit" class="btn btn-primary" onclick="exportToPdf()">Export to pdf</button>
     </div>.
     `);
 
@@ -254,8 +257,6 @@ function renderResults() {
             });
     });
 }
-
-console.log({ formId });
 
 const exportToPdf = () => {
     const city_id = citiesSelectBox.val();
