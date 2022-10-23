@@ -119,7 +119,7 @@ function renderResults() {
         allRecords.length > 1 ? "users" : "user"
     } have filled the form till now.
     </span>
-    <button type="submit" class="btn btn-primary" onclick="exportToPdf()">Export to pdf</button>
+    <button type="submit" class="btn btn-primary" onclick="exportToPdf()">export to xls</button>
     </div>.
     `);
 
