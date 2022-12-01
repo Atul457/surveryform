@@ -64,9 +64,11 @@
             <span class="user-name fw-bolder">
               {{Auth::user()->name}}
             </span>
+            @if(Auth::user()->email)
             <span class="user-status">
-              {{Auth::user()->email}}
+            {{Auth::user()->email}}
             </span>
+            @endif
           @endif
         </div>
         <span class="avatar">

@@ -506,7 +506,7 @@ class FormsFilledController extends Controller
                         $inner_id = $inner[$oIndex]["id"];
                         $label = $option["label"];
                         $progbar_id = $inner[$oIndex]["id"];
-                        $totalFilled = $outerMost[$sqIndex]["result"][$oIndex]["result"]." out of ".$totalUsersFilledTheForm;
+                        $totalFilled = $outerMost[$sqIndex]["result"][$oIndex]["result"]."\t".$totalUsersFilledTheForm;
                         $optionsHtml = $optionsHtml."{$label}\t$totalFilled\n";
                     }
                     $sq = $sqIndex + 1;
@@ -524,7 +524,7 @@ class FormsFilledController extends Controller
                 $ques_index = $sqIndex + 1;
                 $ques_index = "ques{$ques_index}";
                 $report_item_id = $outerMost[$sqIndex]["id"] ?? $ques_index;
-                $ques_label = "Q$i) ".ucfirst($singleQues["label"]);
+                $ques_label = "Q$i) ".ucfirst($singleQues["label"])."\tAttempt By\tOut Of";
                 $i++;
                 $input_type_ques_id = "inputTypeQues{$ques_index}";
                 $ans_html = "";
@@ -541,7 +541,7 @@ class FormsFilledController extends Controller
                 $html = $html."{$ques_label}\n$html_to_insert"."\n"; 
                 }
 
-                $html = $header_html.$heading.$html."\n";
+                $html = strip_tags($header_html.$heading.$html."\n");
             }
 
             $fileName = "survey_report.xls";
@@ -549,7 +549,7 @@ class FormsFilledController extends Controller
             // Headers for download 
             header("Content-Type: application/vnd.ms-excel"); 
             header("Content-Disposition: attachment; filename=\"$fileName\""); 
-            
+
             // Render excel data 
             echo $html; 
             exit;

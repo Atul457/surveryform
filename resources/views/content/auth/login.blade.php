@@ -36,16 +36,17 @@
           </div>
         @endif
 
-        <form class="auth-login-form mt-2" action="{{url('login_user')}}" method="POST">
+        <form class="auth-ulogin-form mt-2" action="{{url('login_user')}}" method="POST">
           @csrf
           <div class="mb-1">
-            <label for="login-email" class="form-label">Email</label>
+            <label for="login-email" class="form-label">Emp Code</label>
             <input
               type="text"
               class="form-control"
               id="login-email"
-              name="email"
-              placeholder="john@example.com"
+              required
+              name="emp_code"
+              placeholder="XXXX"
               aria-describedby="login-email"
               tabindex="1"
               autofocus
@@ -65,6 +66,7 @@
                 class="form-control form-control-merge"
                 id="login-password"
                 name="password"
+                required
                 tabindex="2"
                 placeholder="&#xb7;&#xb7;&#xb7;&#xb7;&#xb7;&#xb7;&#xb7;&#xb7;&#xb7;&#xb7;&#xb7;&#xb7;"
                 aria-describedby="login-password"
